@@ -32,17 +32,13 @@ class DistanceService extends Service {
 
   _respawn() {
     try {
-      this.logger.log(`spawning distance monitor (${this.config.isDevMode ? 'dev' : 'prod'})...`)
+      this.logger.log(`spawning distance monitor (mock)...`)
       if(this._proc) {
         this.logger.log("process alrady exists. killing")
         this._proc.noRespawn = true
         this._proc.kill()
       }
-      if(this.config.isDevMode) {
-        this._proc = spawn('node', [path.resolve(__dirname, '..', 'distance_mock.js')]);
-      } else  {
-        this._proc = spawn('python', [path.resolve(__dirname, '..', 'distance.py')]);
-      }
+      this._proc = spawn('node', [path.resolve(__dirname, '..', 'distance_mock.js')]);
     } catch(err) {
       this.logger.log('Unable to spawn distance script', err)
       return 
