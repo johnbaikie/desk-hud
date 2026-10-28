@@ -104,7 +104,7 @@ export default class RoomPreview extends PIXI.Container{
     this._coverCanvas.alpha = this.progress
 
     this._doorsCanvas.clear()
-    this._doorsCanvas.beginFill(0xff0000)
+    this._doorsCanvas.beginFill(0x2f6bff)
     this._doorsCanvas.alpha = this.progress
     
     const drawCover = ({x1, x2, x3, x4, y1, y2, y3, y4}, position) => {

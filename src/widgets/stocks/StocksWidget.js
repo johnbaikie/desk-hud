@@ -64,7 +64,7 @@ export default class StocksWidget extends Widget {
       this._trendIcon.color = 0xffffff
     } else if(this.state.change < 0) {
       this._trendIcon.code = 0xe5db
-      this._trendIcon.color = 0xff0000
+      this._trendIcon.color = 0x2f6bff
     } else {
       this._trendIcon.code = 0xe15b
       this._trendIcon.color = 0xffffff
