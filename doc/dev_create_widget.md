@@ -101,7 +101,7 @@ export default class MemoryWidget extends Widget {
 
     // text field to shot memory usage
     this._usageLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 15,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -171,14 +171,15 @@ module.exports = MemoryService
 
 - Extend `MemoryWidget` to display memory usage history
 ```js
-import BarChart from '../../frontend/components/BarChart.js'
+import Chart from '../../frontend/components/Chart.js'
 
 export default class MemoryWidget extends Widget {
   constructor() {
     // ...
 
     // create usage chart at main screen
-    this._usageChart = new BarChart({
+    this._usageChart = new Chart({
+      style: 'bars',
       height: 150,
       width: 530
     })

@@ -48,6 +48,8 @@ Each feature is a **widget** (frontend, ES modules) paired with a **service** (b
 - **Demo mode**: `src/frontend/demo/DemoSocket.js` imitates the socket.io client with fake data from `*DemoData.js`. A new widget needs demo data here to show up in the demo.
 - **Persistence**: services use `node-persist` (`storage.getItem/setItem`, stored in `.node-persist/`) for history data such as pomodoro history, room temperature, and stocks.
 
+To add a widget, follow the `create-widget` skill (`.claude/skills/create-widget/SKILL.md`). It covers registration, templates, the current visual style, config and verification.
+
 Socket events, server→client: `config`, `widget`, `distance`, `system`, `log`. Client→server: `service` with `{serviceId, payload}`.
 
 ## Hardware notes
