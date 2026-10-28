@@ -8,7 +8,7 @@ export default class ErrorScreen extends PIXI.Container {
     this._titleField = new TextField("oops! something went wrong!", {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 22,
-      fill: '#2f6bff',
+      fill: '#00d8ff',
       align: 'center',
     })
     this._titleField.position.set(0, -40)

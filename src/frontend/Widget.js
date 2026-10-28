@@ -48,7 +48,7 @@ export default class Widget extends PIXI.Container {
     this._errorBg.beginFill(0x000000, 0.8)
     this._errorBg.drawCircle(0, 0, 90)
     this._errorIcon = new Icon(0xe000, 2, true)
-    this._errorIcon.color = 0x2f6bff
+    this._errorIcon.color = 0x00d8ff
     this._overlay.addChild(this._errorIcon)
   }
 
