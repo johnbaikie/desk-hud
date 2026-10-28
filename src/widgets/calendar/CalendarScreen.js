@@ -24,7 +24,7 @@ export default class CalendarScreen extends PIXI.Container {
     this._agenda.y = -80
 
     this._bg = new LineArt()
-    this._bg.addLine(-150, -105, -150, 80, 1, 0x888888)
+    this._bg.addLine(-150, -105, -150, 80, 1, 0xffffff)
     this._bg.addLine(200, -105, 200, 95)
     for(let i=0; i < 15; i++) {
       this._bg.addLine(200, -76+i*BUSY_SCALE_STEP, 250, -76+i*BUSY_SCALE_STEP, 1, 0x00d8ff)

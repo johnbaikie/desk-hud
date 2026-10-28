@@ -37,7 +37,7 @@ export default class CpuFan extends PIXI.Container {
       points.push(...coord(a+step*0.75, 3))
     }
 
-    this._turbine.addSequence(points, 2, 0x666666)
+    this._turbine.addSequence(points, 2, 0xffffff)
 
     this._frame = new ProgressCircle()
     this._frame.value = 1

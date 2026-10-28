@@ -72,7 +72,7 @@ export default class CoversScreen extends PIXI.Container {
       -138, -80,
       -235, -100,
       -235, -90,
-    ], 1, 0x888888)
+    ], 1, 0xffffff)
     this._lines.addSequence([
       10, -32,
       0, -32,
@@ -80,25 +80,25 @@ export default class CoversScreen extends PIXI.Container {
       -138, -75,
       -175, -83,
       -175, -78,
-    ], 1, 0x888888)
+    ], 1, 0xffffff)
     this._lines.addSequence([
       10, -14,
       -20, -14
-    ], 1, 0x888888)
+    ], 1, 0xffffff)
     this._lines.addSequence([
       10, 4,
       5, 4,
       5, 35,
       8, 55,
       170, 55
-    ], 1, 0x888888)
+    ], 1, 0xffffff)
     this._lines.addSequence([
       10, 22,
       -5, 22,
       -5, 35,
       -11, 80,
       228, 80
-    ], 1, 0x888888)
+    ], 1, 0xffffff)
 
    
   }

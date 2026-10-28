@@ -18,7 +18,7 @@ export default class RoomPreview extends PIXI.Container{
     const backWallWidth = 80
     const backWallHeight = 40
     const sideWallWidth = 40
-    const color = 0x555555
+    const color = 0xffffff
 
     const persp = (x, y) => {
       if(x == 0) return 0

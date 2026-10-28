@@ -32,27 +32,27 @@ export default class WindowBorder extends PIXI.Container {
       815, 290,
       815, 315,
       1480, 315,
-    ], 1, 0x555555)
+    ], 1, 0xffffff)
     this._lines.addSequence([
       805, 290,
       805, 315,
       660, 315,
       660, 170,
       680, 170
-    ], 1, 0x555555)
+    ], 1, 0xffffff)
     this._lines.addSequence([
       1235-33, 200,
       1235-33, 290-33,
       1235, 290,
       1480, 290,
-    ], 1, 0x555555)
+    ], 1, 0xffffff)
 
     this._lines.addSequence([
       1480, 30,
       1235, 30,
       1235-33, 30+33,
       1235-33, 30+33+10,
-    ], 1, 0x555555)
+    ], 1, 0xffffff)
 
     this._lines.addSequence([
       1480, 302,
@@ -66,7 +66,7 @@ export default class WindowBorder extends PIXI.Container {
       1225, 302+10,
       1225-35, 302-35+10,
       1225-70-2, 302+2+10,
-    ], 1, 0x555555)
+    ], 1, 0xffffff)
 
     this._lines.addSequence([
       1480, 20,
@@ -87,14 +87,14 @@ export default class WindowBorder extends PIXI.Container {
       600-10+5+10, 30-10-17,
       573, 3,
       570, 0,
-    ], 1, 0x555555)
+    ], 1, 0xffffff)
 
     this._lines.addSequence([
       0, 20,
       130, 20,
       135, 25,
       1480, 25,
-    ], 1, 0x555555)
+    ], 1, 0xffffff)
 
     this._rotateForwardButton = new IconButton(0xe5c8)
     this._rotateForwardButton.x = 1333
@@ -190,7 +190,7 @@ export default class WindowBorder extends PIXI.Container {
 
     this._tempLine = new LineArt()
     // temp scale 0 - 110
-    this._tempLine.addLine(670-7, 303-125*0.5, 670+7, 303-125*0.5, 1, 0x888888) // 55'C
+    this._tempLine.addLine(670-7, 303-125*0.5, 670+7, 303-125*0.5, 1, 0xffffff) // 55'C
     this.addChild(this._tempLine)
 
     this._tempBar = new Thermometer(125, 0.77)

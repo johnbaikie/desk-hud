@@ -22,7 +22,7 @@ export default class Fan extends PIXI.Container {
       -60, -17,
       -30, -17,
       -10, -10,
-    ], 1, 0x888888)
+    ], 1, 0xffffff)
     this.addChild(this._pointer)
 
     this._turbine = new LineArt()
@@ -46,7 +46,7 @@ export default class Fan extends PIXI.Container {
       points.push(...coord(a+step*0.75, 7))
     }
 
-    this._turbine.addSequence(points, 2, 0xaaaaaa)
+    this._turbine.addSequence(points, 2, 0xffffff)
 
     this._frame = new ProgressCircle()
     this._frame.value = 1

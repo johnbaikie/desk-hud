@@ -234,7 +234,7 @@ export default class ForecastScreen extends PIXI.Container {
     this._daySeparators.clear()
     for(let i=1; i<hours.length; i++) {
       if(hours[i] < hours[i-1]) {
-        this._daySeparators.addLine((i-0.2)*COL_WIDTH, -90, (i-0.2)*COL_WIDTH, 90, 1, 0x888888)
+        this._daySeparators.addLine((i-0.2)*COL_WIDTH, -90, (i-0.2)*COL_WIDTH, 90, 1, 0xffffff)
       }
     }
     
