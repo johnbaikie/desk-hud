@@ -97,7 +97,7 @@ export default class MainScreen extends PIXI.Container {
     this._titleLabel.y = -111
     this.addChild(this._titleLabel)
     
-    this._statusLeftLabel = new TextField('1234567890', {
+    this._statusLeftLabel = new TextField('', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 8,
       fill: '#ffffff',
@@ -110,7 +110,7 @@ export default class MainScreen extends PIXI.Container {
     this._statusLeftLabel.y = -111
     this.addChild(this._statusLeftLabel)
 
-    this._statusRightLabel = new TextField('1234567890', {
+    this._statusRightLabel = new TextField('', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 8,
       fill: '#ffffff',
@@ -197,8 +197,8 @@ export default class MainScreen extends PIXI.Container {
     this._statusLeftLabel.progress = this.progress
     this._statusRightLabel.progress = this.progress
 
-    this._statusLeftLabel.text = (this.statusLeftText !== null) ? this.statusLeftText : '0x'+(837231*Math.round(performance.now()*1000) % 0xffffffffff).toString(16).padStart(10, 'X')
-    this._statusRightLabel.text = (this.statusRightText !== null) ? this.statusRightText : '0x'+(837231*Math.round(performance.now()*1000) % 0xffffffffff).toString(16).padStart(10, 'X')
+    this._statusLeftLabel.text = this.statusLeftText || ''
+    this._statusRightLabel.text = this.statusRightText || ''
 
     this._tabButtons.forEach(t => {
       t.progress = this.progress
