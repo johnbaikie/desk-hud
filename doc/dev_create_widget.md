@@ -40,8 +40,8 @@ const os = require('os');
 
 class MemoryService extends Service {
 
-  constructor(config, io) {
-    super(config, io, 'memory')
+  constructor(config, io, webApp) {
+    super(config, io, webApp, 'memory')
     this._loop = null
   }
 
@@ -139,7 +139,7 @@ export default class MemoryWidget extends Widget {
 ```js
 class MemoryService extends Service {
 
-  constructor(config, io) {
+  constructor(config, io, webApp) {
     // ...
     this._history = []
   }

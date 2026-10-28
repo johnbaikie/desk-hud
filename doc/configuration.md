@@ -56,6 +56,21 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `apiKey` (string): The API key for accessing the StockData service.
   - `symbol` (string): The stock symbol or ticker for which you want to fetch data. 
 
+- **webcam**: This section configures the webcam widget, which shows an RTSP camera stream (transcoded to HLS with ffmpeg).
+  - `name` (string): The name displayed for the camera.
+  - `areas` (array): Regions of the camera image to show on the screen. Each area has:
+    - `cameraX`, `cameraY` (number): Offset of the camera image.
+    - `viewX`, `viewY` (number): Position of the area on the screen.
+    - `width`, `height` (number): Size of the area.
+    - `scale` (number): Scale of the camera image.
+  - `stream` (object): Stream settings.
+    - `rtsp` (string): The RTSP URL of the camera.
+    - `segmentSize` (number): Length of each HLS segment, in seconds.
+    - `segmentCount` (number): Number of HLS segments kept in the playlist.
+    - `buffer` (number): Maximum client-side buffer length, in seconds.
+
+Every key is required. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
+
 
 ## Integrations
 
