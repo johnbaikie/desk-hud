@@ -28,11 +28,14 @@ export default class ScrollContainer extends PIXI.Container {
     this._scroller.drawRect(0, 0, windowWidth, windowHeight)
     this._scroller.interactive = true
     super.addChild(this._scroller)
-    this._scroller.on('mousedown', (e) => this._startDrag(e.data.global))
-    this._scroller.on('mouseup', (e) => this._stopDrag(e.data.global))
-    this._scroller.on('pointerdown', (e) => this._startDrag(e.data.global))
-    this._scroller.on('pointermove', (e) => this._updateDrag(e.data.global))
-    this._scroller.on('pointerup', (e) => this._stopDrag(e.data.global))
+    // track the drag with global events instead of enlarging the hit area,
+    // so an interrupted drag can never leave an invisible box blocking taps
+    this._scroller.on('pointerdown', (e) => this._startDrag(e.global))
+    this._scroller.on('globalpointermove', (e) => this._updateDrag(e.global))
+    this._scroller.on('pointerup', (e) => this._stopDrag(e.global))
+    this._scroller.on('pointerupoutside', (e) => this._stopDrag(e.global))
+    this._scroller.on('pointercancel', (e) => this._stopDrag(e.global))
+    this.on('removed', () => { this.dragging = false })
   }
 
   _boundX(v) {
@@ -51,7 +54,6 @@ export default class ScrollContainer extends PIXI.Container {
   _startDrag({x, y}) {
     this.offsetX = x - this._content.x
     this.offsetY = y - this._content.y
-    this._scroller.scale.set(100)
     this.dragging = true
   }
 
@@ -66,8 +68,6 @@ export default class ScrollContainer extends PIXI.Container {
     if(!this.dragging) return
     this._content.x = this._boundX(x - this.offsetX)
     this._content.y = this._boundY(y - this.offsetY)
-    this._scroller.scale.set(1)
-    this._scroller.x = 0
     this.dragging = false
   }
 

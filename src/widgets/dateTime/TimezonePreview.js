@@ -102,23 +102,24 @@ export default class TimezonePreview extends PIXI.Container {
     this._dragBox.y = -20+2*SEGMENT_HEIGHT
     this._dragBox.interactive = true
     this.addChild(this._dragBox)
-    this._dragBox.on('mousedown', (e) => this._startDrag(e.data.global.x))
-    this._dragBox.on('mouseup', (e) => this._stopDrag(e.data.global.x))
-    this._dragBox.on('pointerdown', (e) => this._startDrag(e.data.global.x))
-    this._dragBox.on('pointermove', (e) => this._updateDrag(e.data.global.x))
-    this._dragBox.on('pointerup', (e) => this._stopDrag(e.data.global.x))
+    // track the drag with global events instead of enlarging the hit area,
+    // so an interrupted drag can never leave an invisible box blocking taps
+    this._dragBox.on('pointerdown', (e) => this._startDrag(e.global.x))
+    this._dragBox.on('globalpointermove', (e) => this._updateDrag(e.global.x))
+    this._dragBox.on('pointerup', (e) => this._stopDrag(e.global.x))
+    this._dragBox.on('pointerupoutside', (e) => this._stopDrag(e.global.x))
+    this._dragBox.on('pointercancel', (e) => this._stopDrag(e.global.x))
+    this.on('removed', () => this._stopDrag())
   }
 
   _startDrag(x) {
     this._offsetX = x - this._dragBox.x
     this._dragStartX = this._container.x
-    this._dragBox.scale.set(100)
     this._dragging = true
   }
 
   _updateDrag(x) {
     if (this._dragging) {
-      this._dragBox.x = x - this._offsetX
       const newPos = this._dragStartX + x - this._offsetX-120-SEGMENT_WIDTH*5.5
       this._dragV = Math.max(-SEGMENT_WIDTH, Math.min(SEGMENT_WIDTH, newPos - this._container.x))
       this._container.x = newPos
@@ -128,7 +129,6 @@ export default class TimezonePreview extends PIXI.Container {
   _stopDrag(x) {
     if(!this._dragging) return
     this._dragBox.x = 120+SHOW_SEGMENTS*30/2
-    this._dragBox.scale.set(1)
     this._dragging = false
     this._lastDragTime = performance.now()
   }
