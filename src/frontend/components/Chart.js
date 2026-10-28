@@ -51,7 +51,7 @@ export default class Chart extends PIXI.Container {
       }
       this._scaleLabels = this._scaleLabels.map((y, i) => {
         const txt = new TextField(this._scaleMin + i * this._tickStep, {
-          fontFamily: 'MajorMonoDisplay-Regular',
+          fontFamily: 'ShareTechMono',
           fontSize: 9,
           fill: '#ffffff',
           stroke: "#ffffff",

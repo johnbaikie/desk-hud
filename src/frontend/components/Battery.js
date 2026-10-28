@@ -39,7 +39,7 @@ export default class Battery extends PIXI.Container {
     }
 
     this._label = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
       fill: '#ffffff',
       stroke: "#ffffff",

@@ -34,7 +34,7 @@ export default class WeatherWidget extends Widget {
     this.addChild(this._currentTempScale)
 
     this._currentTempLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 16,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -44,10 +44,10 @@ export default class WeatherWidget extends Widget {
     this.addChild(this._currentTempLabel)
 
     this._currentDescriotionLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 16,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1,
       align: 'center',
     })
@@ -66,7 +66,7 @@ export default class WeatherWidget extends Widget {
 
     this._rainLabel = new ArchText()
     this._rainLabel.text = ''
-    this._rainLabel.color = 0x00d8ff
+    this._rainLabel.color = 0xffffff
     this._rainLabel.positionOffset = -Math.PI*0.45
     this.addChild(this._rainLabel)
 

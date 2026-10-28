@@ -64,10 +64,10 @@ export default class ClimateScreen extends PIXI.Container {
     this._circle.addChild(this._tempScale)
 
     this._targetLabel = new TextField("", {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 30,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     })
@@ -105,10 +105,10 @@ export default class ClimateScreen extends PIXI.Container {
     this.addChild(this._tempChart)
 
     this._chartLabel = new TextField("Room Temperature:", {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     })
@@ -118,7 +118,7 @@ export default class ClimateScreen extends PIXI.Container {
     this.addChild(this._chartLabel)
 
     this._roomTempLabel = new TextField("", {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -136,7 +136,7 @@ export default class ClimateScreen extends PIXI.Container {
     this.addChild(this._battery)
 
     this._batteryLabel = new TextField("Thermometer:", {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
       fill: '#ffffff',
       stroke: "#ffffff",

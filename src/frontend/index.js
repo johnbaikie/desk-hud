@@ -26,7 +26,7 @@ if(DEMO_MODE) {
 
   console.groupCollapsed(`${LOG_PREFIX} Loading fonts....`)
   await loadFont('weathericons-regular-webfont')
-  await loadFont('MajorMonoDisplay-Regular')
+  await loadFont('ShareTechMono')
   await loadFont('Material Symbols Outlined')
   console.groupEnd()
 

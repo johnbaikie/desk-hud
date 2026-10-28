@@ -3,7 +3,7 @@ export default class TextField extends PIXI.Text {
   constructor (txt, style) {
     super('', style)
     this._progress = 0
-    this._origText = String(txt)
+    this._origText = String(txt).toUpperCase()
     this.anchor.set(0.5)
     this._changed = true
   }
@@ -18,7 +18,7 @@ export default class TextField extends PIXI.Text {
   }
 
   set text(v) {
-    const newText = String(v)
+    const newText = String(v).toUpperCase()
     this._changed = (this._changed || this._origText !== newText)
     this._origText = newText
   }

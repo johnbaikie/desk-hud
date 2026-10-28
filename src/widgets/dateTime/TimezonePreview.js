@@ -48,7 +48,7 @@ export default class TimezonePreview extends PIXI.Container {
     this._nameLabels = this._timezones
       .map(({name}, i) => {
         const txt = new TextField(name, {
-          fontFamily: 'MajorMonoDisplay-Regular',
+          fontFamily: 'ShareTechMono',
           fontSize: 11,
           fill: '#ffffff',
           stroke: "#ffffff",
@@ -64,7 +64,7 @@ export default class TimezonePreview extends PIXI.Container {
     this._timeLabels = this._timezones
       .map((_, i) => {
         const txt = new TextField('00:00:00', {
-          fontFamily: 'MajorMonoDisplay-Regular',
+          fontFamily: 'ShareTechMono',
           fontSize: 11,
           fill: '#ffffff',
           stroke: "#ffffff",

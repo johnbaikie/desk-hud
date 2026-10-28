@@ -23,7 +23,7 @@ export default class StocksWidget extends Widget {
     this.addChild(this._trendIcon)
 
     this._symbolLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 25,
       fill: '#ffffff',
       align: 'center',
@@ -31,7 +31,7 @@ export default class StocksWidget extends Widget {
     this.addChild(this._symbolLabel)
 
     this._priceLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 18,
       fill: '#ffffff',
       align: 'center',

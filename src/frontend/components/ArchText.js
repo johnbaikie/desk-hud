@@ -39,7 +39,7 @@ export default class ArchText extends PIXI.Container {
   }
 
   set text(v) {
-    const str = String(v)
+    const str = String(v).toUpperCase()
     this._updated = this._updated || (this._text !== str)
     if(this._updated) {
       this.cacheAsBitmap = false
@@ -132,7 +132,7 @@ export default class ArchText extends PIXI.Container {
     }
     while(this._chars.length < this.text.length) {
       const char = new PIXI.Text('X', {
-        fontFamily: 'MajorMonoDisplay-Regular',
+        fontFamily: 'ShareTechMono',
         fontSize: this._fontSize,
         fill: this.color,
         stroke: this.color,

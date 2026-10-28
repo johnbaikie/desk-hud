@@ -61,12 +61,12 @@ export default class PomodoroWidget extends Widget {
 
     this._breakLabel = new ArchText()
     this._breakLabel.text = 'Break'
-    this._breakLabel.color = 0x00d8ff
+    this._breakLabel.color = 0xffffff
     this._breakLabel.positionOffset = 1.3
     this.addChild(this._breakLabel)
 
     this._modeLabel = new TextField('Work', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 16,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -101,7 +101,7 @@ export default class PomodoroWidget extends Widget {
     this.addChild(this._timeBgRed)
 
     this._timeLabel = new TextField('00:00.000', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 16,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -115,7 +115,7 @@ export default class PomodoroWidget extends Widget {
 
     this._dotLabel = new ArchText()
     this._dotLabel.text = 'completed:'
-    this._dotLabel.color = 0x00d8ff
+    this._dotLabel.color = 0xffffff
     this._dotLabel.positionOffset = -1.6
     this._dotLabel.alpha = 0
     this.addChild(this._dotLabel)
@@ -226,8 +226,8 @@ export default class PomodoroWidget extends Widget {
       this._ticks.count = 25
     } else {
       this._modeLabel.text = 'break'
-      this._modeLabel.style.fill = 0x00d8ff
-      this._modeLabel.style.stroke = 0x00d8ff
+      this._modeLabel.style.fill = 0xffffff
+      this._modeLabel.style.stroke = 0xffffff
       this._ticks.count = 5
     }
 

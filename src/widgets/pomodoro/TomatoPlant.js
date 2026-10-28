@@ -56,17 +56,17 @@ export default class TomatoPlant extends PIXI.Container {
     this._trunk.addSequence(trunkSeq)
 
     this._dayLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 10,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'center',
     });
     this.addChild(this._dayLabel)
     this._dayLabel.y = 10
     this._valueLabel = new TextField(``, {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 14,
       fill: '#ffffff',
       stroke: "#ffffff",

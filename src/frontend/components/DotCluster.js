@@ -55,7 +55,7 @@ export default class DotCluster extends PIXI.Container {
     }
 
     this._label = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize:11,
       fill: '#ffffff',
       stroke: "#ffffff",

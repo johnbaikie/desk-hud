@@ -6,16 +6,16 @@ export default class ErrorScreen extends PIXI.Container {
     super()
     this.progress = 0
     this._titleField = new TextField("oops! something went wrong!", {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 22,
-      fill: '#00d8ff',
+      fill: '#ffffff',
       align: 'center',
     })
     this._titleField.position.set(0, -40)
     this.addChild(this._titleField)
 
     this._messageField = new TextField("an unexpected error occurred", {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 15,
       fill: '#ffffff',
       align: 'center',

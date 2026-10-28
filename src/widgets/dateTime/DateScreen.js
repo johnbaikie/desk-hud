@@ -18,7 +18,7 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._pointer)
 
     this._currentMonthField = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize:11,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -31,7 +31,7 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._currentMonthField)
 
     this._nextMonthField = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize:11,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -44,10 +44,10 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._nextMonthField)
 
     this._currentMonthHeader = new TextField(header, {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize:11,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'left',
     });
@@ -57,10 +57,10 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._currentMonthHeader)
 
     this._nexttMonthHeader = new TextField(header, {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize:11,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'left',
     });
@@ -70,7 +70,7 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._nexttMonthHeader)
 
     this._currentMonthTitle = new TextField(header, {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 16,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -82,7 +82,7 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._currentMonthTitle)
 
     this._nextMonthTitle = new TextField(header, {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 16,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -94,7 +94,7 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._nextMonthTitle)
 
     this._countdownTitle = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -106,10 +106,10 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._countdownTitle)
 
     this._countdownLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 16,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'center',
     });

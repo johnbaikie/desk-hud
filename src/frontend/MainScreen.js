@@ -87,10 +87,10 @@ export default class MainScreen extends PIXI.Container {
     this.addChild(this._errorScreen )
 
     this._titleLabel = new TextField('>> widget <<', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize:11,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'center',
     });
@@ -98,7 +98,7 @@ export default class MainScreen extends PIXI.Container {
     this.addChild(this._titleLabel)
     
     this._statusLeftLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -111,7 +111,7 @@ export default class MainScreen extends PIXI.Container {
     this.addChild(this._statusLeftLabel)
 
     this._statusRightLabel = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
       fill: '#ffffff',
       stroke: "#ffffff",

@@ -62,7 +62,7 @@ export default class StocksHistoryScreen extends PIXI.Container {
         if(x < this.data.length - 21) {
           const month = MONTHS[(now.getMonth()-1-this._monthLabels.length+12) % 12]
           const label = new TextField(month, {
-            fontFamily: 'MajorMonoDisplay-Regular',
+            fontFamily: 'ShareTechMono',
             fontSize: 11,
             fill: '#ffffff',
             stroke: "#ffffff",

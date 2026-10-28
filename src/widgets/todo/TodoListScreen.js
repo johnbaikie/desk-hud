@@ -44,10 +44,10 @@ export default class TodoListScreen extends PIXI.Container {
     this._taskContainer.scroller.drawRect(-240, -100, 520, 200)
 
     this._statsLabel = new TextField(' todo | show | all ', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'left',
     })
@@ -56,7 +56,7 @@ export default class TodoListScreen extends PIXI.Container {
     this.addChild(this._statsLabel)
 
     this._statsValues = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 10.5,
       fill: '#ffffff',
       stroke: "#ffffff",

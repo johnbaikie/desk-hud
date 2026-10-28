@@ -41,10 +41,10 @@ export default class ForecastScreen extends PIXI.Container {
     this._container.addChild(this._daySeparators)
     
     this._timelineHours = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     })
@@ -69,7 +69,7 @@ export default class ForecastScreen extends PIXI.Container {
     })
 
     this._timelinePop = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -98,10 +98,10 @@ export default class ForecastScreen extends PIXI.Container {
     this._container.addChild(this._tempLine)
 
     this._tempLabels = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'center',
     })

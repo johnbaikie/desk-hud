@@ -53,7 +53,7 @@ export default class DiamondButton extends PIXI.Container {
     ], 1, 0xffffff)
   
     this._label = new TextField(text, {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
       fill: '#ffffff',
       stroke: "#ffffff",

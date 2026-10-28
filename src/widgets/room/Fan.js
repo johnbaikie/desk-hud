@@ -61,7 +61,7 @@ export default class Fan extends PIXI.Container {
     this.addChild(this._speedBar)
 
     this._label = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 9,
       fill: '#ffffff',
       stroke: "#ffffff",

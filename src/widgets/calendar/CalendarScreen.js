@@ -11,7 +11,7 @@ export default class CalendarScreen extends PIXI.Container {
     this.events = null
 
     this._agenda = new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 11,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -37,10 +37,10 @@ export default class CalendarScreen extends PIXI.Container {
       .join('\n')
 
     this._timeScale = new TextField(hours, {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 9,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'right',
     })

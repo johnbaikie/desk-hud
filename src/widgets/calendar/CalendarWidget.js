@@ -17,16 +17,16 @@ export default class CalendarWidget extends Widget {
     })
 
     this._statsTitle = new TextField('completed\ntoday', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 9,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     });
     this.addChild(this._statsTitle)
     this._statsLabel = new TextField('0/0', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 15,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -42,7 +42,7 @@ export default class CalendarWidget extends Widget {
     this.addChild(this._statusProgress)
 
     this._nextLabel = new ArchText()
-    this._nextLabel.color = 0x00d8ff
+    this._nextLabel.color = 0xffffff
     this._nextMeetingLabel = new ArchText()
     this._nextLabel.alignOffset = 0
     this._nextMeetingLabel.alignOffset = 0

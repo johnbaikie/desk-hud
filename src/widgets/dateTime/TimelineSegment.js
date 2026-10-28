@@ -20,7 +20,7 @@ export default class TimelineSegment extends PIXI.Container {
     const darkNumbers =  Array(24).fill(1).map((_, i) => (i < 8 || i > 15) ? '  ' : String(i+1).padStart(2, '0'))
 
     this._hourLabels = new TextField(lightNumbers.join(' '), {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 13.5,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -33,7 +33,7 @@ export default class TimelineSegment extends PIXI.Container {
     this.addChild(this._hourLabels)
 
     this._darkHourLabels = new TextField(darkNumbers.join(' '), {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 13.5,
       fill: '#000000',
       stroke: "#000000",

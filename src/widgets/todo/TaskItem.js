@@ -11,7 +11,7 @@ export default class TaskItem extends PIXI.Container {
     this._lockTimer = 0
 
     this._titleLabel =  new TextField('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 13,
       fill: '#ffffff',
       stroke: "#ffffff",

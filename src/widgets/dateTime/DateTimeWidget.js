@@ -24,7 +24,7 @@ export default class DateTimeWidget extends Widget {
     this.addChild(this._hourPointer)
 
     this._timeLabel = new TextField('00:00:00', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -35,7 +35,7 @@ export default class DateTimeWidget extends Widget {
     this.addChild(this._timeLabel)
 
     this._dateLabel = new TextField('???', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",

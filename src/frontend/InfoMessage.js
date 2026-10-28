@@ -5,10 +5,10 @@ export default class InfoMessage extends PIXI.Container {
   constructor() {
     super()
     this._label = new PIXI.Text('', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 15,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 1.5,
       align: 'center',
     });
@@ -20,7 +20,7 @@ export default class InfoMessage extends PIXI.Container {
   }
 
   set text(txt) {
-    this._text = String(txt)
+    this._text = String(txt).toUpperCase()
     this._clearTime = 100
   }
 

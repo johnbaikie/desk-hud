@@ -52,10 +52,10 @@ export default class CoversScreen extends PIXI.Container {
     })
 
     this._batteryLabel = new TextField('Cover     Door', {
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#00d8ff',
-      stroke: "#00d8ff",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'left',
     })

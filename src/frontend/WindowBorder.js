@@ -114,10 +114,10 @@ export default class WindowBorder extends PIXI.Container {
     this._rotateBackButton.on('pointertap', () => this.emit('rotate', -1))
 
     this._distanceLabel = new TextField('',{
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#888888',
-      stroke: "#888888",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     });
@@ -135,10 +135,10 @@ export default class WindowBorder extends PIXI.Container {
     this._distanceBar.alpha = 0.4
 
     this._cpuLabel = new TextField('cpu:  0.0%',{
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#888888',
-      stroke: "#888888",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     });
@@ -149,10 +149,10 @@ export default class WindowBorder extends PIXI.Container {
     this._cpuLabel.x = 820
 
     this._memLabel = new TextField('mem:  0.0%',{
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#888888',
-      stroke: "#888888",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     });
@@ -163,10 +163,10 @@ export default class WindowBorder extends PIXI.Container {
     this._memLabel.x = 820
 
     this._tempLabel = new TextField('cpu temp:',{
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#888888',
-      stroke: "#888888",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     });
@@ -176,10 +176,10 @@ export default class WindowBorder extends PIXI.Container {
     this._tempLabel.x = 685
 
     this._fanLabel = new TextField('cpu fan:',{
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#888888',
-      stroke: "#888888",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'center',
     });
@@ -228,10 +228,10 @@ export default class WindowBorder extends PIXI.Container {
     })
 
     this._fpsLabel = new TextField('fps: ',{
-      fontFamily: 'MajorMonoDisplay-Regular',
+      fontFamily: 'ShareTechMono',
       fontSize: 8,
-      fill: '#888888',
-      stroke: "#888888",
+      fill: '#ffffff',
+      stroke: "#ffffff",
       strokeThickness: 0.5,
       align: 'left',
     });
