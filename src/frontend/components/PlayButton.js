@@ -7,7 +7,7 @@ export default class PlayButton extends Button {
     this._mode = 'stop'
 
     this._stopIcon = new PIXI.Graphics()
-    this._stopIcon.beginFill(0xff0000)
+    this._stopIcon.beginFill(0x00d8ff)
     this._stopIcon.moveTo(-8, -8)
     this._stopIcon.lineTo(8, -8)
     this._stopIcon.lineTo(8, 8)

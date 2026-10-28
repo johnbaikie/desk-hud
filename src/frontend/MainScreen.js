@@ -89,8 +89,8 @@ export default class MainScreen extends PIXI.Container {
     this._titleLabel = new TextField('>> widget <<', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize:11,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'center',
     });

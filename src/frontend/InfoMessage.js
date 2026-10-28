@@ -7,8 +7,8 @@ export default class InfoMessage extends PIXI.Container {
     this._label = new PIXI.Text('', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 15,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'center',
     });

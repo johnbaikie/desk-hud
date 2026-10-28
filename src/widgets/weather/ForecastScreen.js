@@ -43,8 +43,8 @@ export default class ForecastScreen extends PIXI.Container {
     this._timelineHours = new TextField('', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 11,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 0.5,
       align: 'center',
     })
@@ -100,8 +100,8 @@ export default class ForecastScreen extends PIXI.Container {
     this._tempLabels = new TextField('', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 11,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'center',
     })
@@ -181,7 +181,7 @@ export default class ForecastScreen extends PIXI.Container {
       )
     }
 
-    this._tempLine.addSequence(coord, 3, 0xff0000)
+    this._tempLine.addSequence(coord, 3, 0x00d8ff)
 
     this._tempLabels.text = Array(24)
       .fill(1)

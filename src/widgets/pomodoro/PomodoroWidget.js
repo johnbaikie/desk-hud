@@ -25,7 +25,7 @@ export default class PomodoroWidget extends Widget {
     this.addChild(this._ticks)
 
     this._redLight = new PIXI.Graphics()
-    this._redLight.beginFill(0xff0000)
+    this._redLight.beginFill(0x00d8ff)
     this._redLight.drawCircle(0, 0, 100)
     this._redLight.alpha = 0
     this.addChildAt(this._redLight, 0)
@@ -61,7 +61,7 @@ export default class PomodoroWidget extends Widget {
 
     this._breakLabel = new ArchText()
     this._breakLabel.text = 'Break'
-    this._breakLabel.color = 0xff0000
+    this._breakLabel.color = 0x00d8ff
     this._breakLabel.positionOffset = 1.3
     this.addChild(this._breakLabel)
 
@@ -95,7 +95,7 @@ export default class PomodoroWidget extends Widget {
     this.addChild(this._timeBg)
    
     this._timeBgRed = new PIXI.Graphics()
-    this._timeBgRed.beginFill(0xff0000)
+    this._timeBgRed.beginFill(0x00d8ff)
     this._timeBgRed.drawRect(-55, -9, 110, 20)
     this._timeBgRed.alpha = 0
     this.addChild(this._timeBgRed)
@@ -115,7 +115,7 @@ export default class PomodoroWidget extends Widget {
 
     this._dotLabel = new ArchText()
     this._dotLabel.text = 'completed:'
-    this._dotLabel.color = 0xff0000
+    this._dotLabel.color = 0x00d8ff
     this._dotLabel.positionOffset = -1.6
     this._dotLabel.alpha = 0
     this.addChild(this._dotLabel)
@@ -226,8 +226,8 @@ export default class PomodoroWidget extends Widget {
       this._ticks.count = 25
     } else {
       this._modeLabel.text = 'break'
-      this._modeLabel.style.fill = 0xff0000
-      this._modeLabel.style.stroke = 0xff0000
+      this._modeLabel.style.fill = 0x00d8ff
+      this._modeLabel.style.stroke = 0x00d8ff
       this._ticks.count = 5
     }
 

@@ -39,8 +39,8 @@ export default class RoomWidget extends Widget {
     this._acStateLabel = new TextField('Off', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 11,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1,
       align: 'center',
     });
@@ -50,11 +50,11 @@ export default class RoomWidget extends Widget {
     this.addChild(this._roomView)
 
     this._buttonFrame = new LineArt()
-    this._buttonFrame.addLine(0, 45, 30, 45, 1, 0xaa0000)
-    this._buttonFrame.addLine(0, 45, -30, 45, 1, 0xaa0000)
-    this._buttonFrame.addLine(0, 60, 0, 45, 1, 0xaa0000)
-    this._buttonFrame.addLine(45, 55, 30, 45, 1, 0xaa0000)
-    this._buttonFrame.addLine(-45, 55, -30, 45, 1, 0xaa0000)
+    this._buttonFrame.addLine(0, 45, 30, 45, 1, 0x0090aa)
+    this._buttonFrame.addLine(0, 45, -30, 45, 1, 0x0090aa)
+    this._buttonFrame.addLine(0, 60, 0, 45, 1, 0x0090aa)
+    this._buttonFrame.addLine(45, 55, 30, 45, 1, 0x0090aa)
+    this._buttonFrame.addLine(-45, 55, -30, 45, 1, 0x0090aa)
     this.addChild(this._buttonFrame)
 
     this._dayButton = new IconButton(0xe518)
@@ -90,8 +90,8 @@ export default class RoomWidget extends Widget {
     this._scenesLabel = new TextField('SceNes', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 11,
-      fill: '#aa0000',
-      stroke: "#aa0000",
+      fill: '#0090aa',
+      stroke: "#0090aa",
       strokeThickness: 0.5,
       align: 'center',
     });

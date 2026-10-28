@@ -19,8 +19,8 @@ export default class CalendarWidget extends Widget {
     this._statsTitle = new TextField('completed\ntoday', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 9,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 0.5,
       align: 'center',
     });
@@ -36,13 +36,13 @@ export default class CalendarWidget extends Widget {
     this.addChild(this._statsLabel)
 
     this._statusProgress = new ProgressCircle()
-    this._statusProgress.color = 0xff0000
+    this._statusProgress.color = 0x00d8ff
     this._statusProgress.lineWidth = 2
     this._statusProgress.rotation = Math.PI/2
     this.addChild(this._statusProgress)
 
     this._nextLabel = new ArchText()
-    this._nextLabel.color = 0xff0000
+    this._nextLabel.color = 0x00d8ff
     this._nextMeetingLabel = new ArchText()
     this._nextLabel.alignOffset = 0
     this._nextMeetingLabel.alignOffset = 0
@@ -56,7 +56,7 @@ export default class CalendarWidget extends Widget {
     this.addChild(this._meetingClock)
 
     this._clockAlert = new PIXI.Graphics()
-    this._clockAlert.beginFill(0xff0000)
+    this._clockAlert.beginFill(0x00d8ff)
     this._clockAlert.drawCircle(0, 0, 40)
     this._meetingClock.addChild(this._clockAlert)
     this._clockAlert.visible = false

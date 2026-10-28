@@ -21,7 +21,7 @@ export default class DotCircle extends PIXI.Container {
     this._updateHash = hash
 
     this._shapes.clear()
-    this._shapes.beginFill(0xff0000)
+    this._shapes.beginFill(0x00d8ff)
 
     const a = 2 * Math.PI / this.count
 

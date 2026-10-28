@@ -14,13 +14,13 @@ export default class DateTimeWidget extends Widget {
     super('dateTime', "Date & Time")
 
     this._secPointer = new ProgressCircle()
-    this._secPointer.color = 0xff0000
+    this._secPointer.color = 0x00d8ff
     this.addChild(this._secPointer)
     this._minPointer = new ProgressCircle()
-    this._minPointer.color = 0xff0000
+    this._minPointer.color = 0x00d8ff
     this.addChild(this._minPointer)
     this._hourPointer = new ProgressCircle()
-    this._hourPointer.color = 0xff0000
+    this._hourPointer.color = 0x00d8ff
     this.addChild(this._hourPointer)
 
     this._timeLabel = new TextField('00:00:00', {

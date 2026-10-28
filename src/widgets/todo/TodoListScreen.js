@@ -46,8 +46,8 @@ export default class TodoListScreen extends PIXI.Container {
     this._statsLabel = new TextField(' todo | show | all ', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 8,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'left',
     })

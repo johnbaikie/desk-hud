@@ -21,7 +21,7 @@ export default class DiamondButton extends PIXI.Container {
 
     this._refFill = new PIXI.Graphics()
     this.addChild(this._refFill)
-    this._refFill.beginFill(0xff0000)
+    this._refFill.beginFill(0x00d8ff)
     this._refFill.moveTo(-45, -20)
     this._refFill.lineTo(45, -20)
     this._refFill.lineTo(65, 0)

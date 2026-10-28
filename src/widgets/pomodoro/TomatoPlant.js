@@ -58,8 +58,8 @@ export default class TomatoPlant extends PIXI.Container {
     this._dayLabel = new TextField('', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 10,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'center',
     });

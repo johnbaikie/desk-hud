@@ -13,7 +13,7 @@ export default class DateScreen extends PIXI.Container {
     const header = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'].join(' ')
 
     this._pointer = new PIXI.Graphics()
-    this._pointer.beginFill(0xff0000)
+    this._pointer.beginFill(0x00d8ff)
     this._pointer.drawRect(-2, -1, 22, 16)
     this.addChild(this._pointer)
 
@@ -46,8 +46,8 @@ export default class DateScreen extends PIXI.Container {
     this._currentMonthHeader = new TextField(header, {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize:11,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'left',
     });
@@ -59,8 +59,8 @@ export default class DateScreen extends PIXI.Container {
     this._nexttMonthHeader = new TextField(header, {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize:11,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'left',
     });
@@ -108,8 +108,8 @@ export default class DateScreen extends PIXI.Container {
     this._countdownLabel = new TextField('', {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 16,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'center',
     });

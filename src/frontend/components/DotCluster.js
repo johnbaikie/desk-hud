@@ -68,11 +68,11 @@ export default class DotCluster extends PIXI.Container {
   _createDot(size, radius, angle) {
     const dot = new PIXI.Graphics()
     dot.lineStyle({
-      color: 0xff0000,
+      color: 0x00d8ff,
       width: 1.5,
       alpha: 0.4
     })
-    dot.beginFill(0xff0000, 0.9)
+    dot.beginFill(0x00d8ff, 0.9)
     dot.drawCircle(0, 0, size)
     dot.x = 1.35 * radius * Math.cos(angle)
     dot.y = radius * Math.sin(angle)

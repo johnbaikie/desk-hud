@@ -18,7 +18,7 @@ export default class ScaleCircle extends PIXI.Container {
     const scaleRange = scaleMax - scaleMin
 
     this._rangeIndicator = new ProgressCircle()
-    this._rangeIndicator.color = 0xff0000
+    this._rangeIndicator.color = 0x00d8ff
     this._rangeIndicator.lineWidth = 10
     this.addChild(this._rangeIndicator)
 

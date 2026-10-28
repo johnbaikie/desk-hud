@@ -66,8 +66,8 @@ export default class ClimateScreen extends PIXI.Container {
     this._targetLabel = new TextField("", {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 30,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 0.5,
       align: 'center',
     })
@@ -107,8 +107,8 @@ export default class ClimateScreen extends PIXI.Container {
     this._chartLabel = new TextField("Room Temperature:", {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 11,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 0.5,
       align: 'center',
     })

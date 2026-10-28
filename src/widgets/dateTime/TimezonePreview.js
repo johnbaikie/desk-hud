@@ -92,7 +92,7 @@ export default class TimezonePreview extends PIXI.Container {
     this._pointer.addSequence([
       120 + 5.5*SEGMENT_WIDTH, -SEGMENT_HEIGHT/2-5,
       120 + 5.5*SEGMENT_WIDTH, SEGMENT_HEIGHT*this._timezones.length-SEGMENT_HEIGHT/2+5,
-    ], 4, 0xff0000)
+    ], 4, 0x00d8ff)
     this._pointer.alpha = 0.8
     
     this._dragBox = new PIXI.Graphics()

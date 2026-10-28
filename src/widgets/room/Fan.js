@@ -56,7 +56,7 @@ export default class Fan extends PIXI.Container {
     this._speedBar = new ProgressCircle()
     this._speedBar.value = 1
     this._speedBar.size = 0.3
-    this._speedBar.color = 0xff0000
+    this._speedBar.color = 0x00d8ff
     this._speedBar.lineWidth = 3
     this.addChild(this._speedBar)
 

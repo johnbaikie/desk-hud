@@ -27,7 +27,7 @@ export default class CalendarScreen extends PIXI.Container {
     this._bg.addLine(-150, -105, -150, 80, 1, 0x888888)
     this._bg.addLine(200, -105, 200, 95)
     for(let i=0; i < 15; i++) {
-      this._bg.addLine(200, -76+i*BUSY_SCALE_STEP, 250, -76+i*BUSY_SCALE_STEP, 1, 0xff0000)
+      this._bg.addLine(200, -76+i*BUSY_SCALE_STEP, 250, -76+i*BUSY_SCALE_STEP, 1, 0x00d8ff)
     }
 
     this.addChild(this._bg)
@@ -39,8 +39,8 @@ export default class CalendarScreen extends PIXI.Container {
     this._timeScale = new TextField(hours, {
       fontFamily: 'MajorMonoDisplay-Regular',
       fontSize: 9,
-      fill: '#ff0000',
-      stroke: "#ff0000",
+      fill: '#00d8ff',
+      stroke: "#00d8ff",
       strokeThickness: 1.5,
       align: 'right',
     })
@@ -96,7 +96,7 @@ export default class CalendarScreen extends PIXI.Container {
 
 
       this._busyCanvas.clear()
-      this._busyCanvas.beginFill(0xff0000)
+      this._busyCanvas.beginFill(0x00d8ff)
       for(let event of this.events) {
         if(event.allDay) continue
         let startY = new Date(event.start)
