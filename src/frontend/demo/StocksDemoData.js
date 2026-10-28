@@ -1728,17 +1728,31 @@ export default class StocksDemoData {
         }
 
 
+    // convert sample series to the StockData API format used by StocksService
+    const intraDaySeries = this._shiftTime(intraDay["Time Series (5min)"], true)
+    const dailySeries = this._shiftTime(daily["Time Series (Daily)"], false)
+    const intraDayKeys = Object.keys(intraDaySeries)
+    const latest = intraDaySeries[intraDayKeys[0]]
+    const latestDay = intraDayKeys[0].split(' ')[0]
+    const dayKeys = intraDayKeys.filter(k => k.startsWith(latestDay))
+    const dayOpen = intraDaySeries[dayKeys[dayKeys.length - 1]]
+
     this._data =  {
       widgetId: 'stocks',
       payload: {
         symbol: 'IBM',
         daily: {
-          ...daily,
-          "Time Series (Daily)": this._shiftTime(daily["Time Series (Daily)"], false)
+          data: Object.keys(dailySeries).map(date => ({
+            date,
+            close: Number(dailySeries[date]["4. close"])
+          }))
         },
         intraDay: {
-          ...intraDay,
-          "Time Series (5min)": this._shiftTime(intraDay["Time Series (5min)"], true)
+          data: [{
+            ticker: 'IBM',
+            price: Number(latest["4. close"]),
+            day_open: Number(dayOpen["1. open"])
+          }]
         }
       }
     }

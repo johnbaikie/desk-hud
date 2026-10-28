@@ -115,7 +115,7 @@ export default class WindowBorder extends PIXI.Container {
 
     this._distanceLabel = new TextField('',{
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,
@@ -136,7 +136,7 @@ export default class WindowBorder extends PIXI.Container {
 
     this._cpuLabel = new TextField('cpu:  0.0%',{
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,
@@ -150,7 +150,7 @@ export default class WindowBorder extends PIXI.Container {
 
     this._memLabel = new TextField('mem:  0.0%',{
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,
@@ -164,7 +164,7 @@ export default class WindowBorder extends PIXI.Container {
 
     this._tempLabel = new TextField('cpu temp:',{
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,
@@ -177,7 +177,7 @@ export default class WindowBorder extends PIXI.Container {
 
     this._fanLabel = new TextField('cpu fan:',{
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,
@@ -229,7 +229,7 @@ export default class WindowBorder extends PIXI.Container {
 
     this._fpsLabel = new TextField('fps: ',{
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,

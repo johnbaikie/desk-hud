@@ -13,8 +13,11 @@ class StocksService extends Service {
   }
 
   async start() {
-    this._intraDay = await storage.getItem('stocks.intraDay') || null
-    this._daily = await storage.getItem('stocks.daily') || null
+    // discard cached responses that do not contain any data (e.g. API errors)
+    const intraDay = await storage.getItem('stocks.intraDay')
+    const daily = await storage.getItem('stocks.daily')
+    this._intraDay = this._hasData(intraDay) ? intraDay : null
+    this._daily = this._hasData(daily) ? daily : null
 
     if(this._intraDay) {
       this.logger.log('Intra day data restored from cache')
@@ -38,6 +41,10 @@ class StocksService extends Service {
       setTimeout(async () => await this.updateDaily(), 1000)
     }
    
+  }
+
+  _hasData(json) {
+    return !!json && Array.isArray(json.data) && json.data.length > 0
   }
 
   _createMessage() {
@@ -74,6 +81,7 @@ class StocksService extends Service {
       }
     } catch(err) {
       this.logger.error(err)
+      this.emit({error: String(err.message || err)})
     }
   }
 
@@ -92,6 +100,7 @@ class StocksService extends Service {
       }
     } catch(err) {
       this.logger.error(err)
+      this.emit({error: String(err.message || err)})
     }
   }
 
@@ -103,6 +112,7 @@ class StocksService extends Service {
     this.logger.debug('quote Response received', {ok: response.ok})
     const json = await response.json()
     if(json.Note) throw new Error(json.Note)
+    if(!this._hasData(json)) throw new Error(json.error?.message || 'No stock data returned')
     return json
   }
 
@@ -114,6 +124,7 @@ class StocksService extends Service {
     this.logger.debug('eod Response received', {ok: response.ok})
     const json = await response.json()
     if(json.Note) throw new Error(json.Note)
+    if(!this._hasData(json)) throw new Error(json.error?.message || 'No stock data returned')
     return json
   }
 

@@ -18,7 +18,7 @@ export default class CalendarWidget extends Widget {
 
     this._statsTitle = new TextField('completed\ntoday', {
       fontFamily: 'ShareTechMono',
-      fontSize: 9,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,

@@ -38,7 +38,7 @@ export default class CalendarScreen extends PIXI.Container {
 
     this._timeScale = new TextField(hours, {
       fontFamily: 'ShareTechMono',
-      fontSize: 9,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 1.5,

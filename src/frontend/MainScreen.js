@@ -99,7 +99,7 @@ export default class MainScreen extends PIXI.Container {
     
     this._statusLeftLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,
@@ -112,7 +112,7 @@ export default class MainScreen extends PIXI.Container {
 
     this._statusRightLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
-      fontSize: 8,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,

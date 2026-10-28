@@ -46,6 +46,12 @@ export default class StocksWidget extends Widget {
   }
 
   msg2state(msg) {
+    if(msg.error) {
+      return {error: msg.error}
+    }
+    if(!msg.intraDay?.data?.length || !msg.daily?.data?.length) {
+      return {error: 'No stock data available'}
+    }
     const current = msg.intraDay.data[0].price;
     const past = msg.intraDay.data[0].day_open;
     
@@ -54,7 +60,8 @@ export default class StocksWidget extends Widget {
       current,
       past,
       change: Number((current/past-1).toFixed(3)),
-      history: msg.daily.data.map(d => d.close).reverse()
+      history: msg.daily.data.map(d => d.close).reverse(),
+      error: null
     }
   }
 

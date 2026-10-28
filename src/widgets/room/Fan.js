@@ -62,7 +62,7 @@ export default class Fan extends PIXI.Container {
 
     this._label = new TextField('', {
       fontFamily: 'ShareTechMono',
-      fontSize: 9,
+      fontSize: 10,
       fill: '#ffffff',
       stroke: "#ffffff",
       strokeThickness: 0.5,
