@@ -31,18 +31,6 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `lat` (number): The latitude coordinate of the location for weather information.
   - `lon` (number): The longitude coordinate of the location for weather information.
 
-- **hass**: This section pertains to Home Assistant integration.
-  - `url` (string): The URL of the Home Assistant instance.
-  - `token` (string): The authentication token for Home Assistant.
-  - `entities` (object): Defines a mapping of entity names used in Desk-HUD
-    - `temp` (string): The entity ID for the temperature sensor.
-    - `tempBattery` (string): The entity ID for the temperature sensor battery status.
-    - `ac` (string): The entity ID for the air conditioning system.
-    - `door1`, `door2`, `door3` (string): The entity IDs for binary door sensors.
-    - `cover1`, `cover2`, `cover3`, `cover4`, `cover5` (string): The entity IDs for window cover devices.
-    - `door1Battery`, `door2Battery`, `door3Battery` (string): The entity IDs for the battery status of the door sensors.
-    - `cover1Battery`, `cover2Battery`, `cover3Battery`, `cover4Battery`, `cover5Battery` (string): The entity IDs for the battery status of the window cover devices.
-
 - **google**: This section pertains to Google integration.
   - `clientId` (string): The client ID for Google integration.
   - `clientSecret` (string): The client secret for Google integration.
@@ -56,21 +44,7 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `apiKey` (string): The API key for accessing the StockData service.
   - `symbol` (string): The stock symbol or ticker for which you want to fetch data. 
 
-- **webcam**: This section configures the webcam widget, which shows an RTSP camera stream (transcoded to HLS with ffmpeg).
-  - `name` (string): The name displayed for the camera.
-  - `areas` (array): Regions of the camera image to show on the screen. Each area has:
-    - `cameraX`, `cameraY` (number): Offset of the camera image.
-    - `viewX`, `viewY` (number): Position of the area on the screen.
-    - `width`, `height` (number): Size of the area.
-    - `scale` (number): Scale of the camera image.
-  - `stream` (object): Stream settings.
-    - `rtsp` (string): The RTSP URL of the camera.
-    - `segmentSize` (number): Length of each HLS segment, in seconds.
-    - `segmentCount` (number): Number of HLS segments kept in the playlist.
-    - `buffer` (number): Maximum client-side buffer length, in seconds.
-
 Every key is required. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
-
 
 ## Integrations
 
@@ -84,16 +58,6 @@ To obtain the weather.apiKey for Desk-HUD, you will need to sign up on the OpenW
 4. Generate a new API key by clicking on the "Generate" button.
 5. Once the API key is generated, copy it to your clipboard.
 6. Paste the API key into the `weather.apiKey` parameter in the Desk-HUD configuration file.
-
-### Home Assistant
-
-1. Log in to your Home Assistant instance.
-2. Navigate to your user profile or user settings.
-3. Locate the "Long-Lived Access Tokens" section.
-4. Generate a new access token by clicking on the "Create Token" or similar button.
-5. Provide a name for the token to identify its purpose (e.g., "Desk-HUD Integration").
-6. Once the token is generated, copy it to your clipboard or save it in a secure location.
-7. Paste the Home Assistant token into the corresponding `hass.token` parameter in the Desk-HUD configuration file.
 
 ### Google
 

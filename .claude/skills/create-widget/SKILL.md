@@ -11,7 +11,7 @@ A widget is a pair that shares one string id (e.g. `'memory'`):
 
 The service emits `{widgetId: id, payload}` over socket.io; `WidgetContainer` routes it to the widget's `msg2state`. The widget sends commands back with `sendMessage(payload)` → service `onMessage(payload)`.
 
-Before writing code, ask the user only what you can't decide yourself: what data to show, where it comes from (API, Home Assistant entity, local system), and whether it needs controls. Pick sensible defaults for everything else.
+Before writing code, ask the user only what you can't decide yourself: what data to show, where it comes from (an external API or the local system), and whether it needs controls. Pick sensible defaults for everything else.
 
 ## 1. Files and registration
 
@@ -128,8 +128,8 @@ Key points:
 - Text is **white** (`'#ffffff'`). `TextField`, `ArchText` and `InfoMessage` force uppercase automatically — write strings in normal case.
 - Accent color for graphics (pointers, arcs, highlights, dots): **`0x00d8ff`** (Tron blue). Lines/outlines: `0xffffff`. Chart gridlines may stay dark grey.
 - Minimum `fontSize` is **10**.
-- Reuse components before drawing raw `PIXI.Graphics`: `components/` (`TextField`, `ArchText` curved text, `Chart` with `style: 'bars'`, `ProgressBar`, `Icon`, `IconButton`, `Button`, `DiamondButton`, `LineArt`, `ScrollContainer`, `GaugePointer`, `Battery`, `Thermometer`) and `circles/` (`ScaleCircle`, `ProgressCircle`, `TimelineCircle`, `TickCircle`, `DotCircle`). Read a component's constructor before using it.
-- Good references: `src/widgets/weather/` (API + forecast screen), `src/widgets/stocks/` (chart + error handling), `src/widgets/todo/` (list + commands back to service), `src/widgets/room/` (Home Assistant + multiple tabs).
+- Reuse components before drawing raw `PIXI.Graphics`: `components/` (`TextField`, `ArchText` curved text, `Chart` with `style: 'bars'`, `ProgressBar`, `Icon`, `IconButton`, `Button`, `DiamondButton`, `LineArt`, `ScrollContainer`, `GaugePointer`, `Thermometer`) and `circles/` (`ScaleCircle`, `ProgressCircle`, `TimelineCircle`, `TickCircle`, `DotCircle`). Read a component's constructor before using it.
+- Good references: `src/widgets/weather/` (API + forecast screen), `src/widgets/stocks/` (chart + error handling), `src/widgets/todo/` (list + commands back to service), `src/widgets/pomodoro/` (controls + stats screen).
 
 ## 5. Config
 

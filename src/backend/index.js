@@ -74,13 +74,6 @@ const SocketLogger = require('./SocketLogger.js');
     await socket.emit('config', {
       widgets: {
         dateTime: config.getProp('dateTime'),
-        webcam: {
-          name: config.getProp('webcam.name'),
-          areas: config.getProp('webcam.areas'),
-          stream: {
-            buffer: config.getProp('webcam.stream.buffer')
-          }
-        }
       }
     })
     await Promise.all(serviceInstances.map(s => s.welcomeClient(socket)))

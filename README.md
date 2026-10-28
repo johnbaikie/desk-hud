@@ -1,6 +1,6 @@
 # Desk-HUD
 
-Desk-HUD is a compact side monitor designed to enhance productivity and convenience in your workspace. It features an 11.9-inch touch screen connected to a Raspberry Pi hardware platform, providing quick access to essential features like a todo list, calendar, weather updates, clock, and smart device control for items such as window covers and air conditioning. With Desk-HUD, managing tasks, staying organized, and controlling your environment becomes effortless, all while keeping everything you need within reach on your desk.
+Desk-HUD is a compact side monitor designed to enhance productivity and convenience in your workspace. It features an 11.9-inch touch screen connected to a Raspberry Pi hardware platform, providing quick access to essential features like a todo list, calendar, weather updates, clock, pomodoro timer and stock prices. With Desk-HUD, managing tasks and staying organized becomes effortless, all while keeping everything you need within reach on your desk.
 
 ![Desk view 1](doc/img/desk1.jpg)
 
@@ -26,20 +26,6 @@ Desk-HUD is a compact side monitor designed to enhance productivity and convenie
 - Temperature range for today
 - Rain countdown
 - Forecast for upcoming days
-
-## Room Widget
-
-![Covers preview](doc/img/preview_covers.png)
-
-![Airconditioning preview](doc/img/preview_ac.png)
-
-- Manual control of window covers
-- Window covers scenes: Day, Night, Vide-call (reduced back-light)
-- Monitor batteries of smart devices
-- Open window alerts
-- Air Conditioning control
-- Current room temperature
-- Room temperature history
 
 ## Calendar Widget
 

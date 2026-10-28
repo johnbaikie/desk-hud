@@ -1,6 +1,5 @@
 import CalendarDemoData from "./CalendarDemoData"
 import PomodoroDemoData from "./PomodoroDemoData"
-import RoomDemoData from "./RoomDemoData"
 import TodoDemoData from "./TodoDemoData"
 import WeatherDemoData from "./WeatherDemoData"
 import DateTimeDemoData from "./DateTimeDemoData"
@@ -8,7 +7,6 @@ import StocksDemoData from "./StocksDemoData"
 
 export default class DemoSocket {
   constructor() {
-    this._roomDemo = new RoomDemoData()
     this._weatherDemo = new WeatherDemoData()
     this._todoDemo = new TodoDemoData()
     this._pomodoroDemo = new PomodoroDemoData()
@@ -26,7 +24,6 @@ export default class DemoSocket {
       this._publish('widget', this._weatherDemo.data)
       this._publish('widget', this._todoDemo.data)
       this._publish('widget', this._calendarDemo.data)
-      this._publish('widget', this._roomDemo.data)
       this._publish('widget', this._pomodoroDemo.data)
       this._publish('widget', this._stocksDemo.data)
     }, 500)
@@ -90,9 +87,6 @@ export default class DemoSocket {
     if(serviceId === 'todo') {
       this._todoDemo.onMessage(payload)
       this._publish('widget', this._todoDemo.data)
-    } else if(serviceId === 'room') {
-      this._roomDemo.onMessage(payload)
-      this._publish('widget', this._roomDemo.data)
     } else if(serviceId === 'pomodoro') {
       this._pomodoroDemo.onMessage(payload)
       this._publish('widget', this._pomodoroDemo.data)

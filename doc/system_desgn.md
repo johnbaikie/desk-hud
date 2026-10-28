@@ -10,7 +10,7 @@ On the client side, multiple widgets runs, each corresponding to a specific back
 
 Communication between the client and server is established through web sockets, allowing real-time data exchange. Additionally, an HTTP connection is used to serve static content to the client. This architecture enables seamless and efficient communication between the two components.
 
-The server component of Desk-HUD encompasses multiple services, each responsible for the logic of a specific widget. These services handle data retrieval, processing, and communication with external APIs such as Google API, Open Weather Maps, or Home Assistant. The server also controls peripherals connected to the Raspberry Pi, including a distance sensor and the power of the HDMI monitor.
+The server component of Desk-HUD encompasses multiple services, each responsible for the logic of a specific widget. These services handle data retrieval, processing, and communication with external APIs such as Google API, Open Weather Maps, or StockData. The server also controls peripherals connected to the Raspberry Pi, including a distance sensor and the power of the HDMI monitor.
 
 ### Incoming messages
 

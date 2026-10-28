@@ -42,11 +42,11 @@ Each feature is a **widget** (frontend, ES modules) paired with a **service** (b
 
 - **Registration**: frontend widgets are listed in `src/widgets/widgets.js`; backend services in `src/widgets/services.js`. `DistanceService` and `SysMonitorService` are core services that `src/backend/index.js` adds directly. They emit their own `distance` and `system` events instead of `widget`.
 - **Service** (`src/backend/services/Service.js`): constructor is `super(config, io, webApp, id)`. Implement `start()` (usually a `setInterval` polling loop), `welcomeClient(socket)` (send the current state to a new client), and `onMessage(payload)` (handle commands from the client). `this.emit(payload, socket?)` sends `{widgetId, payload}` on the `widget` event. Emitting `{error: "..."}` puts the widget into its error state, and `{error: null}` clears it.
-- **Widget** (`src/frontend/Widget.js`, extends `PIXI.Container`): `super(id, title)`. Override `msg2state(msg)` to map a service payload into state (`initState` / `this.state`). Override `onConfig(cfg)` for config that the server pushes in the `config` event (only `dateTime` and `webcam` are sent, chosen in `src/backend/index.js`). Use `sendMessage(payload)` to send commands to the service, and `render(renderer)` for per-frame drawing. Animations are driven by `this.progress`.
+- **Widget** (`src/frontend/Widget.js`, extends `PIXI.Container`): `super(id, title)`. Override `msg2state(msg)` to map a service payload into state (`initState` / `this.state`). Override `onConfig(cfg)` for config that the server pushes in the `config` event (only `dateTime` is sent, chosen in `src/backend/index.js`). Use `sendMessage(payload)` to send commands to the service, and `render(renderer)` for per-frame drawing. Animations are driven by `this.progress`.
 - **WidgetContainer** routes socket messages to widgets by id and handles layout, sleep and wake (triggered by distance events), and the system/CPU fan UI.
 - **UI building blocks**: `src/frontend/components/` and `src/frontend/circles/`. These are reusable Pixi components that take a `progress` value for appear/disappear animations.
 - **Demo mode**: `src/frontend/demo/DemoSocket.js` imitates the socket.io client with fake data from `*DemoData.js`. A new widget needs demo data here to show up in the demo.
-- **Persistence**: services use `node-persist` (`storage.getItem/setItem`, stored in `.node-persist/`) for history data such as pomodoro history, room temperature, and stocks.
+- **Persistence**: services use `node-persist` (`storage.getItem/setItem`, stored in `.node-persist/`) for history data such as pomodoro history and stocks.
 
 To add a widget, follow the `create-widget` skill (`.claude/skills/create-widget/SKILL.md`). It covers registration, templates, the current visual style, config and verification.
 
@@ -56,4 +56,3 @@ Socket events, server→client: `config`, `widget`, `distance`, `system`, `log`.
 
 - The distance sensor always uses the mock (`src/backend/distance_mock.js`) because no GPIO sensor is installed. `distance.py` is the real HC-SR04 reader and is currently unused. `DistanceService` reads numbers from the child process's stdout and respawns it if the data goes stale.
 - HDMI power is controlled with `sudo chvt` and the `/sys/class/graphics/fb0/blank` commands in `DistanceService` (Pi 5 setup).
-- `WebcamService` uses ffmpeg to transcode an RTSP stream into HLS segments in `src/backend/www/hls/` (gitignored, and excluded from pm2's file watching).

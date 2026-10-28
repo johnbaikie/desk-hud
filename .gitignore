@@ -1,7 +1,6 @@
 .node-persist
 .DS_Store
 /tmp
-/src/backend/www/hls
 
 # Logs
 logs

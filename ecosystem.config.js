@@ -6,7 +6,6 @@ module.exports = {
       name: "desk-hud",
       script: "src/backend/index.js",
       watch: ".",
-      ignore_watch: ["src/backend/www/hls"],
       env: {
         DHUD_ENV: "development",
       },

@@ -28,31 +28,6 @@
     "lat": 51.5072,
     "lon": -0.1276
   },
-  "hass": {
-    "url": "http://homeassistant.local:8123",
-    "token": "YOUR_HOME_ASSISTANT_LONG_LIVED_TOKEN",
-    "entities": {
-      "temp": "sensor.room_temperature",
-      "tempBattery": "sensor.room_temperature_battery",
-      "ac": "climate.air_conditioner",
-      "door1": "binary_sensor.window_1",
-      "door2": "binary_sensor.window_2",
-      "door3": "binary_sensor.window_3",
-      "cover1": "cover.cover_1",
-      "cover2": "cover.cover_2",
-      "cover3": "cover.cover_3",
-      "cover4": "cover.cover_4",
-      "cover5": "cover.cover_5",
-      "door1Battery": "sensor.window_1_battery",
-      "door2Battery": "sensor.window_2_battery",
-      "door3Battery": "sensor.window_3_battery",
-      "cover1Battery": "sensor.cover_1_battery",
-      "cover2Battery": "sensor.cover_2_battery",
-      "cover3Battery": "sensor.cover_3_battery",
-      "cover4Battery": "sensor.cover_4_battery",
-      "cover5Battery": "sensor.cover_5_battery"
-    }
-  },
   "google": {
     "clientId": "",
     "clientSecret": "",
@@ -68,25 +43,5 @@
   "stockdata": {
     "apiKey": "YOUR_STOCKDATA_API_KEY",
     "symbol": "AAPL"
-  },
-  "webcam": {
-    "name": "Camera",
-    "areas": [
-      {
-        "cameraX": -320,
-        "cameraY": -180,
-        "viewX": 740,
-        "viewY": 160,
-        "width": 640,
-        "height": 320,
-        "scale": 1
-      }
-    ],
-    "stream": {
-      "rtsp": "rtsp://user:password@camera.local:554/stream",
-      "segmentSize": 5,
-      "segmentCount": 5,
-      "buffer": 15
-    }
   }
 }
