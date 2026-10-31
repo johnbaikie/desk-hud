@@ -1,6 +1,8 @@
 import LineArt from "../../frontend/components/LineArt"
 import TextField from "../../frontend/components/TextField"
 
+const CHAR_WIDTH = 10 // px per character: 3 characters per 30px hour cell
+
 export default class TimelineSegment extends PIXI.Container {
   constructor() {
     super()
@@ -16,8 +18,8 @@ export default class TimelineSegment extends PIXI.Container {
     this._bg.drawRect(30*8, -h/2, 8*30, h)
     this.addChild(this._bg)
 
-    const lightNumbers =  Array(24).fill(1).map((_, i) => (i < 8 || i > 15) ? String(i+1).padStart(2, '0') : '  ')
-    const darkNumbers =  Array(24).fill(1).map((_, i) => (i < 8 || i > 15) ? '  ' : String(i+1).padStart(2, '0'))
+    const lightNumbers =  Array(24).fill(1).map((_, i) => (i < 8 || i > 15) ? String(i).padStart(2, '0') : '  ')
+    const darkNumbers =  Array(24).fill(1).map((_, i) => (i < 8 || i > 15) ? '  ' : String(i).padStart(2, '0'))
 
     this._hourLabels = new TextField(lightNumbers.join(' '), {
       fontFamily: 'ShareTechMono',
@@ -44,6 +46,14 @@ export default class TimelineSegment extends PIXI.Container {
     this._darkHourLabels.y = 0
     this._darkHourLabels.anchor.set(0, 0.5)
     this.addChild(this._darkHourLabels)
+
+    // each hour cell is 30px wide and holds "NN " (3 characters), so space
+    // the letters to exactly 10px whatever the font's own width is
+    for(const labels of [this._hourLabels, this._darkHourLabels]) {
+      labels.scale.set(1)
+      const charWidth = PIXI.TextMetrics.measureText('00', labels.style).width/2
+      labels.style.letterSpacing = CHAR_WIDTH - charWidth
+    }
 
   }
 
