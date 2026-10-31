@@ -42,7 +42,7 @@ The configuration for Desk-HUD is stored in a JSON file.
 
 - **stockdata** - allows you to configure the [StockData](http://www.stockdata.org) service integration for Desk-HUD. StockData provides financial market data and analytics.
   - `apiKey` (string): The API key for accessing the StockData service.
-  - `symbol` (string): The stock symbol or ticker for which you want to fetch data. 
+  - `symbol` (string or array): The ticker to show, or several (`["ORCL", "IBM"]` or `"ORCL,IBM"`). With several, the widget switches between them every 20 minutes. Each extra symbol costs about 4 requests a day; the free plan allows about 100.
 
 Every key is required unless marked optional. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
 
