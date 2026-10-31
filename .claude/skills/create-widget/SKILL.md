@@ -127,7 +127,7 @@ Key points:
 - Font: `'ShareTechMono'` for all text; `'Material Symbols Outlined'` via `Icon`/`IconButton`; `'weathericons-regular-webfont'` for weather glyphs.
 - Text is **white** (`'#ffffff'`). `TextField`, `ArchText` and `InfoMessage` force uppercase automatically — write strings in normal case.
 - Accent color for graphics (pointers, arcs, highlights, dots): **`0x00d8ff`** (Tron blue). Lines/outlines: `0xffffff`. Chart gridlines may stay dark grey.
-- Minimum `fontSize` is **10**.
+- Minimum `fontSize` is **10**. `TextField` renders at `TEXT_SCALE` (1.1×) on top of that; if you pad text with spaces to line up with a grid, call `field.scale.set(1)`, and multiply `PIXI.TextMetrics` measurements by `field.scale.x`.
 - Reuse components before drawing raw `PIXI.Graphics`: `components/` (`TextField`, `ArchText` curved text, `Chart` with `style: 'bars'`, `ProgressBar`, `Icon`, `IconButton`, `Button`, `DiamondButton`, `LineArt`, `ScrollContainer`, `GaugePointer`, `Thermometer`) and `circles/` (`ScaleCircle`, `ProgressCircle`, `TimelineCircle`, `TickCircle`, `DotCircle`). Read a component's constructor before using it.
 - Good references: `src/widgets/weather/` (API + forecast screen), `src/widgets/stocks/` (chart + error handling), `src/widgets/todo/` (list + commands back to service), `src/widgets/pomodoro/` (controls + stats screen).
 

@@ -1,7 +1,13 @@
+// Enlarges every TextField without touching font sizes in widget code.
+// Resolution is raised by the same factor so the text stays sharp.
+export const TEXT_SCALE = 1.1
+
 export default class TextField extends PIXI.Text {
 
   constructor (txt, style) {
     super('', style)
+    this.scale.set(TEXT_SCALE)
+    this.resolution = (window.devicePixelRatio || 1) * TEXT_SCALE
     this._progress = 0
     this._origText = String(txt).toUpperCase()
     this.anchor.set(0.5)

@@ -172,7 +172,11 @@ export default class DateScreen extends PIXI.Container {
 
     // measure the font so the highlight follows the actual day grid
     const style = this._currentMonthField.style
-    const measure = (t) => PIXI.TextMetrics.measureText(t, style)
+    const textScale = this._currentMonthField.scale.x
+    const measure = (t) => {
+      const m = PIXI.TextMetrics.measureText(t, style)
+      return {width: m.width*textScale, height: m.height*textScale}
+    }
     const charW = measure('00').width/2
     const cellW = measure('00 00').width - measure('00').width
     const lineH = measure('0\n0').height - measure('0').height

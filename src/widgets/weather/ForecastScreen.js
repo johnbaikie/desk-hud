@@ -51,6 +51,7 @@ export default class ForecastScreen extends PIXI.Container {
     })
     this._timelineHours.y = 20+90
     this._timelineHours.anchor.set(0, 0.5)
+    this._timelineHours.scale.set(1) // spaced to match COL_WIDTH; keep unscaled
     this._container.addChild(this._timelineHours)
 
     this._timelineIcons = Array(24).fill(1).map((_, i) => {
@@ -79,6 +80,7 @@ export default class ForecastScreen extends PIXI.Container {
     })
     this._timelinePop.y = 80+90
     this._timelinePop.anchor.set(0, 0.5)
+    this._timelinePop.scale.set(1) // spaced to match COL_WIDTH; keep unscaled
     this._container.addChild(this._timelinePop)
 
     this._rainChart = new Chart({
@@ -108,6 +110,7 @@ export default class ForecastScreen extends PIXI.Container {
     })
     this._tempLabels.y = -80+90
     this._tempLabels.anchor.set(0, 0.5)
+    this._tempLabels.scale.set(1) // spaced to match COL_WIDTH; keep unscaled
     this._container.addChild(this._tempLabels)
 
   }

@@ -20,8 +20,14 @@ export default class CalendarScreen extends PIXI.Container {
     })
     this._agenda.anchor.set(0, 0)
     this.addChild(this._agenda)
-    this._agenda.x = -270
+    this._agenda.x = -140 // right of the separator line at x=-150
     this._agenda.y = -80
+
+    this._agendaTimes = new TextField('', this._agenda.style)
+    this._agendaTimes.anchor.set(0, 0)
+    this.addChild(this._agendaTimes)
+    this._agendaTimes.x = -270
+    this._agendaTimes.y = -80
 
     this._bg = new LineArt()
     this._bg.addLine(-150, -105, -150, 80, 1, 0xffffff)
@@ -47,6 +53,7 @@ export default class CalendarScreen extends PIXI.Container {
     this._timeScale.y = -85
     this._timeScale.x = 290
     this._timeScale.anchor.set(1, 0)
+    this._timeScale.scale.set(1) // lines match BUSY_SCALE_STEP ticks; keep unscaled
     this.addChild(this._timeScale)
 
     this._busyCanvas = new PIXI.Graphics()
@@ -77,6 +84,7 @@ export default class CalendarScreen extends PIXI.Container {
 
   render(renderer) {
     this._agenda.progress = this.progress
+    this._agendaTimes.progress = this.progress
     this._timeScale.progress = this.progress
     this._bg.progress = this.progress
 
@@ -89,10 +97,11 @@ export default class CalendarScreen extends PIXI.Container {
     }
 
     if(this.events) {
-      this._agenda.text = this.events
+      const upcoming = this.events
         .slice(0, 11)
         .filter(e => e.end >= now.getTime())
-        .map(e => `${formatTime(e.start)} - ${formatTime(e.end)}   ${e.summary.substring(0, 41)}`).join('\n') || '                no more meetings today'
+      this._agendaTimes.text = upcoming.map(e => `${formatTime(e.start)} - ${formatTime(e.end)}`).join('\n')
+      this._agenda.text = upcoming.map(e => e.summary.substring(0, 41)).join('\n') || 'no more meetings today'
 
 
       this._busyCanvas.clear()
