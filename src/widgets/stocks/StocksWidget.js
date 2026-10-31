@@ -4,15 +4,14 @@ import TextField from '../../frontend/components/TextField.js'
 import ScaleCircle from '../../frontend/circles/ScaleCircle.js'
 import StocksHistoryScreen from './StocksHistoryScreen.js'
 
+// with several symbols the widget shows one at a time, switching on this period
+const ROTATE_INTERVAL = 20*60*1000
+
 export default class StocksWidget extends Widget {
   constructor() {
     super('stocks', "Stocks")
     this.initState({
-      symbol: '',
-      current: null,
-      past: null,
-      change: 0,
-      history: []
+      stocks: [],
     })
 
     this.main.title = "Stock Market"
@@ -49,27 +48,35 @@ export default class StocksWidget extends Widget {
     if(msg.error) {
       return {error: msg.error}
     }
-    if(!msg.intraDay?.data?.length || !msg.daily?.data?.length) {
+    const stocks = (Array.isArray(msg.stocks) ? msg.stocks : [])
+      .filter(s => s && s.symbol && Number.isFinite(s.price))
+      .map(s => ({
+        symbol: s.symbol,
+        current: s.price,
+        change: s.dayOpen ? Number((s.price/s.dayOpen-1).toFixed(3)) : 0,
+        history: Array.isArray(s.history) ? s.history : [],
+      }))
+    if(!stocks.length) {
       return {error: 'No stock data available'}
     }
-    const current = msg.intraDay.data[0].price;
-    const past = msg.intraDay.data[0].day_open;
-    
-    return {
-      symbol: msg.symbol,
-      current,
-      past,
-      change: Number((current/past-1).toFixed(3)),
-      history: msg.daily.data.map(d => d.close).reverse(),
-      error: null
+    return {stocks, error: null}
+  }
+
+  // the stock shown now; the same for the circle and the history screen
+  get _stock() {
+    const stocks = this.state.stocks
+    if(!stocks.length) {
+      return {symbol: '', current: null, change: 0, history: []}
     }
+    return stocks[Math.floor(Date.now()/ROTATE_INTERVAL) % stocks.length]
   }
 
   render(renderer) {
-    if(this.state.change > 0) {
+    const stock = this._stock
+    if(stock.change > 0) {
       this._trendIcon.code = 0xe5d8
       this._trendIcon.color = 0xffffff
-    } else if(this.state.change < 0) {
+    } else if(stock.change < 0) {
       this._trendIcon.code = 0xe5db
       this._trendIcon.color = 0x00d8ff
     } else {
@@ -80,10 +87,10 @@ export default class StocksWidget extends Widget {
     this._trendIcon.scale.set(this.size)
     this._trendIcon.alpha = this.progress
     this._symbolLabel.progress = this.progress * this.dataLoadProgress
-    this._symbolLabel.text = this.state.symbol.toLowerCase()
+    this._symbolLabel.text = stock.symbol.toLowerCase()
     this._symbolLabel.style.fontSize = 7 + 11*this.size
-    if(this.state.current) {
-      this._priceLabel.text = this.state.current.toFixed(2)
+    if(stock.current) {
+      this._priceLabel.text = stock.current.toFixed(2)
     }
     this._symbolLabel.y = -50*this.size
     this._priceLabel.progress = this.progress * this.dataLoadProgress
@@ -91,17 +98,19 @@ export default class StocksWidget extends Widget {
     this._priceLabel.style.fontSize = 7 + 8*this.size
     this.changeScale.progress = this.progress
     this.changeScale.size = this.size
-    this.changeScale.value = 100*this.state.change
+    this.changeScale.value = 100*stock.change
     this.changeScale.valueMin = 0
     this.changeScale.valueMax = 0
-    if(this.state.change > 0) {
-      this.changeScale.valueMax = 100*this.state.change
+    if(stock.change > 0) {
+      this.changeScale.valueMax = 100*stock.change
     } else {
-      this.changeScale.valueMin = 100*this.state.change
+      this.changeScale.valueMin = 100*stock.change
     }
     this.changeScale.visible = this.size == 1
     this._historyScreen.progress = this.main.progress * this.dataLoadProgress
-    this._historyScreen.data = this.state.history
+    this._historyScreen.symbol = stock.symbol
+    this._historyScreen.data = stock.history
+    this.main.title = stock.symbol ? `Stock Market: ${stock.symbol}` : 'Stock Market'
     super.render(renderer)
   }
 }

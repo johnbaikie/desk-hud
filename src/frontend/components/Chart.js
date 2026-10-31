@@ -90,6 +90,12 @@ export default class Chart extends PIXI.Container {
     }
   }
 
+  // forget the current scale; the next data sets it from scratch
+  // (autoscale only ever widens the scale, which flattens unrelated data)
+  resetScale() {
+    this._data = []
+  }
+
   applyAutoscale() {
     let min = this._data[0]
     let max = this._data[0]

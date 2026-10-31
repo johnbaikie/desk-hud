@@ -1737,23 +1737,26 @@ export default class StocksDemoData {
     const dayKeys = intraDayKeys.filter(k => k.startsWith(latestDay))
     const dayOpen = intraDaySeries[dayKeys[dayKeys.length - 1]]
 
+    const ibmHistory = Object.keys(dailySeries).map(date => Number(dailySeries[date]["4. close"])).reverse()
+    const ibm = {
+      symbol: 'IBM',
+      price: Number(latest["4. close"]),
+      dayOpen: Number(dayOpen["1. open"]),
+      history: ibmHistory,
+    }
+    // a second, made-up series so demo mode shows the rotation between stocks
+    const orcl = {
+      symbol: 'ORCL',
+      price: 130.56,
+      dayOpen: 128.9,
+      history: ibmHistory.map((v, i) => Number((v*0.92 + 8*Math.sin(i/9)).toFixed(2))),
+    }
+
     this._data =  {
       widgetId: 'stocks',
       payload: {
-        symbol: 'IBM',
-        daily: {
-          data: Object.keys(dailySeries).map(date => ({
-            date,
-            close: Number(dailySeries[date]["4. close"])
-          }))
-        },
-        intraDay: {
-          data: [{
-            ticker: 'IBM',
-            price: Number(latest["4. close"]),
-            day_open: Number(dayOpen["1. open"])
-          }]
-        }
+        stocks: [ibm, orcl],
+        error: null,
       }
     }
   }

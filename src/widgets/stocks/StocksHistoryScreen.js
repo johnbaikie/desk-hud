@@ -8,6 +8,8 @@ export default class StocksHistoryScreen extends PIXI.Container {
     super()
     this.progress = 0
     this.data = []
+    this.symbol = ''
+    this._chartSymbol = ''
 
     this._timelineHash = ''
 
@@ -30,6 +32,10 @@ export default class StocksHistoryScreen extends PIXI.Container {
 
   render(renderer) {
     this._chart.progress = this.progress
+    if(this.symbol !== this._chartSymbol) {
+      this._chartSymbol = this.symbol
+      this._chart.resetScale()
+    }
     this._chart.data = this.data
     this._timeline.scale.set(1, this.progress)
 
