@@ -14,7 +14,6 @@ export default class DemoSocket {
     this._dateTimeDemo = new DateTimeDemoData()
     this._stocksDemo = new StocksDemoData()
 
-    this._cpuFanMode = 'off'
     
     this._listeners = {}
 
@@ -56,8 +55,9 @@ export default class DemoSocket {
     return {
       cpuLoad: 0.21 + 0.05 * Math.random(),
       memLoad: 0.63 + 0.03 * Math.random(),
-      cpuTemp: 55 + 10 * Math.random() + (this._cpuFanMode === 'off' ? 15 : 0),
-      cpuFanMode: this._cpuFanMode
+      cpuTemp: 55 + 10 * Math.random(),
+      cpuFanRpm: 2300 + Math.round(100 * Math.random()),
+      cpuFanLevel: 0.3
     }
   }
 
@@ -90,9 +90,6 @@ export default class DemoSocket {
     } else if(serviceId === 'pomodoro') {
       this._pomodoroDemo.onMessage(payload)
       this._publish('widget', this._pomodoroDemo.data)
-    } else if(serviceId === 'system' && payload.action === 'cpuFan') {
-      this._cpuFanMode = payload.mode
-      this._publish('system', this._getSystemData())
     }
   }
 }

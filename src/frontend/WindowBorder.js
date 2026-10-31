@@ -15,7 +15,8 @@ export default class WindowBorder extends PIXI.Container {
     this.cpuLoad = 0
     this.memLoad = 0
     this.cpuTemp = 0
-    this.cpuFanMode = 'off'
+    this.cpuFanRpm = null
+    this.cpuFanLevel = null
     this._distanceAnim = 0
     this._fps = 0
     this._frameCount = 0
@@ -216,16 +217,6 @@ export default class WindowBorder extends PIXI.Container {
     this._cpuFan.progress = 1
     this.addChild(this._cpuFan)
 
-    this._cpuFan.interactive = true
-    this._cpuFan.on('pointertap', () => {
-      if(this.cpuFanMode === 'off') {
-        this.emit('cpuFanMode', 'auto')
-      } else if(this.cpuFanMode === 'auto') {
-        this.emit('cpuFanMode', 'on')
-      } else {
-        this.emit('cpuFanMode', 'off')
-      }
-    })
 
     this._fpsLabel = new TextField('fps: ',{
       fontFamily: 'ShareTechMono',
@@ -280,14 +271,10 @@ export default class WindowBorder extends PIXI.Container {
     this._tempLine.progress = this.progress
     this._cpuFan.alpha = this.progress
     this._fanLabel.progress = this.progress
-    this._fanLabel.text = `fan mode: ${this.cpuFanMode.padStart(9, ' ')}`
-    if(this.cpuFanMode === 'on') {
-      this._cpuFan.speed = 1
-    } else if(this.cpuFanMode === 'off') {
-      this._cpuFan.speed = 0
-    } else {
-      this._cpuFan.speed = 0.3
-    }
+    // the firmware controls the fan; show its measured speed
+    const fanText = this.cpuFanRpm === null ? 'n/a' : `${Math.round(this.cpuFanRpm)} rpm`
+    this._fanLabel.text = `cpu fan: ${fanText.padStart(10, ' ')}`
+    this._cpuFan.speed = this.cpuFanRpm ? Math.max(0.15, this.cpuFanLevel || 0) : 0
     this._fpsLabel.text = `fps: ${this._fps} (${PIXI.RENDERER_TYPE[renderer.type].toLowerCase()})`
     this._fpsLabel.y = 10 + 22*this.progress
     this._frameCount++

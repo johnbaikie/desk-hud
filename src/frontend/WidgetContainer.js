@@ -26,7 +26,8 @@ export default class WidgetContainer extends PIXI.Container {
     this.memLoad = 0
     this.cpuLoad = 0
     this.cpuTemp = 0
-    this.cpuFanMode = 'off'
+    this.cpuFanRpm = null
+    this.cpuFanLevel = null
     this._widgets = {}
     this._widgetList = []
     this._sleep = !localStorage.getItem('isAwake')
@@ -55,7 +56,6 @@ export default class WidgetContainer extends PIXI.Container {
     this.addChild(this._border)
 
     this._border.on('rotate', (direction) => this._rotateWidgets(direction))
-    this._border.on('cpuFanMode', (...args) => this.emit('cpuFanMode', ...args))
 
     this._reloadButton = new IconButton(0xe863)
     this._reloadButton.x = 30
@@ -196,7 +196,8 @@ export default class WidgetContainer extends PIXI.Container {
     this._border.cpuLoad = this.cpuLoad
     this._border.memLoad = this.memLoad
     this._border.cpuTemp = this.cpuTemp
-    this._border.cpuFanMode = this.cpuFanMode
+    this._border.cpuFanRpm = this.cpuFanRpm
+    this._border.cpuFanLevel = this.cpuFanLevel
     this._reloadButton.alpha += (this.progress*0.3 * (this.online ? 1 : 0) - this._reloadButton.alpha)/10
     this._reloadButton.interactive = this.online
     super.render(renderer)

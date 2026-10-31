@@ -1,6 +1,4 @@
 const Service = require('./Service.js')
-const spawn = require('child_process').spawn
-const exec = require('child_process').exec
 const os 	= require('os-utils');
 const fs 	= require('fs');
 const path = require('path')
@@ -11,8 +9,7 @@ class SysMonitorService extends Service {
     super(config, io, webApp, 'system')
     this._loop = null
     this._cpuTempReadFails = 0
-    this._cpuFanMode = 'off'
-    this._isCpuFanRunning = false
+    this._fanDir = undefined
   }
 
   async start() {
@@ -22,8 +19,6 @@ class SysMonitorService extends Service {
     }
     this._loop = setInterval(() => this.update(), 3000)
     this.update()
-
-    exec('pinctrl set 14 op dl', (err) => this.logger.warn('Unable turn CPU fan off', String(err)))
   }
 
 
@@ -39,9 +34,6 @@ class SysMonitorService extends Service {
     if(result) {
       this.emit(result)
     }
-    if(result && this._cpuFanMode === 'auto') {
-      this._adjustCpuFan(result.cpuTemp)
-    }
   }
 
   async fetchAll() {
@@ -51,7 +43,41 @@ class SysMonitorService extends Service {
       cpuLoad: os.loadavg(1)/100,
       memLoad: 1-os.freememPercentage(),
       cpuTemp,
-      cpuFanMode: this._cpuFanMode
+      ...this._getFan()
+    }
+  }
+
+  // The Pi 5 fan header is driven by the firmware; read its speed from the
+  // pwm-fan hwmon device. Both values are null when no fan is found.
+  _getFan() {
+    if(this._fanDir === undefined) {
+      this._fanDir = null
+      try {
+        const base = '/sys/class/hwmon'
+        for(const dir of fs.readdirSync(base)) {
+          const name = fs.readFileSync(path.join(base, dir, 'name'), 'utf8').trim()
+          if(name === 'pwmfan') {
+            this._fanDir = path.join(base, dir)
+            break
+          }
+        }
+      } catch(err) {
+        // not a Pi (or no hwmon); leave the fan readout empty
+      }
+      if(!this._fanDir) {
+        this.logger.warn('No pwmfan device found, fan speed not shown')
+      }
+    }
+    if(!this._fanDir) {
+      return {cpuFanRpm: null, cpuFanLevel: null}
+    }
+    try {
+      return {
+        cpuFanRpm: Number(fs.readFileSync(path.join(this._fanDir, 'fan1_input'), 'utf8')),
+        cpuFanLevel: Number(fs.readFileSync(path.join(this._fanDir, 'pwm1'), 'utf8'))/255,
+      }
+    } catch(err) {
+      return {cpuFanRpm: null, cpuFanLevel: null}
     }
   }
 
@@ -80,47 +106,11 @@ class SysMonitorService extends Service {
 
   async onMessage(payload) {
     this.logger.log("message received", payload)
-    if(payload.action === 'cpuFan' && payload.mode === 'on') {
-      this.logger.log("Changing CPU fan mode to " + payload.mode)
-      this._cpuFanMode = payload.mode
-      this._startCpuFan()
-      await this.update()
-    } else if(payload.action === 'cpuFan' && payload.mode === 'off') {
-      this.logger.log("Changing CPU fan mode to " + payload.mode)
-      this._cpuFanMode = payload.mode
-      this._stopCpuFan()
-      await this.update()
-    } else if(payload.action === 'cpuFan' && payload.mode === 'auto') {
-      this.logger.log("Changing CPU fan mode to " + payload.mode)
-      this._cpuFanMode = payload.mode
-      await this.update()
-    } else if(payload.action === 'kill' ) {
+    if(payload.action === 'kill' ) {
       this.logger.log("Killing the server... should be started back again by PM2")
       process.kill(process.pid, 'SIGTERM');
       setTimeout(() => process.exit(0), 1000)
     } 
-  }
-
-  _stopCpuFan() {
-    exec('pinctrl set 14 op dl', (err) => this.logger.warn('Unable turn CPU fan off', String(err)))
-    this._isCpuFanRunning = false
-  }
-
-  _startCpuFan() {
-    exec('pinctrl set 14 op dh', (err) => this.logger.warn('Unable turn CPU fan on', String(err)))
-    this._isCpuFanRunning = true
-  }
-
-
-  _adjustCpuFan(cpuTemp) {
-    if(!this._isCpuFanRunning && cpuTemp > 65) {
-      // start
-      this._startCpuFan()
-    } else if(this._isCpuFanRunning && cpuTemp < 60) {
-      // stop
-      this._stopCpuFan()
-    }
-
   }
 
 }

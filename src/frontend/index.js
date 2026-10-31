@@ -101,7 +101,8 @@ if(DEMO_MODE) {
       widgetContainer.cpuLoad = payload.cpuLoad
       widgetContainer.memLoad = payload.memLoad
       widgetContainer.cpuTemp = payload.cpuTemp
-      widgetContainer.cpuFanMode = payload.cpuFanMode
+      widgetContainer.cpuFanRpm = payload.cpuFanRpm ?? null
+      widgetContainer.cpuFanLevel = payload.cpuFanLevel ?? null
     })
     socket.on('log', async (payloads) => {
       const allowedMethods = {
@@ -128,16 +129,6 @@ if(DEMO_MODE) {
         widgetContainer.routeConfig(key, widgets[key])
       }
     });
-    widgetContainer.on('cpuFanMode', (mode) => {
-      const msg = {
-        serviceId: 'system', 
-        payload: {
-          action: 'cpuFan',
-          mode
-        }
-      }
-      socket.emit('service', msg)
-    })
     widgetContainer.on('reload', (mode) => {
       const msg = {
         serviceId: 'system', 
