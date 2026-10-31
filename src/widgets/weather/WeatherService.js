@@ -28,22 +28,32 @@ class WeatherService extends Service {
     const apiKey = this.config.getProp('weather.apiKey')
     const lon = this.config.getProp('weather.lon')
     const lat = this.config.getProp('weather.lat')
+    const units = this._getUnits()
 
-    const current = await this._fetchCurrent(apiKey, lat, lon)
-    const forecast = await this._fetchForecast(apiKey, lat, lon)
+    const current = await this._fetchCurrent(apiKey, lat, lon, units)
+    const forecast = await this._fetchForecast(apiKey, lat, lon, units)
 
-    return {current, forecast}
+    return {current, forecast, units}
   }
 
-  async _fetchCurrent(apiKey, lat, lon) {
-    const url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+  // optional key: older configs without it keep Celsius
+  _getUnits() {
+    try {
+      return this.config.getProp('weather.units') === 'imperial' ? 'imperial' : 'metric'
+    } catch(err) {
+      return 'metric'
+    }
+  }
+
+  async _fetchCurrent(apiKey, lat, lon, units) {
+    const url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`
     const response = await fetch(url)
     const json = await response.json()
     return json
   }
 
-  async _fetchForecast(apiKey, lat, lon) {
-    const url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+  async _fetchForecast(apiKey, lat, lon, units) {
+    const url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`
     const response = await fetch(url)
     const json = await response.json()
     return json

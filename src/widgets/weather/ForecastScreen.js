@@ -26,6 +26,7 @@ export default class ForecastScreen extends PIXI.Container {
     this._pop = []
     this._rain = []
     this._temp = []
+    this.unitLabel = '°c'
 
     this._container = new ScrollContainer(580, 180)
     this._container.contentRect.x = 0
@@ -188,7 +189,7 @@ export default class ForecastScreen extends PIXI.Container {
       .map((_, i) => {
         let txt
         const val = v[i]
-        txt = Math.round(val) + "°c"
+        txt = Math.round(val) + this.unitLabel
         while(txt.length < 5) {
           txt = ' ' + txt
           if(txt.length < 5) {

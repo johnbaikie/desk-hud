@@ -26,7 +26,8 @@
   "weather": {
     "apiKey": "YOUR_OPENWEATHERMAP_API_KEY",
     "lat": 51.5072,
-    "lon": -0.1276
+    "lon": -0.1276,
+    "units": "metric"
   },
   "google": {
     "clientId": "",

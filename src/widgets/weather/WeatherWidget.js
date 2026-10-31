@@ -26,12 +26,19 @@ export default class WeatherWidget extends Widget {
       currentIcon: null,
       currentDescription: null,
       rainTime: null,
-      forecast: null
+      forecast: null,
+      units: 'metric',
     })
 
-    this._currentTempScale = new ScaleCircle(-10, 30, '°c', 5, Math.PI*0.8)
-    this._currentTempScale.rotation = Math.PI*0.3 + Math.PI/2
-    this.addChild(this._currentTempScale)
+    // one dial per unit system; render() shows the one matching state.units
+    this._tempScales = {
+      metric: new ScaleCircle(-10, 30, '°c', 5, Math.PI*0.8),
+      imperial: new ScaleCircle(10, 90, '°f', 5, Math.PI*0.8),
+    }
+    for(const scale of Object.values(this._tempScales)) {
+      scale.rotation = Math.PI*0.3 + Math.PI/2
+      this.addChild(scale)
+    }
 
     this._currentTempLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
@@ -82,6 +89,7 @@ export default class WeatherWidget extends Widget {
     const currentJsonData = msg.current
     const forecastJsonData = msg.forecast
     const newState = {}
+    newState.units = msg.units === 'imperial' ? 'imperial' : 'metric'
     newState.currentTemperature = currentJsonData.main.temp
     newState.currentIcon = currentJsonData.weather[0].icon
     newState.currentDescription = currentJsonData.weather[0].description
@@ -121,7 +129,8 @@ export default class WeatherWidget extends Widget {
     super.render(renderer)
 
     this._currentTempLabel.progress = this.progress*this.dataLoadProgress
-    this._currentTempLabel.text = this.state.currentTemperature === null ? '' : Math.round(this.state.currentTemperature) + '°c'
+    const unitLabel = this.state.units === 'imperial' ? '°f' : '°c'
+    this._currentTempLabel.text = this.state.currentTemperature === null ? '' : Math.round(this.state.currentTemperature) + unitLabel
     this._currentTempLabel.y = 40*this.size
     this._currentTempLabel.style.fontSize = this.size * 8 + 7
 
@@ -136,17 +145,22 @@ export default class WeatherWidget extends Widget {
     this._currentDescriotionLabel.visible = (this.size === 1)
     this._currentDescriotionLabel.style.fontSize = this.size * 12
 
-    this._currentTempScale.size = this.size
-    this._currentTempScale.progress = this.progress*this.dataLoadProgress
-    this._currentTempScale.visible = (this.size === 1)
+    const [scaleMin, scaleMax] = this.state.units === 'imperial' ? [10, 90] : [-10, 30]
+    const clampTemp = (t) => Math.max(scaleMin, Math.min(scaleMax, t))
+    for(const [units, scale] of Object.entries(this._tempScales)) {
+      scale.size = this.size
+      scale.progress = this.progress*this.dataLoadProgress
+      scale.visible = (this.size === 1) && units === this.state.units
+    }
+    const tempScale = this._tempScales[this.state.units]
     if(this.state.currentTemperature !== null) {
-      this._currentTempScale.value = Math.max(-30, Math.min(30, this.state.currentTemperature))
+      tempScale.value = clampTemp(this.state.currentTemperature)
     }
     if(this.state.currentTemperatureMin !== null) {
-      this._currentTempScale.valueMin = Math.max(-10, Math.min(30, this.state.currentTemperatureMin))
+      tempScale.valueMin = clampTemp(this.state.currentTemperatureMin)
     }
     if(this.state.currentTemperatureMax !== null) {
-      this._currentTempScale.valueMax = Math.max(-10, Math.min(30, this.state.currentTemperatureMax))
+      tempScale.valueMax = clampTemp(this.state.currentTemperatureMax)
     }
 
     if(this.state.rainTime) {
@@ -173,6 +187,7 @@ export default class WeatherWidget extends Widget {
       this._forecastScreen.icons = this.state.forecast.icons
       this._forecastScreen.pop = this.state.forecast.pop
       this._forecastScreen.rain = this.state.forecast.rain
+      this._forecastScreen.unitLabel = unitLabel
       this._forecastScreen.temp = this.state.forecast.temp
     }
 

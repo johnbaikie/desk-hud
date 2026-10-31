@@ -30,6 +30,7 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `apiKey` (string): The API key required to access weather data.
   - `lat` (number): The latitude coordinate of the location for weather information.
   - `lon` (number): The longitude coordinate of the location for weather information.
+  - `units` (string, optional): `"metric"` (°C, the default) or `"imperial"` (°F).
 
 - **google**: This section pertains to Google integration.
   - `clientId` (string): The client ID for Google integration.
@@ -44,7 +45,7 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `apiKey` (string): The API key for accessing the StockData service.
   - `symbol` (string): The stock symbol or ticker for which you want to fetch data. 
 
-Every key is required. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
+Every key is required unless marked optional. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
 
 ## Integrations
 
