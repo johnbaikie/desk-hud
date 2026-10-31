@@ -138,7 +138,7 @@ export default class DateScreen extends PIXI.Container {
       []
     ]
 
-    const day = monthStart.getDay()-1
+    const day = (monthStart.getDay()+6) % 7 // Monday-first column of day 1
     for(let i=0; i < day; i++) {
       if(data[data.length-1].length === 7) {
         data.push([])
@@ -170,11 +170,21 @@ export default class DateScreen extends PIXI.Container {
     this._nextMonthField.text = nextMonth.map(r => r.map(c => String(c).padStart(2, ' ')).join(' ')).join('\n')
     this._currentMonthField.text = currentMonth.map(r => r.map(c => String(c).padStart(2, ' ')).join(' ')).join('\n')
 
+    // measure the font so the highlight follows the actual day grid
+    const style = this._currentMonthField.style
+    const measure = (t) => PIXI.TextMetrics.measureText(t, style)
+    const charW = measure('00').width/2
+    const cellW = measure('00 00').width - measure('00').width
+    const lineH = measure('0\n0').height - measure('0').height
+
     for(let i = 0; i < currentMonth.length; i++) {
       for(let j = 0; j < currentMonth[i].length; j++) {
         if(currentMonth[i][j] === now.getDate()) {
-          this._pointer.x = -230 + 24.5*j
-          this._pointer.y = -40 + 14*i
+          this._pointer.clear()
+          this._pointer.beginFill(0x00d8ff)
+          this._pointer.drawRect(-2, -1, 2*charW+4, lineH+2)
+          this._pointer.x = this._currentMonthField.x + cellW*j
+          this._pointer.y = this._currentMonthField.y + lineH*i
         }
       }
     }
