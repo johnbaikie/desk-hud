@@ -36,10 +36,9 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `clientId` (string): The client ID for Google integration.
   - `clientSecret` (string): The client secret for Google integration.
   - `clientToken` (string): The client token for Google integration.
-  - `tasks` (object): Contains settings related to Google Tasks integration.
-    - `inboxId` (string): The ID of the Google Tasks inbox (see Getting Things Done technique).
-    - `actionsId` (string): The ID of the Google Tasks actions list (see Getting Things Done technique).
   - `calendars` (array): An array of Google Calendars IDs.
+
+  The Tasks widget shows every task from all of your Google Tasks lists: open tasks first, then tasks completed in the last 7 days.
 
 - **stockdata** - allows you to configure the [StockData](http://www.stockdata.org) service integration for Desk-HUD. StockData provides financial market data and analytics.
   - `apiKey` (string): The API key for accessing the StockData service.

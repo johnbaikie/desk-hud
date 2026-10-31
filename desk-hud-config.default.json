@@ -33,10 +33,6 @@
     "clientId": "",
     "clientSecret": "",
     "clientToken": "",
-    "tasks": {
-      "inboxId": "YOUR_GOOGLE_TASKS_INBOX_LIST_ID",
-      "actionsId": "YOUR_GOOGLE_TASKS_ACTIONS_LIST_ID"
-    },
     "calendars": [
       "primary"
     ]

@@ -40,11 +40,10 @@ Desk-HUD is a compact side monitor designed to enhance productivity and convenie
 
 ![Todo preview](doc/img/preview_todo.png)
 
-- Compatible with [Getting Things Done](https://gettingthingsdone.com/) approach
-- List tasks for today
-- Complete tasks
+- Shows the tasks from all of your Google Tasks lists, plus tasks completed in the last 7 days
+- Tick tasks off (or back on) from the screen
+- To do / done / all counts
 - Visualize task completion timeline
-- Task inbox status
 
 ## Pomodoro Widget
 

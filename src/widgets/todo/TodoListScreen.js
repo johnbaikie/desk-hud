@@ -2,14 +2,14 @@ import TextField from "../../frontend/components/TextField"
 import TaskItem from "./TaskItem"
 import ScrollContainer from '../../frontend/components/ScrollContainer'
 
-const TASK_MAX = 20
+const TASK_MAX = 50
 const ITEM_HEIGHT = 50
 
 export default class TodoListScreen extends PIXI.Container {
   constructor() {
     super()
     this.progress = 0
-    this.actionList = null
+    this.tasks = null
     this.offsetY = 0
     this.dragging = false
 
@@ -43,7 +43,7 @@ export default class TodoListScreen extends PIXI.Container {
     this._taskContainer.scroller.beginFill(0x000000, 0.0001)
     this._taskContainer.scroller.drawRect(-240, -100, 520, 200)
 
-    this._statsLabel = new TextField(' todo | show | all ', {
+    this._statsLabel = new TextField(' todo | done | all ', {
       fontFamily: 'ShareTechMono',
       fontSize: 10,
       fill: '#ffffff',
@@ -70,11 +70,11 @@ export default class TodoListScreen extends PIXI.Container {
 
   render(renderer) {
     this._taskContainer.contentRect.height=this._tasks.length*ITEM_HEIGHT+20
-    if(this.actionList) {
-      while(this._tasks.length > this.actionList.length || this._tasks.length > TASK_MAX) {
+    if(this.tasks) {
+      while(this._tasks.length > this.tasks.length || this._tasks.length > TASK_MAX) {
         this._taskContainer.removeChild(this._tasks.pop())
       }
-      while(this._tasks.length < this.actionList.length && this._tasks.length < TASK_MAX) {
+      while(this._tasks.length < this.tasks.length && this._tasks.length < TASK_MAX) {
         const task = new TaskItem()
         task.on('complete', (id) => this.emit('complete', id))
         task.on('uncomplete', (id) => this.emit('uncomplete', id))
@@ -86,15 +86,16 @@ export default class TodoListScreen extends PIXI.Container {
 
       for(let i=0; i < this._tasks.length; i++) {
         this._tasks[i].progress = this.progress
-        this._tasks[i].title = this.actionList[i].title
-        this._tasks[i].id = this.actionList[i].id
-        this._tasks[i].completed = !!this.actionList[i].completed
+        this._tasks[i].title = this.tasks[i].title
+        this._tasks[i].id = this.tasks[i].id
+        this._tasks[i].completed = !!this.tasks[i].completed
       }
 
+      const done = this.tasks.filter(t => t.completed).length
       this._statsValues.text = [
-        this.actionList.filter(a => !a.completed).length, 
-        Math.min(this.actionList.length, TASK_MAX), 
-        this.actionList.length
+        this.tasks.length - done,
+        done,
+        this.tasks.length
       ].map(v => String(v).padStart(3, ' ')).join('  ')
     }
     this._statsLabel.progress = this.progress

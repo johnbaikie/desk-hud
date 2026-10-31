@@ -12,8 +12,7 @@ export default class TodoWidget extends Widget {
     super('todo', "Tasks")
     this.dataLoadProgress = 0
     this.initState({
-      inboxList: null,
-      actionList: null,
+      tasks: null,
     })
 
     this._scaleLarge = new TickCircle()
@@ -35,7 +34,7 @@ export default class TodoWidget extends Widget {
     this.addChild(this._timeScale)
 
     this._dotCluster = new DotCluster()
-    this._dotCluster.title = 'inbox'
+    this._dotCluster.title = 'to do'
     this.addChild(this._dotCluster)
 
     this._timeline = new TimelineCircle(0, 1000*60*60*24, Math.PI*1.5)
@@ -43,39 +42,57 @@ export default class TodoWidget extends Widget {
     this.addChild(this._timeline)
 
     // main screen
-    this.main.title = "Getting Things Done"
+    this.main.title = "Tasks"
     const page = this.main.getPage(0)
    
     this._todoListScreen = new TodoListScreen()
     page.addChild(this._todoListScreen)
 
-    this._todoListScreen.on('complete', (id) => {
-      this.sendMessage({action: 'completeNextAction', id})
-    })
-    this._todoListScreen.on('uncomplete', (id) => {
-      this.sendMessage({action: 'uncompleteNextAction', id})
-    })
+    this._todoListScreen.on('complete', (id) => this._setCompleted(id, true))
+    this._todoListScreen.on('uncomplete', (id) => this._setCompleted(id, false))
 
     this.main.setCustomErrorScreen(new AuthErrorScreen(() => this.sendMessage({action: 'auth'})))
 
   }
 
-  msg2state(tasks) {
-    if(tasks.authUrl) {
-      window.location.href = tasks.authUrl
+  // update the list and counts right away; the service confirms with a refresh
+  _setCompleted(id, completed) {
+    if(this.state.tasks) {
+      this.updateState({tasks: this.state.tasks.map(t => t.id !== id ? t : {
+        ...t,
+        status: completed ? 'completed' : 'needsAction',
+        completed: completed ? new Date().getTime() : null,
+      })})
+      this._updateTimeline()
+    }
+    this.sendMessage({action: completed ? 'complete' : 'uncomplete', id})
+  }
+
+  _updateTimeline() {
+    const today = Math.floor((new Date().getTime())/(1000*60*60*24))*(1000*60*60*24) + new Date().getTimezoneOffset()*60000
+    this._timeline.setPoints(this.state.tasks.map(i => i.completed ? i.completed - today : null))
+  }
+
+  onMessage(msg) {
+    super.onMessage(msg)
+    if(this.state.tasks) {
+      this._updateTimeline()
+    }
+  }
+
+  msg2state(msg) {
+    if(msg.authUrl) {
+      window.location.href = msg.authUrl
       return  {}
     }
-
-    const newState = {}
-    newState.lastUpdate = new Date().getTime()
-    newState.inboxList = tasks.inbox
-    newState.actionList = tasks.action
-    newState.todayLeft = newState.actionList.filter(t => t.status === 'needsAction')
-    newState.error = tasks.error
-
-    const today = Math.floor((new Date().getTime())/(1000*60*60*24))*(1000*60*60*24) + new Date().getTimezoneOffset()*60000
-    this._timeline.setPoints(newState.actionList.map(i => i.completed ? i.completed - today : null))  
-    return newState
+    if(!Array.isArray(msg.tasks)) {
+      return {error: msg.error || 'No task data'}
+    }
+    return {
+      lastUpdate: new Date().getTime(),
+      tasks: msg.tasks,
+      error: msg.error || null,
+    }
   }
 
   render(renderer) {
@@ -83,7 +100,7 @@ export default class TodoWidget extends Widget {
 
     const today = Math.floor((new Date().getTime())/(1000*60*60*24))*(1000*60*60*24) + new Date().getTimezoneOffset()*60000
 
-    this._dotCluster.count = this.state.inboxList ? this.state.inboxList.length : 0
+    this._dotCluster.count = this.state.tasks ? this.state.tasks.filter(t => !t.completed).length : 0
     this._dotCluster.progress = this.progress * this.dataLoadProgress
 
     this._timeline.progress = this.progress * this.dataLoadProgress
@@ -104,6 +121,6 @@ export default class TodoWidget extends Widget {
     this._inboxFrame.visible = this.size === 1
     
     this._todoListScreen.progress = this.main.progress * this.dataLoadProgress
-    this._todoListScreen.actionList = this.state.actionList
+    this._todoListScreen.tasks = this.state.tasks
   }
 }

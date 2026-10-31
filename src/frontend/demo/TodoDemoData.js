@@ -4,25 +4,7 @@ export default class TodoDemoData {
     this._data = {
       "widgetId": "todo",
       "payload": {
-        "inbox": [
-          {
-            "id": "34645645643563456",
-            "title": "inbox item 1",
-            "position": "00000000000000000000",
-            "status": "needsAction",
-            "completed": null,
-            "due": null
-          },
-          {
-            "id": "93823723423452345",
-            "title": "inbox item 2",
-            "position": "00000000000000000001",
-            "status": "needsAction",
-            "completed": null,
-            "due": null
-          }
-        ],
-        "action": [
+        "tasks": [
           {
             "id": "7645375467457645674567",
             "title": "check emails",
@@ -73,8 +55,8 @@ export default class TodoDemoData {
   }
 
   onMessage(payload) {
-    if(payload.action === "completeNextAction") {
-      this._data.payload.action = this._data.payload.action.map(item => {
+    if(payload.action === "complete") {
+      this._data.payload.tasks = this._data.payload.tasks.map(item => {
         if(item.id !== payload.id) {
           return item
         }
@@ -84,8 +66,8 @@ export default class TodoDemoData {
           completed: new Date().getTime()
         }
       })
-    } else if(payload.action === "uncompleteNextAction") {
-      this._data.payload.action = this._data.payload.action.map(item => {
+    } else if(payload.action === "uncomplete") {
+      this._data.payload.tasks = this._data.payload.tasks.map(item => {
         if(item.id !== payload.id) {
           return item
         }
