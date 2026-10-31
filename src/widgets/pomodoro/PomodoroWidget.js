@@ -3,12 +3,16 @@ import DotCircle from '../../frontend/circles/DotCircle.js'
 import TickCircle from '../../frontend/circles/TickCircle.js'
 import ArchText from '../../frontend/components/ArchText.js'
 import GaugePointer from '../../frontend/components/GaugePointer.js'
+import IconButton from '../../frontend/components/IconButton.js'
 import PlayButton from '../../frontend/components/PlayButton.js'
 import TextField from '../../frontend/components/TextField.js'
 import PomodoroStatsScreen from './PomodoroStatsScreen.js'
 
 const WORK_DURATION= 1000 * 25 * 60
 const BREAK_DURATION = 1000 * 5 * 60
+const SKIP_ICON = 0xe044 // Material Symbols "skip_next"
+
+const otherMode = (mode) => mode === 'work' ? 'break' : 'work'
 
 export default class PomodoroWidget extends Widget {
   constructor() {
@@ -30,9 +34,21 @@ export default class PomodoroWidget extends Widget {
     this._redLight.alpha = 0
     this.addChildAt(this._redLight, 0)
     
+    // _mode is the running session, or when idle the session play will start.
+    // _timerStart is set only while a session runs.
+    this._mode = localStorage.getItem('Pomodoro_mode') === 'break' ? 'break' : 'work'
     this._timerStart = Number(localStorage.getItem('Pomodoro_timerStart')) || null
-    this._timerStop = Number(localStorage.getItem('Pomodoro_timerStop')) || null
-    this._mode = localStorage.getItem('Pomodoro_mode') || 'work'
+    const oldTimerStop = Number(localStorage.getItem('Pomodoro_timerStop')) || null
+    if(this._timerStart && oldTimerStop) {
+      // saved by the previous version, which kept finished sessions as
+      // start/stop times and switched mode when play was pressed
+      if(oldTimerStop - this._timerStart >= this._getCurrentTimeLimit()) {
+        this._mode = otherMode(this._mode)
+      }
+      this._timerStart = null
+    }
+    localStorage.removeItem('Pomodoro_timerStop')
+    this._saveTimer()
 
     this._pulse = false
 
@@ -41,17 +57,25 @@ export default class PomodoroWidget extends Widget {
     this._playButton.scale.set(0)
     this._playButton.on('play', () => {
       this._timerStart = new Date().getTime()
-      this._timerStop = null
-      this._mode = (this._mode === 'work') ? 'break' : 'work'
       this._pulse = false
-      localStorage.setItem('Pomodoro_timerStart', this._timerStart)
-      localStorage.setItem('Pomodoro_timerStop', this._timerStop)
-      localStorage.setItem('Pomodoro_mode', this._mode)
+      this._saveTimer()
     })
     this._playButton.on('stop', () => {
-      this._timerStop = new Date().getTime()
+      // cancel and reset the same session; skip moves to the other one
+      this._timerStart = null
       this._pulse = false
-      localStorage.setItem('Pomodoro_timerStop', this._timerStop)
+      this._saveTimer()
+    })
+
+    this._skipButton = new IconButton(SKIP_ICON)
+    this._skipButton.scale.set(0)
+    this._skipButton.on('pointertap', (e) => {
+      e.stopPropagation()
+      this._mode = otherMode(this._mode)
+      this._timerStart = null
+      this._pulse = false
+      this._saveTimer()
+      this._updatePlayButtonStatus()
     })
 
     this._workLabel = new ArchText()
@@ -112,6 +136,7 @@ export default class PomodoroWidget extends Widget {
 
     this.addChild(this._timeLabel)
     this.addChild(this._playButton)
+    this.addChild(this._skipButton)
 
     this._dotLabel = new ArchText()
     this._dotLabel.text = 'completed:'
@@ -148,28 +173,40 @@ export default class PomodoroWidget extends Widget {
     }
   }
 
+  _saveTimer() {
+    localStorage.setItem('Pomodoro_mode', this._mode)
+    if(this._timerStart) {
+      localStorage.setItem('Pomodoro_timerStart', this._timerStart)
+    } else {
+      localStorage.removeItem('Pomodoro_timerStart')
+    }
+  }
+
   _updatePlayButtonStatus() {
-    this._playButton.mode = (this._timerStart !== null && this._timerStop === null) ? 'play' : 'stop'
+    this._playButton.mode = this._timerStart ? 'play' : 'stop'
   }
 
   _getCurrentTimeLimit() {
     return (this._mode === 'work') ? WORK_DURATION : BREAK_DURATION
   }
 
+  // returns the elapsed fraction of the running session (0 when idle)
   _updateTimer() {
-    if(!this._timerStart) return
-    const now = new Date().getTime()
-    let dt = (this._timerStop || now) - this._timerStart
-    let timeLimit = this. _getCurrentTimeLimit()
+    if(!this._timerStart) return 0
+    const dt = new Date().getTime() - this._timerStart
+    const timeLimit = this._getCurrentTimeLimit()
     if(dt > timeLimit) {
-      this._timerStop = this._timerStart + timeLimit
-      localStorage.setItem('Pomodoro_timerStop', this._timerStop)
-      this._updatePlayButtonStatus()
-      this._pulse = true
       if(this._mode === 'work') {
         // pomodoro completed
         this.sendMessage({action: 'pomodoroDone'})
       }
+      // finished: show the next session, ready to start
+      this._mode = otherMode(this._mode)
+      this._timerStart = null
+      this._saveTimer()
+      this._updatePlayButtonStatus()
+      this._pulse = true
+      return 0
     }
     return dt / timeLimit
   }
@@ -180,13 +217,17 @@ export default class PomodoroWidget extends Widget {
     const timeProggress = this._updateTimer()
 
     const now = new Date().getTime()
-    let dt = this._timerStart ? (this._timerStop || now) - this._timerStart : 0
-    dt = this. _getCurrentTimeLimit() - dt
+    let dt = this._timerStart ? now - this._timerStart : 0
+    dt = Math.max(0, this._getCurrentTimeLimit() - dt)
     
     this._playButton.scale.set(this.progress*2*Math.max(0, this.size-0.5))
     this._playButton.visible = (0.8)
     this._playButton.x = -100*this.size * Math.cos(Math.PI*0.25)
     this._playButton.y = 100*this.size * Math.sin(Math.PI*0.25)
+
+    this._skipButton.scale.set(0.75*this.progress*2*Math.max(0, this.size-0.5))
+    this._skipButton.x = 100*this.size * Math.cos(Math.PI*0.25)
+    this._skipButton.y = this._playButton.y
 
     this._timeLabel.progress = this.progress
     this._timeBg.alpha = this.progress
@@ -216,16 +257,23 @@ export default class PomodoroWidget extends Widget {
     this._timeLabel.text = timeText
 
     this._modeLabel.progress = this.progress
-    this._modeLabel.style.fontSize = this.size * 26
-    this._modeLabel.y = this.size * 20
-    this._modeLabel.visible = (this.size <= 0.65)
+    if(this.size === 1) {
+      // large circle: spell out what the play button will start
+      this._modeLabel.style.fontSize = 12
+      this._modeLabel.y = 38
+    } else {
+      this._modeLabel.style.fontSize = this.size * 26
+      this._modeLabel.y = this.size * 20
+    }
+    this._modeLabel.visible = (this.size <= 0.65 || this.size === 1)
+    const nextPrefix = (this.size === 1 && !this._timerStart) ? 'next: ' : ''
     if(this._mode === 'work') {
-      this._modeLabel.text = 'work'
+      this._modeLabel.text = nextPrefix + 'work'
       this._modeLabel.style.fill = 0xffffff
       this._modeLabel.style.stroke = 0xffffff
       this._ticks.count = 25
     } else {
-      this._modeLabel.text = 'break'
+      this._modeLabel.text = nextPrefix + 'break'
       this._modeLabel.style.fill = 0xffffff
       this._modeLabel.style.stroke = 0xffffff
       this._ticks.count = 5

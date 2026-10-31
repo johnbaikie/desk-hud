@@ -47,7 +47,8 @@ Each feature is a **widget** (frontend, ES modules) paired with a **service** (b
 - **UI building blocks**: `src/frontend/components/` and `src/frontend/circles/`. These are reusable Pixi components that take a `progress` value for appear/disappear animations.
 - **Text size**: every `TextField` is drawn at `TEXT_SCALE` (`components/TextField.js`) on top of its `fontSize`. Text that is space-padded to line up with a grid (forecast rows, calendar hour scale) opts out with `scale.set(1)`, and code that measures text with `PIXI.TextMetrics` must multiply by the field's `scale.x` (see `DateScreen`).
 - **Demo mode**: `src/frontend/demo/DemoSocket.js` imitates the socket.io client with fake data from `*DemoData.js`. A new widget needs demo data here to show up in the demo.
-- **Persistence**: services use `node-persist` (`storage.getItem/setItem`, stored in `.node-persist/`) for history data such as pomodoro history and stocks.
+- **Persistence**: services use `node-persist` (`storage.getItem/setItem`, stored in `.node-persist/`) for history data such as pomodoro history and stocks. The running pomodoro timer lives in the browser's `localStorage` (`Pomodoro_mode` is the running or next session, `Pomodoro_timerStart` is set only while one runs); only finished work sessions are sent to the service.
+- **Google widgets**: `TodoService` reads every Google Tasks list (open tasks, then tasks completed in the last `COMPLETED_DAYS`) and remembers each task's list for completing it. `CalendarService` reads the calendar IDs in `google.calendars`.
 
 To add a widget, follow the `create-widget` skill (`.claude/skills/create-widget/SKILL.md`). It covers registration, templates, the current visual style, config and verification.
 
