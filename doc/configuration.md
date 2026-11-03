@@ -40,6 +40,9 @@ The configuration for Desk-HUD is stored in a JSON file.
 
   The Tasks widget shows every task from all of your Google Tasks lists: open tasks first, then tasks completed in the last 7 days.
 
+- **outlook**: The Outlook widget shows a work calendar next to the Google one.
+  - `icsUrl` (string): The ICS link from Outlook's "Publish a calendar" setting (Settings → Calendar → Shared calendars). A `webcal://` link works too. Anyone with the link can read the calendar, so keep it out of git. The calendar is reloaded every 5 minutes, but Outlook itself may only refresh a published calendar every few hours.
+
 - **stockdata** - allows you to configure the [StockData](http://www.stockdata.org) service integration for Desk-HUD. StockData provides financial market data and analytics.
   - `apiKey` (string): The API key for accessing the StockData service.
   - `symbol` (string or array): The ticker to show, or several (`["ORCL", "IBM"]` or `"ORCL,IBM"`). With several, the widget switches between them every 20 minutes. Each extra symbol costs about 4 requests a day; the free plan allows about 100.

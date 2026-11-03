@@ -37,6 +37,9 @@
       "primary"
     ]
   },
+  "outlook": {
+    "icsUrl": "YOUR_PUBLISHED_OUTLOOK_ICS_URL"
+  },
   "stockdata": {
     "apiKey": "YOUR_STOCKDATA_API_KEY",
     "symbol": "AAPL"

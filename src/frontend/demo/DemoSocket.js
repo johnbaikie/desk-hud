@@ -1,4 +1,5 @@
 import CalendarDemoData from "./CalendarDemoData"
+import OutlookDemoData from "./OutlookDemoData"
 import PomodoroDemoData from "./PomodoroDemoData"
 import TodoDemoData from "./TodoDemoData"
 import WeatherDemoData from "./WeatherDemoData"
@@ -11,6 +12,7 @@ export default class DemoSocket {
     this._todoDemo = new TodoDemoData()
     this._pomodoroDemo = new PomodoroDemoData()
     this._calendarDemo = new CalendarDemoData()
+    this._outlookDemo = new OutlookDemoData()
     this._dateTimeDemo = new DateTimeDemoData()
     this._stocksDemo = new StocksDemoData()
 
@@ -23,6 +25,7 @@ export default class DemoSocket {
       this._publish('widget', this._weatherDemo.data)
       this._publish('widget', this._todoDemo.data)
       this._publish('widget', this._calendarDemo.data)
+      this._publish('widget', this._outlookDemo.data)
       this._publish('widget', this._pomodoroDemo.data)
       this._publish('widget', this._stocksDemo.data)
     }, 500)

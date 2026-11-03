@@ -9,8 +9,8 @@ import CalendarScreen from './CalendarScreen.js';
 import AuthErrorScreen from './lib/AuthErrorScreen.js';
 
 export default class CalendarWidget extends Widget {
-  constructor() {
-    super('calendar', "Calendar")
+  constructor(id = 'calendar', title = 'Calendar') {
+    super(id, title)
     this.initState({
       allEvents: null,
       todayEvents: null,
@@ -95,19 +95,26 @@ export default class CalendarWidget extends Widget {
     this._meetingClock.addChild(this._clockTitle)
 
     // main screen
-    this.main.title = "Calendar"
+    this.main.title = title
     const calendarPage = this.main.getPage(0)
    
     this._calendarScreen = new CalendarScreen()
     calendarPage.addChild(this._calendarScreen)
 
-    this.main.setCustomErrorScreen(new AuthErrorScreen(() => this.sendMessage({action: 'auth'})))
+    if(id === 'calendar') {
+      // Google sign-in screen; other calendars use the default error icon
+      this.main.setCustomErrorScreen(new AuthErrorScreen(() => this.sendMessage({action: 'auth'})))
+    }
   }
 
   msg2state(msg) {
     if(msg.authUrl) {
       window.location.href = msg.authUrl
       return  {}
+    }
+    if(!msg.allEvents) {
+      // error-only update: keep the last events on screen
+      return { error: msg.error }
     }
     const events = msg.allEvents
     const today = startOfDay()
