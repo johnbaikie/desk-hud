@@ -102,8 +102,7 @@ class StocksService extends Service {
       await storage.setItem('stocks.v2.quotes', this._quotes)
       this._emitUpdate()
     } catch(err) {
-      this.logger.error(err)
-      this.emit({error: String(err.message || err)})
+      this._handleError('quotes', err, this._quotes)
     }
   }
 
@@ -120,9 +119,32 @@ class StocksService extends Service {
       await storage.setItem('stocks.v2.daily', this._daily)
       this._emitUpdate()
     } catch(err) {
-      this.logger.error(err)
-      this.emit({error: String(err.message || err)})
+      this._handleError('daily history', err, this._daily)
     }
+  }
+
+  // A failed refresh keeps showing the last good data and retries on the next
+  // cycle; the widget only shows an error when there is nothing to show.
+  _handleError(what, err, cached) {
+    const message = this._redact(err)
+    if(cached) {
+      this.logger.warn(`Stock ${what} refresh failed, keeping cached data: ${message}`)
+    } else {
+      this.logger.error(`Stock ${what} refresh failed: ${message}`)
+      this.emit({error: message})
+    }
+  }
+
+  // error messages can contain the request URL, which includes the API key
+  _redact(err) {
+    let message = String(err && err.message || err)
+    try {
+      const apiKey = this.config.getProp('stockdata.apiKey')
+      message = message.split(apiKey).join('***')
+    } catch(e) {
+      // no key configured; nothing to hide
+    }
+    return message
   }
 
   async _request(endpoint, apiKey, symbols) {
@@ -130,7 +152,14 @@ class StocksService extends Service {
     this.logger.log(`call https://api.stockdata.org/v1/data/${endpoint}?symbols=${symbols}&api_token=${apiKey.substr(0, 2)}...`)
     const response = await fetch(url)
     this.logger.debug(`${endpoint} Response received`, {ok: response.ok})
-    const json = await response.json()
+    const body = await response.text()
+    let json
+    try {
+      json = JSON.parse(body)
+    } catch(err) {
+      // e.g. an HTML error page while StockData has an outage
+      throw new Error(`StockData ${endpoint} returned HTTP ${response.status} without JSON`)
+    }
     if(json.Note) throw new Error(json.Note)
     if(!json || !Array.isArray(json.data) || !json.data.length) {
       throw new Error(json.error?.message || `No stock data returned for ${symbols}`)
