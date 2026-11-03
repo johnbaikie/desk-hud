@@ -13,7 +13,7 @@ class StocksService extends Service {
     super(config, io, webApp, 'stocks')
     this._loop1 = null
     this._loop2 = null
-    this._quotes = null // {updated, bySymbol: {IBM: {price, dayOpen}}}
+    this._quotes = null // {updated, bySymbol: {IBM: {name, price, dayOpen, ...}}}
     this._daily = null  // {updated, bySymbol: {IBM: [{date, close}]}}
   }
 
@@ -64,9 +64,8 @@ class StocksService extends Service {
       .filter(symbol => this._quotes.bySymbol[symbol])
       .map(symbol => ({
         symbol,
-        price: this._quotes.bySymbol[symbol].price,
-        dayOpen: this._quotes.bySymbol[symbol].dayOpen,
-        // oldest first, for the chart
+        ...this._quotes.bySymbol[symbol],
+        // daily closes, oldest first (about 6 months)
         history: (this._daily.bySymbol[symbol] || []).map(d => d.close).reverse(),
       }))
     return {stocks, error: null}
@@ -94,7 +93,16 @@ class StocksService extends Service {
       const bySymbol = {}
       for(const q of json.data) {
         if(q.ticker && Number.isFinite(q.price)) {
-          bySymbol[q.ticker.toUpperCase()] = {price: q.price, dayOpen: q.day_open}
+          bySymbol[q.ticker.toUpperCase()] = {
+            name: q.name || '',
+            price: q.price,
+            dayOpen: q.day_open,
+            dayHigh: q.day_high,
+            dayLow: q.day_low,
+            prevClose: q.previous_close_price,
+            volume: q.volume,
+            lastTrade: q.last_trade_time ? new Date(q.last_trade_time + 'Z').getTime() : null,
+          }
         }
       }
       if(!Object.keys(bySymbol).length) throw new Error('No stock prices returned')

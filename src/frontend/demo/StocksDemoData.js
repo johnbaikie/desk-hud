@@ -1740,15 +1740,25 @@ export default class StocksDemoData {
     const ibmHistory = Object.keys(dailySeries).map(date => Number(dailySeries[date]["4. close"])).reverse()
     const ibm = {
       symbol: 'IBM',
+      name: 'International Business Machines',
       price: Number(latest["4. close"]),
       dayOpen: Number(dayOpen["1. open"]),
+      dayHigh: Number(latest["4. close"]) + 1.2,
+      dayLow: Number(latest["4. close"]) - 0.9,
+      prevClose: Number(dayOpen["1. open"]) - 0.4,
+      volume: 3245100,
       history: ibmHistory,
     }
     // a second, made-up series so demo mode shows the rotation between stocks
     const orcl = {
       symbol: 'ORCL',
+      name: 'Oracle Corporation',
       price: 130.56,
       dayOpen: 128.9,
+      dayHigh: 131.4,
+      dayLow: 128.2,
+      prevClose: 129.1,
+      volume: 1181985,
       history: ibmHistory.map((v, i) => Number((v*0.92 + 8*Math.sin(i/9)).toFixed(2))),
     }
 

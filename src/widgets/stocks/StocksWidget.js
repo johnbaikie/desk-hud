@@ -2,9 +2,10 @@ import Widget from '../../frontend/Widget.js'
 import Icon from '../../frontend/components/Icon.js'
 import TextField from '../../frontend/components/TextField.js'
 import ScaleCircle from '../../frontend/circles/ScaleCircle.js'
-import StocksHistoryScreen from './StocksHistoryScreen.js'
+import StocksStatsScreen from './StocksStatsScreen.js'
 
-// with several symbols the widget shows one at a time, switching on this period
+// with several symbols the widget shows one at a time and moves to the next
+// after this long without a swipe
 const ROTATE_INTERVAL = 20*60*1000
 
 export default class StocksWidget extends Widget {
@@ -15,8 +16,12 @@ export default class StocksWidget extends Widget {
     })
 
     this.main.title = "Stock Market"
-    this._historyScreen = new StocksHistoryScreen()
-    this.main.getPage(0).addChild(this._historyScreen)
+    this._statsScreen = new StocksStatsScreen()
+    this.main.getPage(0).addChild(this._statsScreen)
+    this._statsScreen.on('swipe', (step) => this._select(this._selected + step))
+
+    this._selected = 0
+    this._selectedAt = Date.now()
 
     this._trendIcon = new Icon()
     this.addChild(this._trendIcon)
@@ -51,7 +56,7 @@ export default class StocksWidget extends Widget {
     const stocks = (Array.isArray(msg.stocks) ? msg.stocks : [])
       .filter(s => s && s.symbol && Number.isFinite(s.price))
       .map(s => ({
-        symbol: s.symbol,
+        ...s,
         current: s.price,
         change: s.dayOpen ? Number((s.price/s.dayOpen-1).toFixed(3)) : 0,
         history: Array.isArray(s.history) ? s.history : [],
@@ -62,13 +67,23 @@ export default class StocksWidget extends Widget {
     return {stocks, error: null}
   }
 
-  // the stock shown now; the same for the circle and the history screen
+  _select(index) {
+    const count = this.state.stocks.length
+    if(!count) return
+    this._selected = ((index % count) + count) % count
+    this._selectedAt = Date.now()
+  }
+
+  // the stock shown now, the same on the circle and the stats screen
   get _stock() {
     const stocks = this.state.stocks
     if(!stocks.length) {
       return {symbol: '', current: null, change: 0, history: []}
     }
-    return stocks[Math.floor(Date.now()/ROTATE_INTERVAL) % stocks.length]
+    if(Date.now() - this._selectedAt > ROTATE_INTERVAL) {
+      this._select(this._selected + 1)
+    }
+    return stocks[this._selected % stocks.length]
   }
 
   render(renderer) {
@@ -107,9 +122,10 @@ export default class StocksWidget extends Widget {
       this.changeScale.valueMin = 100*stock.change
     }
     this.changeScale.visible = this.size == 1
-    this._historyScreen.progress = this.main.progress * this.dataLoadProgress
-    this._historyScreen.symbol = stock.symbol
-    this._historyScreen.data = stock.history
+    this._statsScreen.progress = this.main.progress * this.dataLoadProgress
+    this._statsScreen.stock = stock.symbol ? stock : null
+    this._statsScreen.stockIndex = this._selected % Math.max(1, this.state.stocks.length)
+    this._statsScreen.count = this.state.stocks.length
     this.main.title = stock.symbol ? `Stock Market: ${stock.symbol}` : 'Stock Market'
     super.render(renderer)
   }
