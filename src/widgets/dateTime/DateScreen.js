@@ -13,7 +13,7 @@ export default class DateScreen extends PIXI.Container {
     const header = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'].join(' ')
 
     this._pointer = new PIXI.Graphics()
-    this._pointer.beginFill(0x00d8ff)
+    this._pointer.beginFill(0x00ff41)
     this._pointer.drawRect(-2, -1, 22, 16)
     this.addChild(this._pointer)
 
@@ -29,6 +29,18 @@ export default class DateScreen extends PIXI.Container {
     this._currentMonthField.x = -230
     this._currentMonthField.y = -40
     this.addChild(this._currentMonthField)
+
+    // today's number redrawn in black on top of the bright highlight box
+    this._todayLabel = new TextField('', {
+      fontFamily: 'ShareTechMono',
+      fontSize:11,
+      fill: '#000000',
+      stroke: "#000000",
+      strokeThickness: 0.5,
+      align: 'left',
+    });
+    this._todayLabel.anchor.set(0, 0)
+    this.addChild(this._todayLabel)
 
     this._nextMonthField = new TextField('', {
       fontFamily: 'ShareTechMono',
@@ -185,10 +197,13 @@ export default class DateScreen extends PIXI.Container {
       for(let j = 0; j < currentMonth[i].length; j++) {
         if(currentMonth[i][j] === now.getDate()) {
           this._pointer.clear()
-          this._pointer.beginFill(0x00d8ff)
+          this._pointer.beginFill(0x00ff41)
           this._pointer.drawRect(-2, -1, 2*charW+4, lineH+2)
           this._pointer.x = this._currentMonthField.x + cellW*j
           this._pointer.y = this._currentMonthField.y + lineH*i
+          this._todayLabel.text = String(now.getDate()).padStart(2, ' ')
+          this._todayLabel.x = this._pointer.x
+          this._todayLabel.y = this._pointer.y
         }
       }
     }
@@ -207,6 +222,7 @@ export default class DateScreen extends PIXI.Container {
     this._currentMonthTitle.progress = this.progress
     this._nextMonthTitle.progress = this.progress
     this._pointer.alpha = this.progress
+    this._todayLabel.progress = this.progress
     this._countdownTitle.progress = this.progress
     this._countdownLabel.progress = this.progress
     this._lines.progress = this.progress

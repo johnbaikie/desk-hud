@@ -36,7 +36,7 @@ export default class CalendarWidget extends Widget {
     this.addChild(this._statsLabel)
 
     this._statusProgress = new ProgressCircle()
-    this._statusProgress.color = 0x00d8ff
+    this._statusProgress.color = 0x00ff41
     this._statusProgress.lineWidth = 2
     this._statusProgress.rotation = Math.PI/2
     this.addChild(this._statusProgress)
@@ -56,7 +56,7 @@ export default class CalendarWidget extends Widget {
     this.addChild(this._meetingClock)
 
     this._clockAlert = new PIXI.Graphics()
-    this._clockAlert.beginFill(0x00d8ff)
+    this._clockAlert.beginFill(0x00ff41)
     this._clockAlert.drawCircle(0, 0, 40)
     this._meetingClock.addChild(this._clockAlert)
     this._clockAlert.visible = false

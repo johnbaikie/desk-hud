@@ -185,7 +185,7 @@ export default class ForecastScreen extends PIXI.Container {
       )
     }
 
-    this._tempLine.addSequence(coord, 3, 0x00d8ff)
+    this._tempLine.addSequence(coord, 3, 0x00ff41)
 
     this._tempLabels.text = Array(24)
       .fill(1)

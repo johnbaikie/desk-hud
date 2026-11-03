@@ -29,7 +29,7 @@ export default class PomodoroWidget extends Widget {
     this.addChild(this._ticks)
 
     this._redLight = new PIXI.Graphics()
-    this._redLight.beginFill(0x00d8ff)
+    this._redLight.beginFill(0x00ff41)
     this._redLight.drawCircle(0, 0, 100)
     this._redLight.alpha = 0
     this.addChildAt(this._redLight, 0)
@@ -119,7 +119,7 @@ export default class PomodoroWidget extends Widget {
     this.addChild(this._timeBg)
    
     this._timeBgRed = new PIXI.Graphics()
-    this._timeBgRed.beginFill(0x00d8ff)
+    this._timeBgRed.beginFill(0x00ff41)
     this._timeBgRed.drawRect(-55, -9, 110, 20)
     this._timeBgRed.alpha = 0
     this.addChild(this._timeBgRed)
