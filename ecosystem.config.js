@@ -21,7 +21,7 @@ module.exports = {
   deploy: {
     production: {
       user: "deskhud",
-      host: "deskhud.local",
+      host: "10.168.168.159", // DHCP-reserved; deskhud.local (mDNS) does not resolve on this network
       ref: "origin/main",
       repo: "https://github.com/johnbaikie/desk-hud.git",
       path: "/var/www",

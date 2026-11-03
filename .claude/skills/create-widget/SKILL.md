@@ -136,7 +136,7 @@ Key points:
 If the service needs settings or keys:
 - Read with `this.config.getProp('<id>.key')` — it **throws** if the key is missing or falsy (`0`, `''`).
 - Add the section to all three: local `desk-hud-config.json` (gitignored; never print its values), `desk-hud-config.default.json` (placeholders), and `doc/configuration.md`.
-- The Pi's config is separate: `/home/deskhud/desk-hud-config.json` (via `DHUD_CONFIG`). Add the section there over ssh (`deskhud@deskhud.local`) before deploying, or the service fails to start. Ask the user for real secrets rather than inventing them.
+- The Pi's config is separate: `/home/deskhud/desk-hud-config.json` (via `DHUD_CONFIG`). Add the section there over ssh (`deskhud@10.168.168.159`) before deploying, or the service fails to start. Ask the user for real secrets rather than inventing them.
 
 ## 6. Build and verify
 
@@ -167,6 +167,6 @@ Also `node -e 'require("./src/widgets/<id>/<Name>Service.js")'` to catch backend
 Only when the user asks: commit (don't add the untracked `*.LICENSE.txt` build files), `git push origin main`, then `npm run deploy` (pulls `origin/main` on the Pi, installs, builds, reloads pm2). Confirm with:
 
 ```bash
-ssh deskhud@deskhud.local 'sleep 20; pm2 jlist'   # status online, uptime growing
-ssh deskhud@deskhud.local 'pm2 logs desk-hud --lines 200 --nostream' | grep -i <id>
+ssh deskhud@10.168.168.159 'sleep 20; pm2 jlist'   # status online, uptime growing
+ssh deskhud@10.168.168.159 'pm2 logs desk-hud --lines 200 --nostream' | grep -i <id>
 ```
