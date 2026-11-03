@@ -1,4 +1,5 @@
 import Widget from '../../frontend/Widget.js'
+import { startOfDay } from '../../frontend/time.js'
 import TimelineCircle from '../../frontend/circles/TimelineCircle.js'
 import TickCircle from '../../frontend/circles/TickCircle.js'
 import DotCluster from '../../frontend/components/DotCluster.js'
@@ -69,7 +70,7 @@ export default class TodoWidget extends Widget {
   }
 
   _updateTimeline() {
-    const today = Math.floor((new Date().getTime())/(1000*60*60*24))*(1000*60*60*24) + new Date().getTimezoneOffset()*60000
+    const today = startOfDay()
     this._timeline.setPoints(this.state.tasks.map(i => i.completed ? i.completed - today : null))
   }
 
@@ -98,7 +99,7 @@ export default class TodoWidget extends Widget {
   render(renderer) {
     super.render(renderer)
 
-    const today = Math.floor((new Date().getTime())/(1000*60*60*24))*(1000*60*60*24) + new Date().getTimezoneOffset()*60000
+    const today = startOfDay()
 
     this._dotCluster.count = this.state.tasks ? this.state.tasks.filter(t => !t.completed).length : 0
     this._dotCluster.progress = this.progress * this.dataLoadProgress

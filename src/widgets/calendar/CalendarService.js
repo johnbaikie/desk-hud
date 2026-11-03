@@ -37,7 +37,11 @@ class CalendarService extends GoogleService {
   async fetchAll() {
     try {
       const calIds = this.config.getProp('google.calendars')
-      const today = Math.floor((new Date().getTime())/(1000*60*60*24))*(1000*60*60*24) + new Date().getTimezoneOffset()*60000
+      // local midnight (not Math.floor(now/day), which is UTC midnight and
+      // skipped the rest of today after 6 PM in Chicago)
+      const midnight = new Date()
+      midnight.setHours(0, 0, 0, 0)
+      const today = midnight.getTime()
       const params = {
         timeMin: (new Date(today)).toISOString(),
         maxResults: 50,
@@ -46,7 +50,14 @@ class CalendarService extends GoogleService {
       }
     
       const obj2timestamp = (obj) => {
-        return new Date(obj.dateTime || obj.date || 0).getTime()
+        if(obj.dateTime) return new Date(obj.dateTime).getTime()
+        if(obj.date) {
+          // all-day events give a plain date; new Date('2026-11-03') would be
+          // UTC midnight, i.e. the previous evening here
+          const [y, m, d] = obj.date.split('-').map(Number)
+          return new Date(y, m - 1, d).getTime()
+        }
+        return 0
       }
     
       const allEvents = []

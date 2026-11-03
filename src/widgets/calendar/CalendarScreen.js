@@ -9,6 +9,7 @@ export default class CalendarScreen extends PIXI.Container {
     this.progress = 0
 
     this.events = null
+    this.allDayEvents = null
 
     this._agenda = new TextField('', {
       fontFamily: 'ShareTechMono',
@@ -97,11 +98,16 @@ export default class CalendarScreen extends PIXI.Container {
     }
 
     if(this.events) {
+      const allDay = this.allDayEvents || []
       const upcoming = this.events
-        .slice(0, 11)
         .filter(e => e.end >= now.getTime())
-      this._agendaTimes.text = upcoming.map(e => `${formatTime(e.start)} - ${formatTime(e.end)}`).join('\n')
-      this._agenda.text = upcoming.map(e => e.summary.substring(0, 41)).join('\n') || 'no more meetings today'
+        .slice(0, Math.max(0, 11 - allDay.length))
+      const title = (e) => (e.summary || '(no title)').substring(0, 41)
+      this._agendaTimes.text = [
+        ...allDay.map(() => 'all day'),
+        ...upcoming.map(e => `${formatTime(e.start)} - ${formatTime(e.end)}`),
+      ].join('\n')
+      this._agenda.text = [...allDay.map(title), ...upcoming.map(title)].join('\n') || 'no more meetings today'
 
 
       this._busyCanvas.clear()

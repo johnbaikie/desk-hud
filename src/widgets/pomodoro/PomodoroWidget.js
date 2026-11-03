@@ -1,4 +1,5 @@
 import Widget from '../../frontend/Widget.js'
+import { startOfDay, daysAgo } from '../../frontend/time.js'
 import DotCircle from '../../frontend/circles/DotCircle.js'
 import TickCircle from '../../frontend/circles/TickCircle.js'
 import ArchText from '../../frontend/components/ArchText.js'
@@ -160,12 +161,12 @@ export default class PomodoroWidget extends Widget {
   }
 
   msg2state(data) {
-    const today = Math.floor((new Date().getTime())/(1000*60*60*24))
     return {
       history: data.history,
-      stats:  data.history      
-        .map(t => Math.floor(t/(1000*60*60*24) - today + 6))
-        .filter(t => t >= 0)
+      // index 6 is today, 0 is six days ago
+      stats:  data.history
+        .map(t => 6 - daysAgo(t))
+        .filter(t => t >= 0 && t <= 6)
         .reduce((s, v) => {
           s[v]++
           return s
@@ -308,7 +309,7 @@ export default class PomodoroWidget extends Widget {
     this._dotLabel.radius = this.size * 113
     this._dotLabel.fontSize = 12 * this.size
     this._dotLabel.visible = (this.size === 1)
-    const dayStart = Math.floor(now / (1000*60*60*24))*(1000*60*60*24)
+    const dayStart = startOfDay(now)
     if(this.state.history) {
       this._dots.countMax = Math.min(10, this.state.history.filter(p => p > dayStart ).length)
     }

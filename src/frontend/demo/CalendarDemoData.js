@@ -1,10 +1,19 @@
 export default class CalendarDemoData {
   constructor() {
     const now = Math.floor((new Date().getTime())/(1000*60*60))*1000*60*60
+    const midnight = new Date()
+    midnight.setHours(0, 0, 0, 0)
     this._data =  {
       widgetId: 'calendar',
       payload: {
         allEvents: [
+          {
+            "id": "9031874520",
+            "summary": "Team offsite",
+            "start": midnight.getTime(),
+            "end": midnight.getTime() + 24*60*60*1000,
+            "allDay": true
+          },
           {
             "id": "822245245",
             "summary": "Product launch discussion",

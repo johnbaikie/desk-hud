@@ -1,4 +1,5 @@
 import Widget from '../../frontend/Widget.js'
+import { startOfDay } from '../../frontend/time.js'
 import ProgressCircle from '../../frontend/circles/ProgressCircle.js';
 import TickCircle from '../../frontend/circles/TickCircle.js';
 import ArchText from '../../frontend/components/ArchText.js';
@@ -14,6 +15,7 @@ export default class CalendarWidget extends Widget {
       allEvents: null,
       todayEvents: null,
       todayEventsLeft: null,
+      todayAllDay: null,
     })
 
     this._statsTitle = new TextField('completed\ntoday', {
@@ -107,14 +109,15 @@ export default class CalendarWidget extends Widget {
       window.location.href = msg.authUrl
       return  {}
     }
-    console.log("#####", msg)
     const events = msg.allEvents
-    const today = Math.floor((new Date().getTime())/(1000*60*60*24))*(1000*60*60*24) + new Date().getTimezoneOffset()*60000
+    const today = startOfDay()
 
     const newState = {}
     newState.allEvents = events.filter(e => e.start < today + 7*24*60*60*1000)
     newState.todayEvents = newState.allEvents.filter(e => e.start < today + 24*60*60*1000 && !e.allDay)
     newState.todayEventsLeft = newState.todayEvents.filter(e => e.end >= new Date().getTime())
+    // all-day events are listed but kept out of the meeting count, clock and busy bar
+    newState.todayAllDay = events.filter(e => e.allDay && e.start < today + 24*60*60*1000 && e.end > today)
     newState.error = msg.error
     return newState
   }
@@ -201,5 +204,6 @@ export default class CalendarWidget extends Widget {
     }   
     this._calendarScreen.progress = this.main.progress * this.dataLoadProgress
     this._calendarScreen.events = this.state.todayEvents
+    this._calendarScreen.allDayEvents = this.state.todayAllDay
   }
 }
