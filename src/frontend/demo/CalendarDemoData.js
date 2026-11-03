@@ -49,6 +49,14 @@ export default class CalendarDemoData {
             "end": now + 3.25*60*60*1000,
             "allDay": false
           },
+          // tomorrow, for swiping the main screen
+          {
+            "id": "778899",
+            "summary": "Dentist",
+            "start": now + 25*60*60*1000,
+            "end": now + 26*60*60*1000,
+            "allDay": false
+          },
         ]
       }
     }

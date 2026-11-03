@@ -44,7 +44,9 @@ class CalendarService extends GoogleService {
       const today = midnight.getTime()
       const params = {
         timeMin: (new Date(today)).toISOString(),
-        maxResults: 50,
+        // the main screen can be swiped through a week
+        timeMax: (new Date(today + 8*24*60*60*1000)).toISOString(),
+        maxResults: 250,
         singleEvents: true,
         orderBy: 'startTime',
       }

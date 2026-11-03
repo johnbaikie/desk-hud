@@ -8,6 +8,13 @@ import TextField from '../../frontend/components/TextField.js';
 import CalendarScreen from './CalendarScreen.js';
 import AuthErrorScreen from './lib/AuthErrorScreen.js';
 
+// days ahead the main screen can be swiped to (the services load a week)
+const MAX_DAY_OFFSET = 6
+// the main screen goes back to today after this long without a swipe
+const DAY_RESET_TIME = 60*1000
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 export default class CalendarWidget extends Widget {
   constructor(id = 'calendar', title = 'Calendar') {
     super(id, title)
@@ -95,16 +102,50 @@ export default class CalendarWidget extends Widget {
     this._meetingClock.addChild(this._clockTitle)
 
     // main screen
+    this._title = title
     this.main.title = title
+    this.main.statusRightText = '< swipe: other days >'
     const calendarPage = this.main.getPage(0)
    
     this._calendarScreen = new CalendarScreen()
     calendarPage.addChild(this._calendarScreen)
+    this._calendarScreen.on('swipe', (step) => this._selectDay(this._dayOffset + step))
+
+    // day shown on the main screen, in days from today
+    this._dayOffset = 0
+    this._dayOffsetAt = 0
+    this._dayCache = null
 
     if(id === 'calendar') {
       // Google sign-in screen; other calendars use the default error icon
       this.main.setCustomErrorScreen(new AuthErrorScreen(() => this.sendMessage({action: 'auth'})))
     }
+  }
+
+  _selectDay(offset) {
+    this._dayOffset = Math.max(0, Math.min(MAX_DAY_OFFSET, offset))
+    this._dayOffsetAt = Date.now()
+  }
+
+  // timed and all-day events of the day `offset` days from today, cached
+  // until the day, the offset or the events change
+  _dayEvents(offset) {
+    const d = new Date(startOfDay())
+    d.setDate(d.getDate() + offset) // calendar days, so DST changes don't shift it
+    const dayStart = d.getTime()
+    d.setDate(d.getDate() + 1)
+    const dayEnd = d.getTime()
+    const all = this.state.allEvents
+    const c = this._dayCache
+    if(c && c.dayStart === dayStart && c.all === all) return c
+
+    this._dayCache = {
+      dayStart,
+      all,
+      events: all && all.filter(e => !e.allDay && e.start < dayEnd && e.end > dayStart),
+      allDay: all && all.filter(e => e.allDay && e.start < dayEnd && e.end > dayStart),
+    }
+    return this._dayCache
   }
 
   msg2state(msg) {
@@ -209,8 +250,21 @@ export default class CalendarWidget extends Widget {
       this._meetingClock.visible = false
       this._clockAlert.visible = false
     }   
+    if(this._dayOffset && Date.now() - this._dayOffsetAt > DAY_RESET_TIME) {
+      this._dayOffset = 0
+    }
     this._calendarScreen.progress = this.main.progress * this.dataLoadProgress
-    this._calendarScreen.events = this.state.todayEvents
-    this._calendarScreen.allDayEvents = this.state.todayAllDay
+    this._calendarScreen.isToday = this._dayOffset === 0
+    if(this._dayOffset === 0) {
+      this._calendarScreen.events = this.state.todayEvents
+      this._calendarScreen.allDayEvents = this.state.todayAllDay
+      this.main.title = this._title + ': Today'
+    } else {
+      const day = this._dayEvents(this._dayOffset)
+      this._calendarScreen.events = day.events
+      this._calendarScreen.allDayEvents = day.allDay
+      const date = new Date(day.dayStart)
+      this.main.title = `${this._title}: ${DAY_NAMES[date.getDay()]} ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`
+    }
   }
 }
