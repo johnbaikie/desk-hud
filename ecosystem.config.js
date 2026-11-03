@@ -5,7 +5,10 @@ module.exports = {
     {
       name: "desk-hud",
       script: "src/backend/index.js",
-      watch: ".",
+      // restart on backend code changes only; watching "." also caught the
+      // services' own data files (.node-persist), restarting every 20 minutes
+      watch: ["src/backend", "src/widgets"],
+      ignore_watch: ["node_modules", ".node-persist", "src/backend/www"],
       env: {
         DHUD_ENV: "development",
       },
