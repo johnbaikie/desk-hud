@@ -106,7 +106,10 @@ class SysMonitorService extends Service {
 
   async onMessage(payload) {
     this.logger.log("message received", payload)
-    if(payload.action === 'kill' ) {
+    if(payload.action === 'touchDebug') {
+      // TEMPORARY: taps reported by the client's touch diagnostics
+      this.logger.log(`touch ${payload.type} at ${payload.x},${payload.y} -> ${payload.target}`)
+    } else if(payload.action === 'kill' ) {
       this.logger.log("Killing the server... should be started back again by PM2")
       process.kill(process.pid, 'SIGTERM');
       setTimeout(() => process.exit(0), 1000)
