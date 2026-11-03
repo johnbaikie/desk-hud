@@ -1,17 +1,21 @@
 const Service = require('./Service.js')
-const spawn = require('child_process').spawn
 const exec = require('child_process').exec
-const path = require('path')
 
 const HDMI_ON_COMMAND = `sudo chvt 7; sudo sh -c 'echo "0" > /sys/class/graphics/fb0/blank'`
 const HDMI_OFF_COMMAND = `sudo chvt 1; sudo sh -c 'echo "1" > /sys/class/graphics/fb0/blank'`
+
+// No distance sensor is fitted, so readings are simulated in-process: someone
+// always sitting at the desk. (This used to be a separate node process,
+// distance_mock.js, which cost ~45 MB of memory for the same constant value.)
+const MOCK_DISTANCE = 20 // cm
+const MOCK_INTERVAL = 50 // ms between readings
 
 class DistanceService extends Service {
 
   constructor(config, io, webApp) {
     super(config, io, webApp, 'distance')
     this._loop = null
-    this._proc = null
+    this._sensor = null
     this._queue = []
     this._distance = 0
     this._lastSensorDataTime = 10000
@@ -21,7 +25,7 @@ class DistanceService extends Service {
   }
 
   async start() {
-    this._respawn()
+    this._startSensor()
 
     if(this._loop) {
       clearInterval(this._loop)
@@ -30,44 +34,15 @@ class DistanceService extends Service {
     this.update()
   }
 
-  _respawn() {
-    try {
-      this.logger.log(`spawning distance monitor (mock)...`)
-      if(this._proc) {
-        this.logger.log("process alrady exists. killing")
-        this._proc.noRespawn = true
-        this._proc.kill()
-      }
-      this._proc = spawn('node', [path.resolve(__dirname, '..', 'distance_mock.js')]);
-    } catch(err) {
-      this.logger.log('Unable to spawn distance script', err)
-      return 
+  _startSensor() {
+    if(this._sensor) {
+      clearInterval(this._sensor)
     }
-    this._proc.stdout.on('data', (data) => {
-      const txt = data.toString()
-      if(!isNaN(txt)) {
-        this._queue.push(Number(txt))
-        this._lastSensorDataTime = performance.now()
-      } else {
-        this.logger.log('stdout: ' + txt);
-      }
-    });
-    
-    this._proc.stderr.on('data', (data) => {
-      this.logger.error('stderr: ' + data.toString());
-    });
-    this._proc.on('error', (data) => {
-      this.logger.error('error: ' + data.toString());
-    });
-    
-    let proc = this._proc
-    this._proc.on('exit', (code) => {
-      this.logger.log('child process exited with code ' + (code || 0).toString());
-      if(!proc.noRespawn) {
-        this.logger.log('respawn in 5sec...')
-        setTimeout(() => this._respawn(), 5000)
-      }
-    });
+    this.logger.log('starting distance monitor (mock)')
+    this._sensor = setInterval(() => {
+      this._queue.push(MOCK_DISTANCE)
+      this._lastSensorDataTime = performance.now()
+    }, MOCK_INTERVAL)
   }
 
   async welcomeClient(socket) {
@@ -88,7 +63,7 @@ class DistanceService extends Service {
       this.logger.log("Sensor data is outdated. skipping")
       this._queue = []
       this._lastSensorDataTime = performance.now()
-      this._respawn()
+      this._startSensor()
       return null;
     }
     if(this._queue.length === 0) {
