@@ -2,7 +2,6 @@ import WidgetContainer from "./WidgetContainer.js";
 import FontFaceObserver from 'fontfaceobserver'
 import DemoSocket from "./demo/DemoSocket.js";
 import widgets from "../widgets/widgets.js";
-import TouchDebug from "./TouchDebug.js";
 
 const getDemoMode = () => {
   if(typeof(BUILD_DEMO_MODE) !== 'undefined' && (BUILD_DEMO_MODE === 'true' || BUILD_DEMO_MODE === true)) {
@@ -42,12 +41,6 @@ if(DEMO_MODE) {
   document.body.appendChild(app.view)
   PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.LINEAR;
   document.getElementById('loading').style.display = 'none'
-
-  // TEMPORARY: touch diagnostics for the right-hand widgets; remove when done
-  new TouchDebug(app, (tap) => {
-    console.log('[touch]', tap)
-    socket.emit('service', {serviceId: 'system', payload: {action: 'touchDebug', ...tap}})
-  })
 
   // possibility to clone containers to increase load for perf tests
   const widgetContainers = Array(1).fill(1).map(_ => new WidgetContainer())
