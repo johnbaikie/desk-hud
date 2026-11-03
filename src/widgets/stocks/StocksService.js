@@ -126,7 +126,6 @@ class StocksService extends Service {
   }
 
   async _request(endpoint, apiKey, symbols) {
-    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0
     const url = `https://api.stockdata.org/v1/data/${endpoint}?symbols=${encodeURIComponent(symbols)}&api_token=${apiKey}`
     this.logger.log(`call https://api.stockdata.org/v1/data/${endpoint}?symbols=${symbols}&api_token=${apiKey.substr(0, 2)}...`)
     const response = await fetch(url)
