@@ -21,6 +21,8 @@ const COL_WIDTH = 73.2
 export default class ForecastScreen extends PIXI.Container {
   constructor() {
     super()
+    // kept per instance: in rainbow mode ACCENT changes from widget to widget
+    this._accent = ACCENT
     this.progress = 0
     this._startTime = 0
     this._icons = []
@@ -186,7 +188,7 @@ export default class ForecastScreen extends PIXI.Container {
       )
     }
 
-    this._tempLine.addSequence(coord, 3, ACCENT)
+    this._tempLine.addSequence(coord, 3, this._accent)
 
     this._tempLabels.text = Array(24)
       .fill(1)

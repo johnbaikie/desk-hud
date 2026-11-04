@@ -4,6 +4,8 @@ import TextField from "./TextField"
 export default class DotCluster extends PIXI.Container {
   constructor() {
     super()
+    // kept per instance: in rainbow mode ACCENT changes from widget to widget
+    this._accent = ACCENT
     this.progress = 0
     this.count = 0
     this.title = 'Count'
@@ -69,11 +71,11 @@ export default class DotCluster extends PIXI.Container {
   _createDot(size, radius, angle) {
     const dot = new PIXI.Graphics()
     dot.lineStyle({
-      color: ACCENT,
+      color: this._accent,
       width: 1.5,
       alpha: 0.4
     })
-    dot.beginFill(ACCENT, 0.9)
+    dot.beginFill(this._accent, 0.9)
     dot.drawCircle(0, 0, size)
     dot.x = 1.35 * radius * Math.cos(angle)
     dot.y = radius * Math.sin(angle)

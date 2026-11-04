@@ -2,6 +2,8 @@ import { ACCENT } from '../theme.js'
 export default class DotCircle extends PIXI.Container {
   constructor() {
     super()
+    // kept per instance: in rainbow mode ACCENT changes from widget to widget
+    this._accent = ACCENT
     this._shapes = new PIXI.Graphics()
     this.addChild(this._shapes)
 
@@ -22,7 +24,7 @@ export default class DotCircle extends PIXI.Container {
     this._updateHash = hash
 
     this._shapes.clear()
-    this._shapes.beginFill(ACCENT)
+    this._shapes.beginFill(this._accent)
 
     const a = 2 * Math.PI / this.count
 

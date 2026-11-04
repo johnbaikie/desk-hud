@@ -12,6 +12,8 @@ const ROTATE_INTERVAL = 20*60*1000
 export default class StocksWidget extends Widget {
   constructor() {
     super('stocks', "Stocks")
+    // kept per instance: in rainbow mode ACCENT changes from widget to widget
+    this._accent = ACCENT
     this.initState({
       stocks: [],
     })
@@ -94,7 +96,7 @@ export default class StocksWidget extends Widget {
       this._trendIcon.color = 0xffffff
     } else if(stock.change < 0) {
       this._trendIcon.code = 0xe5db
-      this._trendIcon.color = ACCENT
+      this._trendIcon.color = this._accent
     } else {
       this._trendIcon.code = 0xe15b
       this._trendIcon.color = 0xffffff

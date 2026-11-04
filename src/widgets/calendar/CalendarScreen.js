@@ -8,6 +8,8 @@ const SWIPE_DISTANCE = 30 // px of horizontal drag that counts as a swipe
 export default class CalendarScreen extends PIXI.Container {
   constructor() {
     super()
+    // kept per instance: in rainbow mode ACCENT changes from widget to widget
+    this._accent = ACCENT
     this.progress = 0
 
     this.events = null
@@ -139,7 +141,7 @@ export default class CalendarScreen extends PIXI.Container {
 
 
       this._busyCanvas.clear()
-      this._busyCanvas.beginFill(ACCENT)
+      this._busyCanvas.beginFill(this._accent)
       for(let event of this.events) {
         if(event.allDay) continue
         let startY = new Date(event.start)

@@ -13,7 +13,7 @@ function getTimezoneMs(options={}) {
 }
 
 export default class TimezonePreview extends PIXI.Container {
-  constructor(timezones) {
+  constructor(timezones, accent = ACCENT) {
     super()
 
     this._timezones = timezones 
@@ -93,7 +93,7 @@ export default class TimezonePreview extends PIXI.Container {
     this._pointer.addSequence([
       120 + 5.5*SEGMENT_WIDTH, -SEGMENT_HEIGHT/2-5,
       120 + 5.5*SEGMENT_WIDTH, SEGMENT_HEIGHT*this._timezones.length-SEGMENT_HEIGHT/2+5,
-    ], 4, ACCENT)
+    ], 4, accent)
     this._pointer.alpha = 0.8
     
     this._dragBox = new PIXI.Graphics()

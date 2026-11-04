@@ -28,6 +28,8 @@ const formatVolume = (v) => {
 export default class StocksStatsScreen extends PIXI.Container {
   constructor() {
     super()
+    // kept per instance: in rainbow mode ACCENT changes from widget to widget
+    this._accent = ACCENT
     this.progress = 0
     this.stock = null
     this.stockIndex = 0
@@ -116,7 +118,7 @@ export default class StocksStatsScreen extends PIXI.Container {
         this._trendIcon.color = 0xffffff
       } else if(diff < 0) {
         this._trendIcon.code = 0xe5db
-        this._trendIcon.color = ACCENT
+        this._trendIcon.color = this._accent
       } else {
         this._trendIcon.code = 0xe15b
         this._trendIcon.color = 0xffffff

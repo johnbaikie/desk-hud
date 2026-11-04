@@ -2,6 +2,7 @@ import WidgetContainer from "./WidgetContainer.js";
 import FontFaceObserver from 'fontfaceobserver'
 import DemoSocket from "./demo/DemoSocket.js";
 import widgets from "../widgets/widgets.js";
+import { useWidgetAccent, useBaseAccent } from "./theme.js";
 
 const getDemoMode = () => {
   if(typeof(BUILD_DEMO_MODE) !== 'undefined' && (BUILD_DEMO_MODE === 'true' || BUILD_DEMO_MODE === true)) {
@@ -51,7 +52,12 @@ if(DEMO_MODE) {
     
     app.stage.addChild(widgetContainer)
     
-    const widgetsInstances = widgets.map((Def) => new Def())
+    // in rainbow mode each widget is built with its own accent colour
+    const widgetsInstances = widgets.map((Def, i) => {
+      useWidgetAccent(i)
+      return new Def()
+    })
+    useBaseAccent()
     
     widgetsInstances.forEach((w) => {
       widgetContainer.addWidget(w)
