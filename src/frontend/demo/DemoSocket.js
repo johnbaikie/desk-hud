@@ -5,6 +5,7 @@ import TodoDemoData from "./TodoDemoData"
 import WeatherDemoData from "./WeatherDemoData"
 import DateTimeDemoData from "./DateTimeDemoData"
 import StocksDemoData from "./StocksDemoData"
+import NetworkDemoData from "./NetworkDemoData"
 
 export default class DemoSocket {
   constructor() {
@@ -15,6 +16,7 @@ export default class DemoSocket {
     this._outlookDemo = new OutlookDemoData()
     this._dateTimeDemo = new DateTimeDemoData()
     this._stocksDemo = new StocksDemoData()
+    this._networkDemo = new NetworkDemoData()
 
     
     this._listeners = {}
@@ -28,6 +30,7 @@ export default class DemoSocket {
       this._publish('widget', this._outlookDemo.data)
       this._publish('widget', this._pomodoroDemo.data)
       this._publish('widget', this._stocksDemo.data)
+      this._publish('widget', this._networkDemo.data)
     }, 500)
 
     setTimeout(() => {
@@ -93,6 +96,8 @@ export default class DemoSocket {
     } else if(serviceId === 'pomodoro') {
       this._pomodoroDemo.onMessage(payload)
       this._publish('widget', this._pomodoroDemo.data)
+    } else if(serviceId === 'network') {
+      this._networkDemo.onMessage(payload, () => this._publish('widget', this._networkDemo.data))
     }
   }
 }

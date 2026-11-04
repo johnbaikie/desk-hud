@@ -6,6 +6,7 @@ import OutlookWidget from './outlook'
 import TodoWidget from './todo'
 import PomodoroWidget from './pomodoro'
 import StocksWidget from './stocks'
+import NetworkWidget from './network'
 import AccentWidget from './accent'
 
 const widgets = [
@@ -17,6 +18,7 @@ const widgets = [
   PomodoroWidget,
 
   StocksWidget,
+  NetworkWidget,
   AccentWidget,
   
 ]
