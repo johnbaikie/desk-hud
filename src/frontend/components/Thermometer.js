@@ -1,3 +1,4 @@
+import { ACCENT } from '../theme.js'
 export default class Thermometer extends PIXI.Container {
   constructor(height=100, warnThreshold) {
     super()
@@ -18,7 +19,7 @@ export default class Thermometer extends PIXI.Container {
     this._bg.beginFill(0xffffff)
     this._bg.drawCircle(0, 0, 3)
     if(warnThreshold) {
-      this._bg.beginFill(0x00ff41)
+      this._bg.beginFill(ACCENT)
       this._bg.drawRect(8, -this._barHeight, 3, 4+(this._barHeight-4)*(1-warnThreshold))
       this._bg.endFill()
       this._bg.lineStyle({

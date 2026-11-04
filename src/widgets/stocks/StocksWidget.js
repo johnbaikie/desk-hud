@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import Widget from '../../frontend/Widget.js'
 import Icon from '../../frontend/components/Icon.js'
 import TextField from '../../frontend/components/TextField.js'
@@ -93,7 +94,7 @@ export default class StocksWidget extends Widget {
       this._trendIcon.color = 0xffffff
     } else if(stock.change < 0) {
       this._trendIcon.code = 0xe5db
-      this._trendIcon.color = 0x00ff41
+      this._trendIcon.color = ACCENT
     } else {
       this._trendIcon.code = 0xe15b
       this._trendIcon.color = 0xffffff

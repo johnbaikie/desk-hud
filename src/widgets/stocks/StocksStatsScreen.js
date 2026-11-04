@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import TextField from '../../frontend/components/TextField'
 import Icon from '../../frontend/components/Icon'
 
@@ -115,7 +116,7 @@ export default class StocksStatsScreen extends PIXI.Container {
         this._trendIcon.color = 0xffffff
       } else if(diff < 0) {
         this._trendIcon.code = 0xe5db
-        this._trendIcon.color = 0x00ff41
+        this._trendIcon.color = ACCENT
       } else {
         this._trendIcon.code = 0xe15b
         this._trendIcon.color = 0xffffff

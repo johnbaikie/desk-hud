@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import LineArt from "../../frontend/components/LineArt"
 import TextField from "../../frontend/components/TextField"
 import TimelineSegment from "./TimelineSegment"
@@ -92,7 +93,7 @@ export default class TimezonePreview extends PIXI.Container {
     this._pointer.addSequence([
       120 + 5.5*SEGMENT_WIDTH, -SEGMENT_HEIGHT/2-5,
       120 + 5.5*SEGMENT_WIDTH, SEGMENT_HEIGHT*this._timezones.length-SEGMENT_HEIGHT/2+5,
-    ], 4, 0x00ff41)
+    ], 4, ACCENT)
     this._pointer.alpha = 0.8
     
     this._dragBox = new PIXI.Graphics()

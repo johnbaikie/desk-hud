@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import MainScreen from '../../frontend/MainScreen.js';
 import Widget from '../../frontend/Widget.js'
 import ProgressCircle from '../../frontend/circles/ProgressCircle.js';
@@ -14,13 +15,13 @@ export default class DateTimeWidget extends Widget {
     super('dateTime', "Date & Time")
 
     this._secPointer = new ProgressCircle()
-    this._secPointer.color = 0x00ff41
+    this._secPointer.color = ACCENT
     this.addChild(this._secPointer)
     this._minPointer = new ProgressCircle()
-    this._minPointer.color = 0x00ff41
+    this._minPointer.color = ACCENT
     this.addChild(this._minPointer)
     this._hourPointer = new ProgressCircle()
-    this._hourPointer.color = 0x00ff41
+    this._hourPointer.color = ACCENT
     this.addChild(this._hourPointer)
 
     this._timeLabel = new TextField('00:00:00', {

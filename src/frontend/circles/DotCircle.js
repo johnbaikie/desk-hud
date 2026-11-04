@@ -1,3 +1,4 @@
+import { ACCENT } from '../theme.js'
 export default class DotCircle extends PIXI.Container {
   constructor() {
     super()
@@ -21,7 +22,7 @@ export default class DotCircle extends PIXI.Container {
     this._updateHash = hash
 
     this._shapes.clear()
-    this._shapes.beginFill(0x00ff41)
+    this._shapes.beginFill(ACCENT)
 
     const a = 2 * Math.PI / this.count
 

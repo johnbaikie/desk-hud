@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import Widget from '../../frontend/Widget.js'
 import { startOfDay } from '../../frontend/time.js'
 import ProgressCircle from '../../frontend/circles/ProgressCircle.js';
@@ -45,7 +46,7 @@ export default class CalendarWidget extends Widget {
     this.addChild(this._statsLabel)
 
     this._statusProgress = new ProgressCircle()
-    this._statusProgress.color = 0x00ff41
+    this._statusProgress.color = ACCENT
     this._statusProgress.lineWidth = 2
     this._statusProgress.rotation = Math.PI/2
     this.addChild(this._statusProgress)
@@ -65,7 +66,7 @@ export default class CalendarWidget extends Widget {
     this.addChild(this._meetingClock)
 
     this._clockAlert = new PIXI.Graphics()
-    this._clockAlert.beginFill(0x00ff41)
+    this._clockAlert.beginFill(ACCENT)
     this._clockAlert.drawCircle(0, 0, 40)
     this._meetingClock.addChild(this._clockAlert)
     this._clockAlert.visible = false

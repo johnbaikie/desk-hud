@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import LineArt from "../../frontend/components/LineArt"
 import TextField from "../../frontend/components/TextField"
 
@@ -40,7 +41,7 @@ export default class TomatoPlant extends PIXI.Container {
         const side = (branchIndex % 2 === 0) ? -1 : 1
 
         this._fruits[branchIndex] = new PIXI.Graphics()
-        this._fruits[branchIndex].beginFill(0x00ff41)
+        this._fruits[branchIndex].beginFill(ACCENT)
         this._fruits[branchIndex].drawCircle(0, 0, 7)
         this._fruits[branchIndex].endFill()
         this._fruits[branchIndex].lineStyle({width: 1, color: 0xffffff})

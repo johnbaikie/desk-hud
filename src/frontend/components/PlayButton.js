@@ -1,3 +1,4 @@
+import { ACCENT } from '../theme.js'
 import Button from "./Button"
 
 export default class PlayButton extends Button {
@@ -7,7 +8,7 @@ export default class PlayButton extends Button {
     this._mode = 'stop'
 
     this._stopIcon = new PIXI.Graphics()
-    this._stopIcon.beginFill(0x00ff41)
+    this._stopIcon.beginFill(ACCENT)
     this._stopIcon.moveTo(-8, -8)
     this._stopIcon.lineTo(8, -8)
     this._stopIcon.lineTo(8, 8)

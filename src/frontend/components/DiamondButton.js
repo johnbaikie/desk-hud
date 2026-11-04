@@ -1,3 +1,4 @@
+import { ACCENT } from '../theme.js'
 import LineArt from "./LineArt"
 import TextField from "./TextField"
 
@@ -21,7 +22,7 @@ export default class DiamondButton extends PIXI.Container {
 
     this._refFill = new PIXI.Graphics()
     this.addChild(this._refFill)
-    this._refFill.beginFill(0x00ff41)
+    this._refFill.beginFill(ACCENT)
     this._refFill.moveTo(-45, -20)
     this._refFill.lineTo(45, -20)
     this._refFill.lineTo(65, 0)

@@ -1,3 +1,4 @@
+import { ACCENT } from '../theme.js'
 import TextField from "./TextField"
 
 export default class DotCluster extends PIXI.Container {
@@ -68,11 +69,11 @@ export default class DotCluster extends PIXI.Container {
   _createDot(size, radius, angle) {
     const dot = new PIXI.Graphics()
     dot.lineStyle({
-      color: 0x00ff41,
+      color: ACCENT,
       width: 1.5,
       alpha: 0.4
     })
-    dot.beginFill(0x00ff41, 0.9)
+    dot.beginFill(ACCENT, 0.9)
     dot.drawCircle(0, 0, size)
     dot.x = 1.35 * radius * Math.cos(angle)
     dot.y = radius * Math.sin(angle)

@@ -6,6 +6,7 @@ import OutlookWidget from './outlook'
 import TodoWidget from './todo'
 import PomodoroWidget from './pomodoro'
 import StocksWidget from './stocks'
+import AccentWidget from './accent'
 
 const widgets = [
   DateTimeWidget,
@@ -16,6 +17,7 @@ const widgets = [
   PomodoroWidget,
 
   StocksWidget,
+  AccentWidget,
   
 ]
 export default widgets

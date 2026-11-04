@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import Chart from "../../frontend/components/Chart"
 import LineArt from "../../frontend/components/LineArt"
 import ScrollContainer from "../../frontend/components/ScrollContainer"
@@ -185,7 +186,7 @@ export default class ForecastScreen extends PIXI.Container {
       )
     }
 
-    this._tempLine.addSequence(coord, 3, 0x00ff41)
+    this._tempLine.addSequence(coord, 3, ACCENT)
 
     this._tempLabels.text = Array(24)
       .fill(1)

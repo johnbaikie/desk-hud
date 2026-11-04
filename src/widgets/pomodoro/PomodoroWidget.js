@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import Widget from '../../frontend/Widget.js'
 import { startOfDay, daysAgo } from '../../frontend/time.js'
 import DotCircle from '../../frontend/circles/DotCircle.js'
@@ -30,7 +31,7 @@ export default class PomodoroWidget extends Widget {
     this.addChild(this._ticks)
 
     this._redLight = new PIXI.Graphics()
-    this._redLight.beginFill(0x00ff41)
+    this._redLight.beginFill(ACCENT)
     this._redLight.drawCircle(0, 0, 100)
     this._redLight.alpha = 0
     this.addChildAt(this._redLight, 0)
@@ -120,7 +121,7 @@ export default class PomodoroWidget extends Widget {
     this.addChild(this._timeBg)
    
     this._timeBgRed = new PIXI.Graphics()
-    this._timeBgRed.beginFill(0x00ff41)
+    this._timeBgRed.beginFill(ACCENT)
     this._timeBgRed.drawRect(-55, -9, 110, 20)
     this._timeBgRed.alpha = 0
     this.addChild(this._timeBgRed)

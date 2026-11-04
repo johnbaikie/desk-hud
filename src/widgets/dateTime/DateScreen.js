@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import LineArt from "../../frontend/components/LineArt"
 import TextField from "../../frontend/components/TextField"
 
@@ -13,7 +14,7 @@ export default class DateScreen extends PIXI.Container {
     const header = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'].join(' ')
 
     this._pointer = new PIXI.Graphics()
-    this._pointer.beginFill(0x00ff41)
+    this._pointer.beginFill(ACCENT)
     this._pointer.drawRect(-2, -1, 22, 16)
     this.addChild(this._pointer)
 
@@ -197,7 +198,7 @@ export default class DateScreen extends PIXI.Container {
       for(let j = 0; j < currentMonth[i].length; j++) {
         if(currentMonth[i][j] === now.getDate()) {
           this._pointer.clear()
-          this._pointer.beginFill(0x00ff41)
+          this._pointer.beginFill(ACCENT)
           this._pointer.drawRect(-2, -1, 2*charW+4, lineH+2)
           this._pointer.x = this._currentMonthField.x + cellW*j
           this._pointer.y = this._currentMonthField.y + lineH*i

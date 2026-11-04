@@ -1,3 +1,4 @@
+import { ACCENT } from '../../frontend/theme.js'
 import LineArt from "../../frontend/components/LineArt"
 import TextField from "../../frontend/components/TextField"
 
@@ -37,7 +38,7 @@ export default class CalendarScreen extends PIXI.Container {
     this._bg.addLine(-150, -105, -150, 80, 1, 0xffffff)
     this._bg.addLine(200, -105, 200, 95)
     for(let i=0; i < 15; i++) {
-      this._bg.addLine(200, -76+i*BUSY_SCALE_STEP, 250, -76+i*BUSY_SCALE_STEP, 1, 0x00ff41)
+      this._bg.addLine(200, -76+i*BUSY_SCALE_STEP, 250, -76+i*BUSY_SCALE_STEP, 1, ACCENT)
     }
 
     this.addChild(this._bg)
@@ -138,7 +139,7 @@ export default class CalendarScreen extends PIXI.Container {
 
 
       this._busyCanvas.clear()
-      this._busyCanvas.beginFill(0x00ff41)
+      this._busyCanvas.beginFill(ACCENT)
       for(let event of this.events) {
         if(event.allDay) continue
         let startY = new Date(event.start)

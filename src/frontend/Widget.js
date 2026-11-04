@@ -1,3 +1,4 @@
+import { ACCENT } from './theme.js'
 import MainScreen from "./MainScreen"
 import TitleCircle from "./circles/TitleCircle"
 import Icon from "./components/Icon"
@@ -48,7 +49,7 @@ export default class Widget extends PIXI.Container {
     this._errorBg.beginFill(0x000000, 0.8)
     this._errorBg.drawCircle(0, 0, 90)
     this._errorIcon = new Icon(0xe000, 2, true)
-    this._errorIcon.color = 0x00ff41
+    this._errorIcon.color = ACCENT
     this._overlay.addChild(this._errorIcon)
   }
 
