@@ -71,9 +71,16 @@ const SocketLogger = require('./SocketLogger.js');
     config.coreLogger.emit(logHistory)
 
     config.coreLogger.log("Client connected")
+    // the TIME screen marks home on its world map (weather location; optional)
+    let location = null
+    try {
+      location = { lat: Number(config.getProp('weather.lat')), lon: Number(config.getProp('weather.lon')) }
+    } catch(err) {
+      location = null
+    }
     await socket.emit('config', {
       widgets: {
-        dateTime: config.getProp('dateTime'),
+        dateTime: { ...config.getProp('dateTime'), location },
       }
     })
     await Promise.all(serviceInstances.map(s => s.welcomeClient(socket)))

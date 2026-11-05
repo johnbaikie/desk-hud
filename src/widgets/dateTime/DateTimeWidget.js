@@ -78,7 +78,7 @@ export default class DateTimeWidget extends Widget {
   onConfig(config) {
     this._dateScreen.coundownDate = new Date(config.countdown.date)
     this._dateScreen.countdownName = config.countdown.name
-    this._timeScreen.addTimezonePreview(config.timezones)
+    this._timeScreen.setPlaces(config.timezones, config.location || null)
   }
 
   render(renderer) {

@@ -2,6 +2,8 @@ export default class DateTimeDemoData {
   constructor() {
 
     this.config = {
+      // no location: the map puts home at the browser's time zone city
+      location: null,
       countdown: {
         name: "Vacations",
         date: new Date(Math.floor((new Date().getTime()+17*24*60*60*1000)/(24*60*60*1000))*(24*60*60*1000)).toISOString()

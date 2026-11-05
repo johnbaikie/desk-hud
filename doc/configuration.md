@@ -25,6 +25,7 @@ The configuration for Desk-HUD is stored in a JSON file.
     - Each timezone object has the following properties:
       - `id` (string): The ID of the time zone.
       - `name` (string): The corresponding name of the time zone.
+      - `lat`, `lon` (numbers, optional): Where to mark it on the TIME screen's world map. Common zones (e.g. `America/Boise`, `Australia/Sydney`) are placed at their main city automatically (see `src/widgets/dateTime/places.js`); others need these. The zone the screen itself runs in is shown as HOME at the `weather` location.
 
 - **weather**: Location for weather, forecasts and alerts from the US National Weather Service (api.weather.gov; US locations only, no API key).
   - `lat` (number): The latitude of the location.
