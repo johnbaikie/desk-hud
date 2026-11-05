@@ -26,10 +26,9 @@ The configuration for Desk-HUD is stored in a JSON file.
       - `id` (string): The ID of the time zone.
       - `name` (string): The corresponding name of the time zone.
 
-- **weather**: This section includes settings for weather information.
-  - `apiKey` (string): The API key required to access weather data.
-  - `lat` (number): The latitude coordinate of the location for weather information.
-  - `lon` (number): The longitude coordinate of the location for weather information.
+- **weather**: Location for weather, forecasts and alerts from the US National Weather Service (api.weather.gov; US locations only, no API key).
+  - `lat` (number): The latitude of the location.
+  - `lon` (number): The longitude of the location.
   - `units` (string, optional): `"metric"` (°C, the default) or `"imperial"` (°F).
 
 - **google**: This section pertains to Google integration.
@@ -50,17 +49,6 @@ The configuration for Desk-HUD is stored in a JSON file.
 Every key is required unless marked optional. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
 
 ## Integrations
-
-### Open Weather Maps
-
-To obtain the weather.apiKey for Desk-HUD, you will need to sign up on the OpenWeatherMap website and obtain an API key. Here are the steps to get the API key:
-
-1. Visit the [OpenWeatherMap website](https://openweathermap.org/).
-2. Sign up for a free account or log in to your existing account.
-3. Once logged in, navigate to the `My API Keys` section.
-4. Generate a new API key by clicking on the "Generate" button.
-5. Once the API key is generated, copy it to your clipboard.
-6. Paste the API key into the `weather.apiKey` parameter in the Desk-HUD configuration file.
 
 ### Google
 

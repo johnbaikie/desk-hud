@@ -154,6 +154,8 @@ export default class WidgetContainer extends PIXI.Container {
     }
 
     widget.on('activate', () => this._activate(widget))
+    // e.g. a new severe weather warning
+    widget.on('wake', () => { if(this._sleep) this.wakeUp() })
   }
 
   _activate(widget) {

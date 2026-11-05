@@ -81,7 +81,7 @@ export default class ScrollContainer extends PIXI.Container {
 
   scrollTo(x, y) {
     this._content.x = this._boundX(x)
-    this._content.y = this._boundX(y)
+    this._content.y = this._boundY(y)
   }
 
   addChild(obj) {

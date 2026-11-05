@@ -22,10 +22,10 @@ Desk-HUD is a compact side monitor designed to enhance productivity and convenie
 
 ![Weather preview](doc/img/preview_weather.png)
 
-- Current weather
-- Temperature range for today
-- Rain countdown
-- Forecast for upcoming days
+- Current conditions from the nearest US National Weather Service station
+- Temperature range for the next 24 hours and a rain countdown
+- Next 12 hours (NOW tab) and 6-day forecast (DAYS tab)
+- Active NWS alerts: shown on the circle and an ALERTS tab; a new warning wakes the screen and brings the widget to the front
 
 ## Calendar Widget
 

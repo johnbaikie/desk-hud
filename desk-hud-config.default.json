@@ -24,10 +24,9 @@
     ]
   },
   "weather": {
-    "apiKey": "YOUR_OPENWEATHERMAP_API_KEY",
-    "lat": 51.5072,
-    "lon": -0.1276,
-    "units": "metric"
+    "lat": 38.8977,
+    "lon": -77.0365,
+    "units": "imperial"
   },
   "google": {
     "clientId": "",

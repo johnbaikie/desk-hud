@@ -2,33 +2,34 @@ import Widget from '../../frontend/Widget.js'
 import ScaleCircle from '../../frontend/circles/ScaleCircle.js'
 import ArchText from '../../frontend/components/ArchText.js'
 import TextField from '../../frontend/components/TextField.js'
-import ForecastScreen from './ForecastScreen.js'
+import { ACCENT } from '../../frontend/theme.js'
+import { ICONS, WEATHER_FONT } from './weatherIcons.js'
+import WeatherNowScreen from './WeatherNowScreen.js'
+import WeatherDaysScreen from './WeatherDaysScreen.js'
+import WeatherAlertsScreen from './WeatherAlertsScreen.js'
 
-const icons = {
-  '01d': '',    '01n': '',
-  '02d': '',    '02n': '',
-  '03d': '',    '03n': '',
-  '04d': '',    '04n': '',
-  '09d': '',    '09n': '',
-  '10d': '',    '10n': '',
-  '11d': '',    '11n': '',
-  '13d': '',    '13n': '',
-  '50d': '',    '50n': '',
-}
+const TAB_NOW = 0
+const TAB_DAYS = 1
+const TAB_ALERTS = 2
 
 export default class WeatherWidget extends Widget {
   constructor() {
     super('weather', "Weather")
     this.initState({
-      currentTemperature: null,
-      currentTemperatureMin: null,
-      currentTemperatureMax: null,
-      currentIcon: null,
-      currentDescription: null,
-      rainTime: null,
-      forecast: null,
       units: 'metric',
+      location: '',
+      current: null,
+      range: null,
+      rainTime: null,
+      hourly: [],
+      daily: [],
+      alerts: [],
+      alertsOk: true,
     })
+    // kept per instance: in rainbow mode ACCENT changes from widget to widget
+    this._accent = ACCENT
+    // alert ids already seen, so only new warnings wake the screen
+    this._seenAlerts = new Set()
 
     // one dial per unit system; render() shows the one matching state.units
     this._tempScales = {
@@ -40,6 +41,13 @@ export default class WeatherWidget extends Widget {
       this.addChild(scale)
     }
 
+    // pulsing ring while a severe or extreme alert is active
+    this._alertRing = new PIXI.Graphics()
+    this._alertRing.lineStyle({ width: 4, color: this._accent })
+    this._alertRing.drawCircle(0, 0, 96)
+    this._alertRing.visible = false
+    this.addChild(this._alertRing)
+
     this._currentTempLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
       fontSize: 16,
@@ -50,7 +58,7 @@ export default class WeatherWidget extends Widget {
     })
     this.addChild(this._currentTempLabel)
 
-    this._currentDescriotionLabel = new TextField('', {
+    this._currentDescriptionLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
       fontSize: 16,
       fill: '#ffffff',
@@ -58,10 +66,10 @@ export default class WeatherWidget extends Widget {
       strokeThickness: 1,
       align: 'center',
     })
-    this.addChild(this._currentDescriotionLabel)
+    this.addChild(this._currentDescriptionLabel)
 
     this._currentIcon = new TextField('', {
-      fontFamily: 'weathericons-regular-webfont',
+      fontFamily: WEATHER_FONT,
       fontSize: 60,
       fill: '#ffffff',
       stroke: "#ffffff",
@@ -71,125 +79,157 @@ export default class WeatherWidget extends Widget {
     this._currentIcon.progress = 1
     this.addChild(this._currentIcon)
 
-    this._rainLabel = new ArchText()
-    this._rainLabel.text = ''
-    this._rainLabel.color = 0xffffff
-    this._rainLabel.positionOffset = -Math.PI*0.45
-    this.addChild(this._rainLabel)
+    // "rain in hh:mm:ss", or the most severe alert
+    this._arcLabel = new ArchText()
+    this._arcLabel.text = ''
+    this._arcLabel.color = 0xffffff
+    this._arcLabel.positionOffset = -Math.PI*0.45
+    this.addChild(this._arcLabel)
 
-    // main screen
-    this.main.title = "3 Days Forecast"
-    const page = this.main.getPage(0)
-   
-    this._forecastScreen = new ForecastScreen()
-    page.addChild(this._forecastScreen)
+    // main screen: NOW, DAYS and (while any are active) ALERTS tabs
+    this.main.title = 'Weather'
+    const tabs = [['Now', WeatherNowScreen], ['Days', WeatherDaysScreen], ['Alerts', WeatherAlertsScreen]]
+    this._screens = tabs.map(([name, Screen], i) => {
+      const tab = this.main.getTabButton(i)
+      tab.text = name
+      tab.visible = i !== TAB_ALERTS
+      const screen = new Screen()
+      this.main.getPage(i).addChild(screen)
+      return screen
+    })
+    this._screens[TAB_NOW].on('showAlerts', () => this.main.activateTab(TAB_ALERTS))
   }
-  
+
   msg2state(msg) {
-    const currentJsonData = msg.current
-    const forecastJsonData = msg.forecast
-    const newState = {}
-    newState.units = msg.units === 'imperial' ? 'imperial' : 'metric'
-    newState.currentTemperature = currentJsonData.main.temp
-    newState.currentIcon = currentJsonData.weather[0].icon
-    newState.currentDescription = currentJsonData.weather[0].description
-
-    const now = (new Date().getTime())/1000
-    const temperature24 = forecastJsonData.list
-      .filter(d => d.dt >= now && d.dt <= now + 24*60*60)
-      .map(d => ({
-        min: d.main.temp_min,
-        max: d.main.temp_max,
-      }))
-      .reduce((range, val) => {
-        range.min = Math.min(val.min, range.min)
-        range.max = Math.max(val.max, range.max)
-        return range
-      }, {
-        min: currentJsonData.main.temp,
-        max: currentJsonData.main.temp
-      })
-      newState.currentTemperatureMin = temperature24.min
-    newState.currentTemperatureMax = temperature24.max
-
-    let rain = forecastJsonData.list.filter(d => d.rain)
-    newState.rainTime = (rain && rain.length > 0) ? rain[0].dt*1000 : null
-
-    newState.forecast = {
-      startTime: forecastJsonData.list[0].dt*1000,
-      icons: forecastJsonData.list.map(r => r.weather ? r.weather[0].icon : undefined),
-      pop: forecastJsonData.list.map(r => r.rain ? r.pop : 0),
-      rain: forecastJsonData.list.map(r => r.rain ? r.rain['3h'] : 0),
-      temp: forecastJsonData.list.map(r => r.main.temp),
+    if(msg.error) return { error: msg.error }
+    if(!msg.current || !Number.isFinite(msg.current.temp)) return { error: 'No weather data' }
+    return {
+      units: msg.units === 'imperial' ? 'imperial' : 'metric',
+      location: msg.location || '',
+      current: msg.current,
+      range: msg.range || null,
+      rainTime: msg.rainTime || null,
+      hourly: Array.isArray(msg.hourly) ? msg.hourly : [],
+      daily: Array.isArray(msg.daily) ? msg.daily : [],
+      alerts: Array.isArray(msg.alerts) ? msg.alerts : [],
+      alertsOk: msg.alertsOk !== false,
+      error: null,
     }
-    return newState
+  }
+
+  updateState(obj) {
+    super.updateState(obj)
+    const s = this.state
+    if(!s.current) return
+
+    // text changes only when data arrives (each change re-renders a texture)
+    const deg = s.units === 'imperial' ? '°f' : '°c'
+    this._currentTempLabel.text = `${s.current.temp}${deg}`
+    this._currentIcon.text = ICONS[s.current.icon] || ''
+    this._currentDescriptionLabel.text = (s.current.description || '').substring(0, 17)
+
+    this.main.title = s.location ? `Weather: ${s.location}` : 'Weather'
+    const updated = new Date(s.current.at || Date.now())
+    this.main.statusLeftText = `observed ${String(updated.getHours()).padStart(2, '0')}:${String(updated.getMinutes()).padStart(2, '0')}`
+    this.main.statusRightText = s.alerts.length ? `${s.alerts.length} alert${s.alerts.length > 1 ? 's' : ''}` : 'no alerts'
+
+    this._screens[TAB_NOW].data = s
+    this._screens[TAB_DAYS].data = s
+    this._screens[TAB_ALERTS].alerts = s.alerts
+
+    const alertsTab = this.main.getTabButton(TAB_ALERTS)
+    alertsTab.visible = s.alerts.length > 0
+    alertsTab.text = s.alerts.length > 1 ? `Alerts ${s.alerts.length}` : 'Alerts'
+    if(!s.alerts.length && this.main.getPage(TAB_ALERTS).parent) {
+      this.main.activateTab(TAB_NOW)
+    }
+
+    this._handleNewWarnings(s.alerts)
+  }
+
+  // a new warning (not a watch or advisory) wakes the screen, brings this
+  // widget to the front and opens the ALERTS tab
+  _handleNewWarnings(alerts) {
+    const fresh = alerts.filter(a => !this._seenAlerts.has(a.id))
+    alerts.forEach(a => this._seenAlerts.add(a.id))
+    const warning = fresh.find(a => a.isWarning)
+    if(!warning) return
+    this.emit('wake')
+    if(this.index !== 0) this.emit('activate') // activating the front widget would swap it away
+    this._screens[TAB_ALERTS].show(alerts.indexOf(warning))
+    this.main.activateTab(TAB_ALERTS)
+  }
+
+  _arcText() {
+    const s = this.state
+    if(s.alerts.length) {
+      // the arc has room for ~20 characters
+      const short = s.alerts[0].event
+        .replace(/Severe /i, 'Svr ')
+        .replace(/Thunderstorm/i, 'T-Storm')
+        .replace(/Winter /i, 'Wntr ')
+        .replace(/Advisory/i, 'Adv.')
+      return '! ' + short
+    }
+    if(!s.rainTime) return ''
+    const left = Math.round((s.rainTime - Date.now())/1000)
+    if(left <= 0) return 'rain likely now'
+    const clock = [Math.floor(left/3600), Math.floor(left/60) % 60, left % 60]
+      .map(n => String(n).padStart(2, '0')).join(':')
+    return 'rain in ' + clock
   }
 
   render(renderer) {
     super.render(renderer)
+    const p = this.progress*this.dataLoadProgress
+    const s = this.state
 
-    this._currentTempLabel.progress = this.progress*this.dataLoadProgress
-    const unitLabel = this.state.units === 'imperial' ? '°f' : '°c'
-    this._currentTempLabel.text = this.state.currentTemperature === null ? '' : Math.round(this.state.currentTemperature) + unitLabel
+    this._currentTempLabel.progress = p
     this._currentTempLabel.y = 40*this.size
     this._currentTempLabel.style.fontSize = this.size * 8 + 7
 
-    this._currentIcon.alpha = this.progress*this.dataLoadProgress
-    this._currentIcon.text = this.state.currentIcon === null ? '' : icons[this.state.currentIcon]
+    this._currentIcon.alpha = p
     this._currentIcon.y = -29*this.size
     this._currentIcon.style.fontSize = this.size * 60
 
-    this._currentDescriotionLabel.progress = this.progress*this.dataLoadProgress
-    this._currentDescriotionLabel.text = this.state.currentDescription === null ? '' : this.state.currentDescription.substring(0, 17)
-    this._currentDescriotionLabel.y = 15*this.size
-    this._currentDescriotionLabel.visible = (this.size === 1)
-    this._currentDescriotionLabel.style.fontSize = this.size * 12
+    this._currentDescriptionLabel.progress = p
+    this._currentDescriptionLabel.y = 15*this.size
+    this._currentDescriptionLabel.visible = (this.size === 1)
+    this._currentDescriptionLabel.style.fontSize = this.size * 12
 
-    const [scaleMin, scaleMax] = this.state.units === 'imperial' ? [10, 90] : [-10, 30]
+    const [scaleMin, scaleMax] = s.units === 'imperial' ? [10, 90] : [-10, 30]
     const clampTemp = (t) => Math.max(scaleMin, Math.min(scaleMax, t))
     for(const [units, scale] of Object.entries(this._tempScales)) {
       scale.size = this.size
-      scale.progress = this.progress*this.dataLoadProgress
-      scale.visible = (this.size === 1) && units === this.state.units
+      scale.progress = p
+      scale.visible = (this.size === 1) && units === s.units
     }
-    const tempScale = this._tempScales[this.state.units]
-    if(this.state.currentTemperature !== null) {
-      tempScale.value = clampTemp(this.state.currentTemperature)
-    }
-    if(this.state.currentTemperatureMin !== null) {
-      tempScale.valueMin = clampTemp(this.state.currentTemperatureMin)
-    }
-    if(this.state.currentTemperatureMax !== null) {
-      tempScale.valueMax = clampTemp(this.state.currentTemperatureMax)
+    const tempScale = this._tempScales[s.units]
+    if(s.current) tempScale.value = clampTemp(s.current.temp)
+    if(s.range) {
+      tempScale.valueMin = clampTemp(s.range.low)
+      tempScale.valueMax = clampTemp(s.range.high)
     }
 
-    if(this.state.rainTime) {
-      const now = (new Date().getTime())
-      const rainTimeLeft = Math.round(Math.max(0, this.state.rainTime - now)/1000)
-      let rainClock = ''
-      rainClock += Math.floor(rainTimeLeft/(60*60)).toString().padStart(2, '0') + ':'
-      rainClock += (Math.floor(rainTimeLeft/60) % 60).toString().padStart(2, '0') + ':'
-      rainClock += (rainTimeLeft % 60).toString().padStart(2, '0')
-      this._rainLabel.text = rainTimeLeft ? 'rain in ' + rainClock : ''
-    } else {
-      this._rainLabel.text = ''
+    const severe = s.alerts.some(a => a.severity === 'Severe' || a.severity === 'Extreme')
+    this._alertRing.visible = severe
+    if(severe) {
+      this._alertRing.scale.set(this.size)
+      this._alertRing.alpha = p * (0.5 + 0.5*Math.sin(performance.now()*0.004))
     }
 
-    this._rainLabel.visible = (this.size === 1)
-    this._rainLabel.progress = this.progress*this.dataLoadProgress
-    this._rainLabel.size = this.size
-    this._rainLabel.radius = 110*this.size
-    this._rainLabel.fontSize = 11*this.size
-    
-    this._forecastScreen.progress = this.main.progress * this.dataLoadProgress
-    if(this.state.forecast) {
-      this._forecastScreen.startTime = this.state.forecast.startTime
-      this._forecastScreen.icons = this.state.forecast.icons
-      this._forecastScreen.pop = this.state.forecast.pop
-      this._forecastScreen.rain = this.state.forecast.rain
-      this._forecastScreen.unitLabel = unitLabel
-      this._forecastScreen.temp = this.state.forecast.temp
-    }
+    this._arcLabel.text = this._arcText()
+    // alert names are long: start just after the title and run clockwise
+    // instead of centring (which spills back into the title)
+    this._arcLabel.alignOffset = s.alerts.length ? 0 : 0.5
+    this._arcLabel.positionOffset = s.alerts.length ? -Math.PI*0.38 : -Math.PI*0.45
+    // small circles have no room for the rain countdown, but do show alerts
+    this._arcLabel.visible = this.size === 1 || s.alerts.length > 0
+    this._arcLabel.progress = p
+    this._arcLabel.size = this.size
+    this._arcLabel.radius = 110*this.size
+    this._arcLabel.fontSize = Math.max(7, 11*this.size)
 
+    this._screens.forEach(screen => screen.progress = this.main.progress * this.dataLoadProgress)
   }
 }
