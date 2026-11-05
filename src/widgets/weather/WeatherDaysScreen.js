@@ -1,6 +1,6 @@
 import TextField from '../../frontend/components/TextField'
 import LineArt from '../../frontend/components/LineArt'
-import { ICONS, WEATHER_FONT } from './weatherIcons.js'
+import WeatherIcon from './WeatherIcon.js'
 
 const style = (fontSize, extra={}) => ({
   fontFamily: 'ShareTechMono',
@@ -45,7 +45,7 @@ export default class WeatherDaysScreen extends PIXI.Container {
       const x = -COL_WIDTH*COLUMNS/2 + (i + 0.5)*COL_WIDTH
       return {
         name: add(x, -86, style(13, { strokeThickness: 0.8 })),
-        icon: add(x, -56, style(30, { fontFamily: WEATHER_FONT })),
+        icon: this.addChild(Object.assign(new WeatherIcon(30), { x, y: -56 })),
         high: add(x, -22, style(20, { strokeThickness: 1 })),
         low: add(x, 0, style(14)),
         pop: add(x, 20, style(11)),
@@ -61,7 +61,7 @@ export default class WeatherDaysScreen extends PIXI.Container {
     this._columns.forEach((col, i) => {
       const day = days[i]
       col.name.text = day ? day.name : ''
-      col.icon.text = day ? (ICONS[day.icon] || '') : ''
+      col.icon.code = day ? day.icon : null
       col.high.text = day && day.high !== null ? `${day.high}°` : (day ? '--' : '')
       col.low.text = day && day.low !== null ? `${day.low}°` : ''
       col.pop.text = day ? `rain ${Math.round(day.pop)}%` : ''
@@ -84,7 +84,7 @@ export default class WeatherDaysScreen extends PIXI.Container {
   render(renderer) {
     this._texts.forEach(t => t.progress = this.progress)
     this._columns.forEach(c => {
-      c.icon.alpha = this.progress
+      c.icon.progress = this.progress
       c.low.alpha = 0.7 * this.progress
       c.short.alpha = 0.8 * this.progress
     })

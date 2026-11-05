@@ -1,7 +1,7 @@
 import { ACCENT } from '../../frontend/theme.js'
 import TextField from '../../frontend/components/TextField'
 import LineArt from '../../frontend/components/LineArt'
-import { ICONS, WEATHER_FONT } from './weatherIcons.js'
+import WeatherIcon from './WeatherIcon.js'
 
 const style = (fontSize, extra={}) => ({
   fontFamily: 'ShareTechMono',
@@ -40,7 +40,9 @@ export default class WeatherNowScreen extends PIXI.Container {
     }
 
     // current conditions
-    this._icon = add('', -248, -60, style(44, { fontFamily: WEATHER_FONT, align: 'center' }), 0.5)
+    this._icon = new WeatherIcon(44)
+    this._icon.position.set(-248, -60)
+    this.addChild(this._icon)
     this._temp = add('', -205, -60, style(40, { strokeThickness: 1 }))
     this._description = add('', -280, -16, style(13, { wordWrap: true, wordWrapWidth: 165 }))
 
@@ -69,7 +71,7 @@ export default class WeatherNowScreen extends PIXI.Container {
       const x = -255 + i*85
       return {
         time: add('', x, 12, style(11, { align: 'center' }), 0.5),
-        icon: add('', x - 17, 35, style(22, { fontFamily: WEATHER_FONT, align: 'center' }), 0.5),
+        icon: this.addChild(Object.assign(new WeatherIcon(22), { x: x - 17, y: 35 })),
         temp: add('', x + 2, 35, style(15)),
         pop: add('', x, 58, style(10, { align: 'center' }), 0.5),
       }
@@ -84,7 +86,7 @@ export default class WeatherNowScreen extends PIXI.Container {
     const speed = d.units === 'imperial' ? 'mph' : 'km/h'
     const c = d.current
 
-    this._icon.text = ICONS[c.icon] || ''
+    this._icon.code = c.icon
     this._temp.text = `${c.temp}${deg}`
     this._description.text = (c.description || '').substring(0, 40)
 
@@ -100,7 +102,7 @@ export default class WeatherNowScreen extends PIXI.Container {
     this._columns.forEach((col, i) => {
       const h = hours[i]
       col.time.text = h ? (i === 0 ? 'now' : hhmm(h.t)) : ''
-      col.icon.text = h ? (ICONS[h.icon] || '') : ''
+      col.icon.code = h ? h.icon : null
       col.temp.text = h ? `${Math.round(h.temp)}°` : ''
       col.pop.text = h ? `rain ${Math.round(h.pop)}%` : ''
       col.pop.alpha = h && h.pop >= 30 ? 1 : 0.6
@@ -140,8 +142,8 @@ export default class WeatherNowScreen extends PIXI.Container {
 
   render(renderer) {
     this._texts.forEach(t => t.progress = this.progress)
-    this._icon.alpha = this.progress
-    this._columns.forEach(c => c.icon.alpha = this.progress)
+    this._icon.progress = this.progress
+    this._columns.forEach(c => c.icon.progress = this.progress)
     this._separator.progress = this.progress
     this._alertBox.alpha = this.progress
     this._alertTitle.alpha = this.progress

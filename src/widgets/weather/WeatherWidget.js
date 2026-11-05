@@ -3,7 +3,7 @@ import ScaleCircle from '../../frontend/circles/ScaleCircle.js'
 import ArchText from '../../frontend/components/ArchText.js'
 import TextField from '../../frontend/components/TextField.js'
 import { ACCENT } from '../../frontend/theme.js'
-import { ICONS, WEATHER_FONT } from './weatherIcons.js'
+import WeatherIcon from './WeatherIcon.js'
 import WeatherNowScreen from './WeatherNowScreen.js'
 import WeatherDaysScreen from './WeatherDaysScreen.js'
 import WeatherAlertsScreen from './WeatherAlertsScreen.js'
@@ -68,15 +68,7 @@ export default class WeatherWidget extends Widget {
     })
     this.addChild(this._currentDescriptionLabel)
 
-    this._currentIcon = new TextField('', {
-      fontFamily: WEATHER_FONT,
-      fontSize: 60,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'center',
-    })
-    this._currentIcon.progress = 1
+    this._currentIcon = new WeatherIcon(60)
     this.addChild(this._currentIcon)
 
     // "rain in hh:mm:ss", or the most severe alert
@@ -125,7 +117,7 @@ export default class WeatherWidget extends Widget {
     // text changes only when data arrives (each change re-renders a texture)
     const deg = s.units === 'imperial' ? '°f' : '°c'
     this._currentTempLabel.text = `${s.current.temp}${deg}`
-    this._currentIcon.text = ICONS[s.current.icon] || ''
+    this._currentIcon.code = s.current.icon
     this._currentDescriptionLabel.text = (s.current.description || '').substring(0, 17)
 
     this.main.title = s.location ? `Weather: ${s.location}` : 'Weather'
@@ -188,9 +180,9 @@ export default class WeatherWidget extends Widget {
     this._currentTempLabel.y = 40*this.size
     this._currentTempLabel.style.fontSize = this.size * 8 + 7
 
-    this._currentIcon.alpha = p
+    this._currentIcon.progress = p
     this._currentIcon.y = -29*this.size
-    this._currentIcon.style.fontSize = this.size * 60
+    this._currentIcon.scale.set(this.size)
 
     this._currentDescriptionLabel.progress = p
     this._currentDescriptionLabel.y = 15*this.size
