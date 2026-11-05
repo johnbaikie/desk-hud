@@ -17,15 +17,6 @@ export default class WindowBorder extends PIXI.Container {
     this.cpuTemp = 0
     this.cpuFanRpm = null
     this.cpuFanLevel = null
-    this._distanceAnim = 0
-    this._fps = 0
-    this._frameCount = 0
-
-    setInterval(() => {
-      this._fps = this._frameCount*2
-      this._frameCount = 0
-    }, 500)
-
     this._lines = new LineArt()
     this.addChild(this._lines)
 
@@ -57,16 +48,7 @@ export default class WindowBorder extends PIXI.Container {
       1202, 73,
     ], 28)
     this._lines.addLine(1190, 305, 1480, 305, 1, 0xffffff, 0.35)
-    // the FPS tab hanging from the top line
-    this._lines.addRoundedSequence([
-      945, 25,
-      945, 42,
-      820, 42,
-      820, 32,
-      600, 32,
-      600, 25,
-    ], 8)
-    // top line under the distance readout
+    // top line
     this._lines.addLine(0, 25, 1480, 25, 1, 0xffffff)
 
     this._rotateForwardButton = new IconButton(0xe5c8)
@@ -85,27 +67,6 @@ export default class WindowBorder extends PIXI.Container {
 
     this._rotateForwardButton.on('pointertap', () => this.emit('rotate', +1))
     this._rotateBackButton.on('pointertap', () => this.emit('rotate', -1))
-
-    this._distanceLabel = new TextField('',{
-      fontFamily: 'ShareTechMono',
-      fontSize: 10,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'center',
-    });
-    this._distanceLabel.x = 15
-    this._distanceLabel.y = 10
-    this._distanceLabel.progress = 1
-    this._distanceLabel.anchor.set(0, 0.5)
-    this.addChild(this._distanceLabel)
-
-    this._distanceBar = new ProgressBar(45)
-    this._distanceBar.progress = 1
-    this.addChild(this._distanceBar)
-    this._distanceBar.x = 140
-    this._distanceBar.y = 6
-    this._distanceBar.alpha = 0.4
 
     this._cpuLabel = new TextField('cpu:  0.0%',{
       fontFamily: 'ShareTechMono',
@@ -190,19 +151,6 @@ export default class WindowBorder extends PIXI.Container {
     this.addChild(this._cpuFan)
 
 
-    this._fpsLabel = new TextField('fps: ',{
-      fontFamily: 'ShareTechMono',
-      fontSize: 10,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'left',
-    });
-    this._fpsLabel.anchor.set(0, 0.5)
-    this._fpsLabel.x = 825
-    this._fpsLabel.y = 32
-    this.addChild(this._fpsLabel)
-    this._fpsLabel.progress = 1
   }
 
   get rotationActive() {
@@ -221,10 +169,6 @@ export default class WindowBorder extends PIXI.Container {
     this._rotateForwardButton.alpha = this.progress
     this._rotateBackButton.alpha = this.progress
     this._lines.progress = this.progress
-    this._distanceAnim += (this.distance - this._distanceAnim)/20
-    this._distanceLabel.text = `distance: ${this._distanceAnim.toFixed(3).padStart(7, ' ')}cm`
-    this._distanceBar.value = Math.min(1, this._distanceAnim/300)
-    this._distanceBar.alpha = 0.2 + 0.8 * this.progress
 
     this._cpuLabel.progress = this.progress
     this._cpuLabel.text = `cpu: ${(100*this.cpuLoad).toFixed(1).padStart(5, ' ')}%`
@@ -247,9 +191,6 @@ export default class WindowBorder extends PIXI.Container {
     const fanText = this.cpuFanRpm === null ? 'n/a' : `${Math.round(this.cpuFanRpm)} rpm`
     this._fanLabel.text = `cpu fan: ${fanText.padStart(10, ' ')}`
     this._cpuFan.speed = this.cpuFanRpm ? Math.max(0.15, this.cpuFanLevel || 0) : 0
-    this._fpsLabel.text = `fps: ${this._fps} (${PIXI.RENDERER_TYPE[renderer.type].toLowerCase()})`
-    this._fpsLabel.y = 10 + 22*this.progress
-    this._frameCount++
   }
 
 }
