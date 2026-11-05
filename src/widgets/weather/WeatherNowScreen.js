@@ -1,5 +1,5 @@
 import { ACCENT } from '../../frontend/theme.js'
-import TextField from '../../frontend/components/TextField'
+import TextField, { TEXT_GREY } from '../../frontend/components/TextField'
 import LineArt from '../../frontend/components/LineArt'
 import WeatherIcon from './WeatherIcon.js'
 
@@ -50,7 +50,7 @@ export default class WeatherNowScreen extends PIXI.Container {
     this._figures = {}
     ;['24 h hi / lo', 'feels like', 'wind', 'humidity'].forEach((name, i) => {
       const y = -84 + i*22
-      add(name, -85, y, style(11)).alpha = 0.7
+      add(name, -85, y, style(11, { fill: TEXT_GREY, strokeThickness: 0 }))
       this._figures[name] = add('', 15, y, style(13))
     })
 
@@ -61,7 +61,7 @@ export default class WeatherNowScreen extends PIXI.Container {
     this.addChild(this._alertBox)
     const wrap = { wordWrap: true, wordWrapWidth: (ALERT_BOX.width - 20) / 1.1 }
     this._alertTitle = add('', ALERT_BOX.x + 10, ALERT_BOX.y + 8, style(13, { strokeThickness: 0.8, ...wrap }), 0, 0)
-    this._alertDetail = add('', ALERT_BOX.x + 10, ALERT_BOX.y + 52, style(11, wrap), 0, 0)
+    this._alertDetail = add('', ALERT_BOX.x + 10, ALERT_BOX.y + 52, style(11, { ...wrap, fill: TEXT_GREY, strokeThickness: 0 }), 0, 0)
 
     // next hours
     this._separator = new LineArt()
@@ -73,7 +73,7 @@ export default class WeatherNowScreen extends PIXI.Container {
         time: add('', x, 12, style(11, { align: 'center' }), 0.5),
         icon: this.addChild(Object.assign(new WeatherIcon(22), { x: x - 17, y: 35 })),
         temp: add('', x + 2, 35, style(15)),
-        pop: add('', x, 58, style(10, { align: 'center' }), 0.5),
+        pop: add('', x, 58, style(10, { align: 'center', strokeThickness: 0 }), 0.5),
       }
     })
   }
@@ -105,7 +105,7 @@ export default class WeatherNowScreen extends PIXI.Container {
       col.icon.code = h ? h.icon : null
       col.temp.text = h ? `${Math.round(h.temp)}°` : ''
       col.pop.text = h ? `rain ${Math.round(h.pop)}%` : ''
-      col.pop.alpha = h && h.pop >= 30 ? 1 : 0.6
+      col.pop.style.fill = h && h.pop >= 30 ? '#ffffff' : TEXT_GREY
     })
   }
 
@@ -147,7 +147,7 @@ export default class WeatherNowScreen extends PIXI.Container {
     this._separator.progress = this.progress
     this._alertBox.alpha = this.progress
     this._alertTitle.alpha = this.progress
-    this._alertDetail.alpha = 0.8 * this.progress
+    this._alertDetail.alpha = this.progress
     super.render(renderer)
   }
 }

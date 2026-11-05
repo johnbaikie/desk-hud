@@ -2,6 +2,12 @@
 // Resolution is raised by the same factor so the text stays sharp.
 export const TEXT_SCALE = 1.1
 
+// Secondary text: use these solid greys with strokeThickness 0 rather than
+// fading white text with alpha; faded text with a 0.5 px outline looks
+// blurry on the Pi's 1x screen.
+export const TEXT_GREY = '#b8b8b8'
+export const TEXT_DIM = '#8f8f8f'
+
 export default class TextField extends PIXI.Text {
 
   constructor (txt, style) {
@@ -11,6 +17,8 @@ export default class TextField extends PIXI.Text {
     this._progress = 0
     this._origText = String(txt).toUpperCase()
     this.anchor.set(0.5)
+    // snap to whole screen pixels: centred text otherwise lands on half pixels and blurs
+    this.roundPixels = true
     this._changed = true
   }
 

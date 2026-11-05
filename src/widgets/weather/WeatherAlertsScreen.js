@@ -1,5 +1,5 @@
 import { ACCENT } from '../../frontend/theme.js'
-import TextField from '../../frontend/components/TextField'
+import TextField, { TEXT_GREY, TEXT_DIM } from '../../frontend/components/TextField'
 import ScrollContainer from '../../frontend/components/ScrollContainer'
 
 const style = (fontSize, extra={}) => ({
@@ -43,11 +43,10 @@ export default class WeatherAlertsScreen extends PIXI.Container {
     this._event.y = -84
     this.addChild(this._event)
 
-    this._meta = new TextField('', style(11))
+    this._meta = new TextField('', style(11, { fill: TEXT_GREY, strokeThickness: 0 }))
     this._meta.anchor.set(0, 0.5)
     this._meta.x = -270
     this._meta.y = -64
-    this._meta.alpha = 0.8
     this.addChild(this._meta)
 
     this._next = new TextField('', style(12, { align: 'right' }))
@@ -61,11 +60,10 @@ export default class WeatherAlertsScreen extends PIXI.Container {
     this.addChild(this._next)
 
     // below the frame on the left, clear of the tab buttons
-    this._hint = new TextField('drag the text to read more', style(10))
+    this._hint = new TextField('drag the text to read more', style(10, { fill: TEXT_DIM, strokeThickness: 0 }))
     this._hint.anchor.set(0, 0.5)
     this._hint.x = -280
     this._hint.y = 76
-    this._hint.alpha = 0.6
     this._hint.visible = false
     this.addChild(this._hint)
 

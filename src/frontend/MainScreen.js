@@ -1,7 +1,7 @@
 import ErrorScreen from './ErrorScreen.js'
 import DiamondButton from './components/DiamondButton.js'
 import LineArt from './components/LineArt.js'
-import TextField from './components/TextField.js'
+import TextField, { TEXT_DIM } from './components/TextField.js'
 
 export default class MainScreen extends PIXI.Container {
 
@@ -45,12 +45,10 @@ export default class MainScreen extends PIXI.Container {
     this._statusLeftLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
       fontSize: 10,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
+      fill: TEXT_DIM, // solid grey: faded white looks blurry
+      strokeThickness: 0,
       align: 'center',
     });
-    this._statusLeftLabel.alpha = 0.4
     this._statusLeftLabel.x = -210
     this._statusLeftLabel.y = -111
     this.addChild(this._statusLeftLabel)
@@ -58,12 +56,10 @@ export default class MainScreen extends PIXI.Container {
     this._statusRightLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
       fontSize: 10,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
+      fill: TEXT_DIM, // solid grey: faded white looks blurry
+      strokeThickness: 0,
       align: 'center',
     });
-    this._statusRightLabel.alpha = 0.4
     this._statusRightLabel.x = 210
     this._statusRightLabel.y = -111
     this.addChild(this._statusRightLabel)

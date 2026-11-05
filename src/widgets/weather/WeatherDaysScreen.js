@@ -1,4 +1,4 @@
-import TextField from '../../frontend/components/TextField'
+import TextField, { TEXT_GREY } from '../../frontend/components/TextField'
 import LineArt from '../../frontend/components/LineArt'
 import WeatherIcon from './WeatherIcon.js'
 
@@ -47,9 +47,9 @@ export default class WeatherDaysScreen extends PIXI.Container {
         name: add(x, -86, style(13, { strokeThickness: 0.8 })),
         icon: this.addChild(Object.assign(new WeatherIcon(30), { x, y: -56 })),
         high: add(x, -22, style(20, { strokeThickness: 1 })),
-        low: add(x, 0, style(14)),
-        pop: add(x, 20, style(11)),
-        short: add(x, 32, style(10, { wordWrap: true, wordWrapWidth: (COL_WIDTH - 8) / 1.1 }), 0),
+        low: add(x, 0, style(14, { fill: TEXT_GREY, strokeThickness: 0 })),
+        pop: add(x, 20, style(11, { strokeThickness: 0 })),
+        short: add(x, 32, style(10, { wordWrap: true, wordWrapWidth: (COL_WIDTH - 8) / 1.1, fill: TEXT_GREY, strokeThickness: 0 }), 0),
       }
     })
   }
@@ -65,7 +65,7 @@ export default class WeatherDaysScreen extends PIXI.Container {
       col.high.text = day && day.high !== null ? `${day.high}°` : (day ? '--' : '')
       col.low.text = day && day.low !== null ? `${day.low}°` : ''
       col.pop.text = day ? `rain ${Math.round(day.pop)}%` : ''
-      col.pop.alpha = day && day.pop >= 30 ? 1 : 0.6
+      col.pop.style.fill = day && day.pop >= 30 ? '#ffffff' : TEXT_GREY
       col.short.text = day ? this._shorten(day.short) : ''
     })
   }
@@ -85,8 +85,6 @@ export default class WeatherDaysScreen extends PIXI.Container {
     this._texts.forEach(t => t.progress = this.progress)
     this._columns.forEach(c => {
       c.icon.progress = this.progress
-      c.low.alpha = 0.7 * this.progress
-      c.short.alpha = 0.8 * this.progress
     })
     this._lines.progress = this.progress
     super.render(renderer)
