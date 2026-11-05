@@ -24,13 +24,14 @@ export default class TaskItem extends PIXI.Container {
 
     this._checkBox = new LineArt()
     this._checkBox.x = 20
-    this._checkBox.addSequence([
-      -15, -15,
+    this._checkBox.addRoundedSequence([
+      0, -15,
       15, -15,
       15, 15,
       -15, 15,
       -15, -15,
-    ], 1, 0xffffff, 1, 0, 0.5)
+      0, -15,
+    ], 6, 1, 0xffffff, 1, 0, 0.5)
     this._checkBox.addSequence([
       -13, 0,
       -3, 10,

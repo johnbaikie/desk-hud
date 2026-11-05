@@ -2,6 +2,9 @@ import { ACCENT } from '../theme.js'
 import LineArt from "./LineArt"
 import TextField from "./TextField"
 
+const W = 116
+const H = 34
+
 export default class DiamondButton extends PIXI.Container {
   constructor(text='') {
     super()
@@ -9,50 +12,30 @@ export default class DiamondButton extends PIXI.Container {
     this.progress = 0
     this._active = false
 
+    // pill-shaped tab button (the name is historical: it used to be a
+    // pointed hexagon)
     this._blackFill = new PIXI.Graphics()
     this.addChild(this._blackFill)
     this._blackFill.beginFill(0x000000)
-    this._blackFill.moveTo(-45, -20)
-    this._blackFill.lineTo(45, -20)
-    this._blackFill.lineTo(65, 0)
-    this._blackFill.lineTo(45, 20)
-    this._blackFill.lineTo(-45, 20)
-    this._blackFill.lineTo(-65, 0)
-    this._blackFill.lineTo(-45, -20)
+    this._blackFill.drawRoundedRect(-W/2, -H/2, W, H, H/2)
 
     this._refFill = new PIXI.Graphics()
     this.addChild(this._refFill)
     this._refFill.beginFill(ACCENT)
-    this._refFill.moveTo(-45, -20)
-    this._refFill.lineTo(45, -20)
-    this._refFill.lineTo(65, 0)
-    this._refFill.lineTo(45, 20)
-    this._refFill.lineTo(-45, 20)
-    this._refFill.lineTo(-65, 0)
-    this._refFill.lineTo(-45, -20)
+    this._refFill.drawRoundedRect(-W/2, -H/2, W, H, H/2)
     this._refFill.alpha = 0
 
     this._frame = new LineArt()
     this.addChild(this._frame)
-    this._frame.addSequence([
-      -45, -20,
-      45, -20,
-      65, 0,
-      45, 20,
-      -45, 20,
-      -65, 0,
-      -45, -20
-    ], 2, 0xffffff)
-    this._frame.addSequence([
-      -45+2, -20+3,
-      45-2, -20+3,
-      65-5, 0,
-      45-2, 20-3,
-      -45+2, 20-3,
-      -65+5, 0,
-      -45+2, -20+3
-    ], 1, 0xffffff)
-  
+    this._frame.addRoundedSequence([
+      0, -H/2,
+      W/2, -H/2,
+      W/2, H/2,
+      -W/2, H/2,
+      -W/2, -H/2,
+      0, -H/2,
+    ], H/2, 1.5, 0xffffff, 0.85)
+
     this._label = new TextField(text, {
       fontFamily: 'ShareTechMono',
       fontSize: 11,

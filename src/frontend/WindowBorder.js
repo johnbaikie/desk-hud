@@ -29,73 +29,45 @@ export default class WindowBorder extends PIXI.Container {
     this._lines = new LineArt()
     this.addChild(this._lines)
 
-    this._lines.addSequence([
+    // thin lines with rounded corners (formerly 45° jogs and zigzags)
+    const R = 12
+    // under the CPU/memory readout, out to the right edge
+    this._lines.addRoundedSequence([
       815, 290,
       815, 315,
       1480, 315,
-    ], 1, 0xffffff)
-    this._lines.addSequence([
+    ], R)
+    // around the fan / CPU temperature corner
+    this._lines.addRoundedSequence([
       805, 290,
       805, 315,
       660, 315,
       660, 170,
-      680, 170
-    ], 1, 0xffffff)
-    this._lines.addSequence([
-      1235-33, 200,
-      1235-33, 290-33,
-      1235, 290,
+      680, 170,
+    ], R)
+    // bracket around the small circles: bottom and top
+    this._lines.addRoundedSequence([
+      1202, 200,
+      1202, 290,
       1480, 290,
-    ], 1, 0xffffff)
-
-    this._lines.addSequence([
+    ], 28)
+    this._lines.addRoundedSequence([
       1480, 30,
-      1235, 30,
-      1235-33, 30+33,
-      1235-33, 30+33+10,
-    ], 1, 0xffffff)
-
-    this._lines.addSequence([
-      1480, 302,
-      1225, 302,
-      1225-35, 302-35,
-      1225-70-12, 302+12,
-    ], 3, 0x333333)
-
-    this._lines.addSequence([
-      1480, 302+10,
-      1225, 302+10,
-      1225-35, 302-35+10,
-      1225-70-2, 302+2+10,
-    ], 1, 0xffffff)
-
-    this._lines.addSequence([
-      1480, 20,
-      1235, 20,
-      1225, 10,
-      950, 10,
-      950, 0,
-    ], 3, 0x333333)
-
-    this._lines.addSequence([
-      945, 0,
-      945, 40,
-      820, 40,
-      820, 30,
-      600, 30,
-      600-10, 30-10,
-      600-10+5, 30-10,
-      600-10+5+10, 30-10-17,
-      573, 3,
-      570, 0,
-    ], 1, 0xffffff)
-
-    this._lines.addSequence([
-      0, 20,
-      130, 20,
-      135, 25,
-      1480, 25,
-    ], 1, 0xffffff)
+      1202, 30,
+      1202, 73,
+    ], 28)
+    this._lines.addLine(1190, 305, 1480, 305, 1, 0xffffff, 0.35)
+    // the FPS tab hanging from the top line
+    this._lines.addRoundedSequence([
+      945, 25,
+      945, 42,
+      820, 42,
+      820, 32,
+      600, 32,
+      600, 25,
+    ], 8)
+    // top line under the distance readout
+    this._lines.addLine(0, 25, 1480, 25, 1, 0xffffff)
 
     this._rotateForwardButton = new IconButton(0xe5c8)
     this._rotateForwardButton.x = 1333

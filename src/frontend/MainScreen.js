@@ -12,75 +12,20 @@ export default class MainScreen extends PIXI.Container {
     this.statusLeftText = null
     this.statusRightText = null
 
+    // a rounded panel with a short bar under the title; the line out to
+    // the right links the panel to the large widget circles
     this._frame = new LineArt()
-    this._frame.addSequence([
-      295, -90,
-      295, 120,
-      -295, 120,
-      -295, -90,
-      295, -90
-    ], 1, 0xffffff, 0.1)
+    this._frame.addRoundedSequence([
+      0, -97,
+      295, -97,
+      295, 108,
+      -295, 108,
+      -295, -97,
+      0, -97,
+    ], 16, 1, 0xffffff, 0.55)
+    this._frame.addLine(-70, -97, 70, -97, 3, 0xffffff, 1, 0.3, 1)
+    this._frame.addLine(295, 0, 355, 0, 1, 0xffffff, 0.55, 0, 0.5)
 
-    this._frame.addLine(90, -120, -90, -120, 3, 0xffffff, 1, 0.5)
-    this._frame.addSequence([
-      455, -110,
-      455, -120,
-      280, -120,
-      280, -100,
-      300, -80,
-      260, -80,
-      245, -95,
-      150, -95,
-      125, -120,
-
-      -125, -120,
-      -150, -95,
-      -245, -95,
-      -260, -80,
-      -300, -80,
-      -280, -100,
-      -280, -120,
-    ])
-
-    this._frame.addSequence([
-      330, 0,
-      300, 0,
-      300, 110+10,
-      260+5, 110+10,
-      245+5, 95+10,
-      150, 95+10,
-      125, 120+10,
-
-      -125+150, 120+10,
-      -150+150, 95+10,
-      -245, 95+10,
-      -260, 80+10,
-      -300, 80+10,
-      -300, 100+15,
-      -280, 100+15,
-    ])
-
-    this._frame.addSequence([
-      125, -120,
-      100, -95,
-      90, -95,
-      85, -100,
-
-      -85, -100,
-      -90, -95,
-      -100, -95,
-      -125, -120,
-    ], 1, 0xffffff, 1, 0.4, 1)
-
-    this._frame.addLine(-300, -60, -300, 60, 1, 0xffffff, 1, 0.5)
-
-    this._frame.addSequence([
-      330, -20,
-      300, -20,
-      300, -60, 
-      350, -60, 
-    ], 1, 0xffffff, 1, 0, 0.5)
-    
     this.addChild(this._frame)
 
     this._errorScreen = new ErrorScreen()
@@ -124,15 +69,12 @@ export default class MainScreen extends PIXI.Container {
     this.addChild(this._statusRightLabel)
 
     this._tabButtons = [];
-    this._tabButtons[0] = new DiamondButton()
-    this._tabButtons[0].x = 200
-    this._tabButtons[0].y = 130
-    this._tabButtons[1] = new DiamondButton()
-    this._tabButtons[1].x = 75
-    this._tabButtons[1].y = 103
-    this._tabButtons[2] = new DiamondButton()
-    this._tabButtons[2].x = -50
-    this._tabButtons[2].y = 130
+    // one row of pill buttons under the panel, first tab on the right
+    ;[200, 75, -50].forEach((x, i) => {
+      this._tabButtons[i] = new DiamondButton()
+      this._tabButtons[i].x = x
+      this._tabButtons[i].y = 130
+    })
     this._tabButtons.forEach((button, i) => {
       this.addChild(button)
       button.on('activate', () => this.activateTab(i))

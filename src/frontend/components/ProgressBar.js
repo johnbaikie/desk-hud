@@ -1,54 +1,35 @@
+// A rounded bar: a faint track and a solid fill for `value` (0..1).
+// segmentCount keeps the old signature: the bar is 10 px per segment wide.
 export default class ProgressBar extends PIXI.Container {
   constructor(segmentCount=10, height=10) {
     super()
 
     this.value = 0
     this.progress = 0
+    this._width = 10 * segmentCount
+    this._height = height
+    this._hash = ''
 
-    this._segments = Array(segmentCount).fill(1).map((_, i) => {
-      const segment = new PIXI.Graphics()
-      segment.beginFill(0xffffff)
-      segment.moveTo(height/2,0)
-      segment.lineTo(height/2 + 8,0)
-      segment.lineTo(8,height)
-      segment.lineTo(0,height)
-      segment.lineTo(height/2,0)
-      segment.alpha = 0
-      this.addChild(segment)
-      segment.x = 10 * i
-      return segment
-    })
-
-    this._limit = new PIXI.Graphics()
-    this._limit.beginFill(0xffffff)
-    this._limit.moveTo(height/2,0)
-    this._limit.lineTo(height/2 + 2,0)
-    this._limit.lineTo(2,height)
-    this._limit.lineTo(0,height)
-    this._limit.lineTo(height/2,0)
-    this.addChild(this._limit)
-    this._limit.x = 10 * this._segments.length
+    this._canvas = new PIXI.Graphics()
+    this.addChild(this._canvas)
   }
 
   render(renderer) {
-    const v = this.value*this.progress
-    const segmentWidth = 1 / this._segments.length
-    const fullSegments = Math.floor(v/segmentWidth)
-
-    for(let i=0; i < this._segments.length; i++) {
-      const segment = this._segments[i]
-
-      if(i < fullSegments) {
-        segment.alpha = 1
-      } else if(i === fullSegments) {
-        segment.alpha = (v - i * segmentWidth)/segmentWidth
-      } else {
-        segment.alpha = 0.1*this.progress
+    const v = Math.max(0, Math.min(1, this.value*this.progress))
+    const hash = `${v.toFixed(3)}|${this.progress.toFixed(3)}`
+    if(hash !== this._hash) {
+      this._hash = hash
+      const w = this._width, h = this._height, r = h/2
+      const g = this._canvas
+      g.clear()
+      g.beginFill(0xffffff, 0.15*this.progress)
+      g.drawRoundedRect(0, 0, w, h, r)
+      if(v > 0) {
+        g.beginFill(0xffffff, 0.9)
+        g.drawRoundedRect(0, 0, Math.max(h, w*v), h, r)
       }
+      g.endFill()
     }
-
-    this._limit.visible = (this.progress === 1)
-
     super.render(renderer)
   }
 }

@@ -133,11 +133,7 @@ export default class DateScreen extends PIXI.Container {
     this.addChild(this._countdownLabel)
 
     this._lines = new LineArt()
-    this._lines.addSequence([
-      -300, 50,
-      -45, 50,
-      0, 95,
-    ])
+    this._lines.addLine(-280, 50, -30, 50, 1, 0xffffff, 0.5)
     this.addChild(this._lines)
 
     this._refreshCalendar()

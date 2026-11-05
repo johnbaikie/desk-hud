@@ -6,7 +6,7 @@ export default class TitleCircle extends PIXI.Container {
     super()
     this._canvas = new PIXI.Graphics()
     this._label = new ArchText()
-    this._label.text = `|> ${title} <|`
+    this._label.text = `  ${title}  `
     this.addChild(this._canvas)
     this.addChild(this._label)
     this._progress = 0
@@ -53,7 +53,7 @@ export default class TitleCircle extends PIXI.Container {
     const r = 100*this.size
     this._label.radius = r
     this._label.fontSize = 6 + 6 * this.size
-    const da = Math.PI/20
+    const da = Math.PI/90 // fine steps: coarser ones show as facets on a 200 px circle
 
     const [startAngle, endAngle] = this._label.startAngleRange
 
