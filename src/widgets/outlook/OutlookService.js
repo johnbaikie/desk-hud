@@ -76,10 +76,10 @@ class OutlookService extends Service {
     }
     const data = ical.sync.parseICS(await response.text())
 
-    const midnight = new Date()
-    midnight.setHours(0, 0, 0, 0)
-    const from = midnight
-    const to = new Date(midnight.getTime() + 8*DAY)
+    // this month and next: the calendar widget can show any day of them
+    const now = new Date()
+    const from = new Date(now.getFullYear(), now.getMonth(), 1)
+    const to = new Date(now.getFullYear(), now.getMonth() + 2, 1)
 
     const allEvents = []
     for(const item of Object.values(data)) {

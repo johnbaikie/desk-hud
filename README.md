@@ -31,10 +31,10 @@ Desk-HUD is a compact side monitor designed to enhance productivity and convenie
 
 ![Calendar preview](doc/img/preview_calendar.png)
 
-- Today's meetings
+- Work (published Outlook calendar) and Personal (Google) tabs; swipe left/right for other days
+- Tap a day on the Date & Time widget's DATE tab to open it here
 - Busy/available timeline
-- Next meeting info
-- Ongoing meeting clock
+- Next meeting info and an ongoing meeting clock across both calendars
 
 ## Todo Widget
 

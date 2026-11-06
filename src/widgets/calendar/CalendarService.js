@@ -39,14 +39,15 @@ class CalendarService extends GoogleService {
       const calIds = this.config.getProp('google.calendars')
       // local midnight (not Math.floor(now/day), which is UTC midnight and
       // skipped the rest of today after 6 PM in Chicago)
-      const midnight = new Date()
-      midnight.setHours(0, 0, 0, 0)
-      const today = midnight.getTime()
+      // the calendar can show any day of this month and next (the DATE tab
+      // links to them): load from the 1st of this month to the end of next
+      const now = new Date()
+      const rangeStart = new Date(now.getFullYear(), now.getMonth(), 1)
+      const rangeEnd = new Date(now.getFullYear(), now.getMonth() + 2, 1)
       const params = {
-        timeMin: (new Date(today)).toISOString(),
-        // the main screen can be swiped through a week
-        timeMax: (new Date(today + 8*24*60*60*1000)).toISOString(),
-        maxResults: 250,
+        timeMin: rangeStart.toISOString(),
+        timeMax: rangeEnd.toISOString(),
+        maxResults: 2500,
         singleEvents: true,
         orderBy: 'startTime',
       }

@@ -181,12 +181,14 @@ export default class Widget extends PIXI.Container {
     }
   }
 
-  msg2state(msg) {
+  // serviceId: which service sent it (a widget can take messages from
+  // several, see messageIds in WidgetContainer.addWidget)
+  msg2state(msg, serviceId) {
     return null
   }
 
-  onMessage(msg) {
-    const newState = this.msg2state(msg)
+  onMessage(msg, serviceId = this._id) {
+    const newState = this.msg2state(msg, serviceId)
     if(newState) {
       this.updateState(newState)
     }

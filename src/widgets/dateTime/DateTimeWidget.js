@@ -70,6 +70,8 @@ export default class DateTimeWidget extends Widget {
 
     this._dateScreen = new DateScreen()
     datePage.addChild(this._dateScreen)
+    // WidgetContainer opens the tapped day in the calendar widget
+    this._dateScreen.on('pickDate', (time) => this.emit('openDate', time))
 
     this._timeScreen = new TimeScreen()
     timePage.addChild(this._timeScreen)

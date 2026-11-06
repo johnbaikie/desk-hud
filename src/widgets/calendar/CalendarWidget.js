@@ -8,19 +8,30 @@ import GaugePointer from '../../frontend/components/GaugePointer.js';
 import TextField from '../../frontend/components/TextField.js';
 import CalendarScreen from './CalendarScreen.js';
 import AuthErrorScreen from './lib/AuthErrorScreen.js';
+import ErrorScreen from '../../frontend/ErrorScreen.js';
 
-// days ahead the main screen can be swiped to (the services load a week)
-const MAX_DAY_OFFSET = 6
-// the main screen goes back to today after this long without a swipe
-const DAY_RESET_TIME = 60*1000
+// the main screen goes back to today after this long without a swipe or tap
+const DAY_RESET_TIME = 2*60*1000
+const DAY = 24*60*60*1000
+// main-screen tabs; the services' widget ids map onto them
+const TAB_WORK = 0
+const TAB_PERSONAL = 1
+const SOURCES = { outlook: 'work', calendar: 'personal' }
+const TAB_SOURCE = ['work', 'personal']
+const TAB_NAMES = ['Work', 'Personal']
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 export default class CalendarWidget extends Widget {
-  constructor(id = 'calendar', title = 'Calendar') {
-    super(id, title)
+  // One widget for both calendars: the Google service ('calendar') is the
+  // Personal tab and the Outlook ICS service ('outlook') the Work tab. The
+  // circle sums up today across both.
+  constructor() {
+    super('calendar', 'Calendar')
+    // WidgetContainer routes these services' messages here
+    this.messageIds = ['calendar', 'outlook']
     this.initState({
-      allEvents: null,
+      sources: { work: { events: null, error: null }, personal: { events: null, error: null } },
       todayEvents: null,
       todayEventsLeft: null,
       todayAllDay: null,
@@ -102,73 +113,104 @@ export default class CalendarWidget extends Widget {
     this._clockTitle = new ArchText()
     this._meetingClock.addChild(this._clockTitle)
 
-    // main screen
-    this._title = title
-    this.main.title = title
+    // main screen: a Work and a Personal tab, each a day of one calendar;
+    // left/right swipes change the day on both
     this.main.statusRightText = '< swipe: other days >'
-    const calendarPage = this.main.getPage(0)
-   
-    this._calendarScreen = new CalendarScreen()
-    calendarPage.addChild(this._calendarScreen)
-    this._calendarScreen.on('swipe', (step) => this._selectDay(this._dayOffset + step))
+    this._screens = TAB_NAMES.map((name, i) => {
+      const tab = this.main.getTabButton(i)
+      tab.text = name
+      tab.visible = true
+      const screen = new CalendarScreen()
+      screen.on('swipe', (step) => this._selectDay(this._dayOffset + step))
+      this.main.getPage(i).addChild(screen)
+      return screen
+    })
+    // each tab shows its own source's problem instead of the whole widget
+    // going into its error state; Google can be signed into again from here
+    this._errorScreens = [
+      new ErrorScreen(),
+      new AuthErrorScreen(() => this.sendMessage({action: 'auth'})),
+    ]
+    this._errorScreens.forEach((screen, i) => {
+      screen.visible = false
+      this.main.getPage(i).addChild(screen)
+    })
 
     // day shown on the main screen, in days from today
     this._dayOffset = 0
     this._dayOffsetAt = 0
-    this._dayCache = null
+    this._dayCache = {}
+  }
 
-    if(id === 'calendar') {
-      // Google sign-in screen; other calendars use the default error icon
-      this.main.setCustomErrorScreen(new AuthErrorScreen(() => this.sendMessage({action: 'auth'})))
-    }
+  // the services load this month and next, matching the DATE tab
+  _offsetRange() {
+    const now = new Date()
+    const today = startOfDay()
+    const first = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    const last = new Date(now.getFullYear(), now.getMonth() + 2, 0).getTime()
+    return [Math.round((first - today)/DAY), Math.round((last - today)/DAY)]
+  }
+
+  // show a date (ms) on the main screen; used by the Date & Time widget
+  showDate(time) {
+    this._selectDay(Math.round((startOfDay(time) - startOfDay())/DAY))
   }
 
   _selectDay(offset) {
-    this._dayOffset = Math.max(0, Math.min(MAX_DAY_OFFSET, offset))
+    const [min, max] = this._offsetRange()
+    this._dayOffset = Math.max(min, Math.min(max, offset))
     this._dayOffsetAt = Date.now()
   }
 
-  // timed and all-day events of the day `offset` days from today, cached
-  // until the day, the offset or the events change
-  _dayEvents(offset) {
+  // timed and all-day events of one source on the day `offset` days from
+  // today, cached until the day, the offset or the events change
+  _dayEvents(source, offset) {
     const d = new Date(startOfDay())
     d.setDate(d.getDate() + offset) // calendar days, so DST changes don't shift it
     const dayStart = d.getTime()
     d.setDate(d.getDate() + 1)
     const dayEnd = d.getTime()
-    const all = this.state.allEvents
-    const c = this._dayCache
+    const all = this.state.sources[source].events
+    const c = this._dayCache[source]
     if(c && c.dayStart === dayStart && c.all === all) return c
 
-    this._dayCache = {
+    this._dayCache[source] = {
       dayStart,
       all,
       events: all && all.filter(e => !e.allDay && e.start < dayEnd && e.end > dayStart),
       allDay: all && all.filter(e => e.allDay && e.start < dayEnd && e.end > dayStart),
     }
-    return this._dayCache
+    return this._dayCache[source]
   }
 
-  msg2state(msg) {
+  msg2state(msg, serviceId = 'calendar') {
     if(msg.authUrl) {
       window.location.href = msg.authUrl
       return  {}
     }
-    if(!msg.allEvents) {
-      // error-only update: keep the last events on screen
-      return { error: msg.error }
+    const key = SOURCES[serviceId] || 'personal'
+    const previous = this.state.sources[key]
+    const sources = {
+      ...this.state.sources,
+      // an error-only update keeps the last events on screen
+      [key]: { events: msg.allEvents || previous.events, error: msg.error || null },
     }
-    const events = msg.allEvents
-    const today = startOfDay()
 
-    const newState = {}
-    newState.allEvents = events.filter(e => e.start < today + 7*24*60*60*1000)
-    newState.todayEvents = newState.allEvents.filter(e => e.start < today + 24*60*60*1000 && !e.allDay)
-    newState.todayEventsLeft = newState.todayEvents.filter(e => e.end >= new Date().getTime())
-    // all-day events are listed but kept out of the meeting count, clock and busy bar
-    newState.todayAllDay = events.filter(e => e.allDay && e.start < today + 24*60*60*1000 && e.end > today)
-    newState.error = msg.error
-    return newState
+    // today across both calendars, for the circle
+    const today = startOfDay()
+    const tomorrow = today + DAY
+    const all = [...(sources.work.events || []), ...(sources.personal.events || [])]
+      .sort((a, b) => a.start - b.start)
+    const todayEvents = all.filter(e => !e.allDay && e.start < tomorrow && e.end > today)
+    return {
+      sources,
+      todayEvents,
+      todayEventsLeft: todayEvents.filter(e => e.end >= Date.now()),
+      // all-day events are listed but kept out of the meeting count, clock and busy bar
+      todayAllDay: all.filter(e => e.allDay && e.start < tomorrow && e.end > today),
+      // the circle's error overlay only when neither calendar has anything
+      error: (sources.work.error && sources.personal.error && !all.length) ? sources.personal.error : null,
+    }
   }
 
   render(renderer) {
@@ -254,18 +296,28 @@ export default class CalendarWidget extends Widget {
     if(this._dayOffset && Date.now() - this._dayOffsetAt > DAY_RESET_TIME) {
       this._dayOffset = 0
     }
-    this._calendarScreen.progress = this.main.progress * this.dataLoadProgress
-    this._calendarScreen.isToday = this._dayOffset === 0
-    if(this._dayOffset === 0) {
-      this._calendarScreen.events = this.state.todayEvents
-      this._calendarScreen.allDayEvents = this.state.todayAllDay
-      this.main.title = this._title + ': Today'
-    } else {
-      const day = this._dayEvents(this._dayOffset)
-      this._calendarScreen.events = day.events
-      this._calendarScreen.allDayEvents = day.allDay
-      const date = new Date(day.dayStart)
-      this.main.title = `${this._title}: ${DAY_NAMES[date.getDay()]} ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`
-    }
+    const mainProgress = this.main.progress * this.dataLoadProgress
+    let dayLabel = 'Today'
+    this._screens.forEach((screen, i) => {
+      const source = this.state.sources[TAB_SOURCE[i]]
+      const day = this._dayEvents(TAB_SOURCE[i], this._dayOffset)
+      screen.progress = mainProgress
+      screen.isToday = this._dayOffset === 0
+      screen.events = day.events
+      screen.allDayEvents = day.allDay
+      if(this._dayOffset !== 0) {
+        const date = new Date(day.dayStart)
+        dayLabel = `${DAY_NAMES[date.getDay()]} ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`
+      }
+      // a source's error replaces its tab when there is nothing to show
+      const failed = !!source.error && !(source.events && source.events.length)
+      const errorScreen = this._errorScreens[i]
+      errorScreen.visible = failed
+      errorScreen.message = source.error
+      errorScreen.progress = mainProgress
+      screen.visible = !failed
+    })
+    const tab = this.main.getPage(TAB_PERSONAL).parent ? TAB_PERSONAL : TAB_WORK
+    this.main.title = `${TAB_NAMES[tab]}: ${dayLabel}`
   }
 }

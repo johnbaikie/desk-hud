@@ -24,6 +24,7 @@ const textStyle = (fontSize, extra={}) => ({
 
 // DATE tab: this month and next as two large calendars. Today is
 // highlighted in the accent colour; weekends and days already past are grey.
+// Tapping a day emits 'pickDate' with that day's local midnight (ms).
 export default class DateScreen extends PIXI.Container {
   constructor() {
     super()
@@ -58,7 +59,17 @@ export default class DateScreen extends PIXI.Container {
       const cells = []
       for(let r = 0; r < 6; r++) {
         for(let c = 0; c < 7; c++) {
-          cells.push(add(left + (c + 0.5)*COL, GRID_Y + r*ROW, textStyle(15)))
+          const cell = add(left + (c + 0.5)*COL, GRID_Y + r*ROW, textStyle(15))
+          // invisible tap target the size of the grid cell
+          const hit = new PIXI.Graphics()
+          hit.beginFill(0x000000, 0.0001)
+          hit.drawRect(-COL/2, -ROW/2, COL, ROW)
+          hit.position.copyFrom(cell.position)
+          hit.cursor = 'pointer'
+          hit.on('pointertap', () => { if(hit.date) this.emit('pickDate', hit.date) })
+          this.addChild(hit)
+          cell.hit = hit
+          cells.push(cell)
         }
       }
       return { left, title, cells }
@@ -85,9 +96,13 @@ export default class DateScreen extends PIXI.Container {
         const day = i - offset + 1
         if(day < 1 || day > days) {
           cell.text = ''
+          cell.hit.date = null
+          cell.hit.interactive = false
           return
         }
         cell.text = String(day)
+        cell.hit.date = new Date(start.getFullYear(), start.getMonth(), day).getTime()
+        cell.hit.interactive = true
         const weekend = i % 7 >= 5
         const past = m === 0 && day < now.getDate()
         const isToday = m === 0 && day === now.getDate()

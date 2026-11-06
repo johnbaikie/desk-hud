@@ -118,7 +118,7 @@ export default class WidgetContainer extends PIXI.Container {
       console.warn(`Widget "${widgetId}" not found. Ignoring incoming message`)
       return
     }
-    this._widgets[widgetId].onMessage(msg)
+    this._widgets[widgetId].onMessage(msg, widgetId)
   }
 
   routeConfig(widgetId, msg) {
@@ -132,7 +132,10 @@ export default class WidgetContainer extends PIXI.Container {
   addWidget(widget) {
     const index = this._widgetList.length
     this._widgetList.push(widget)
-    this._widgets[widget.id] = widget
+    // a widget can take messages from several services (messageIds)
+    for(const id of widget.messageIds || [widget.id]) {
+      this._widgets[id] = widget
+    }
 
     while(this._slots.length < index+1) {
       this._slots.push({
@@ -156,6 +159,14 @@ export default class WidgetContainer extends PIXI.Container {
     widget.on('activate', () => this._activate(widget))
     // e.g. a new severe weather warning
     widget.on('wake', () => { if(this._sleep) this.wakeUp() })
+    // a date tapped on the Date & Time widget opens it in the calendar
+    widget.on('openDate', (time) => {
+      const calendar = this._widgets['calendar']
+      if(!calendar || !calendar.showDate) return
+      calendar.showDate(time)
+      // activating the front widget would swap it away
+      if(this._widgetList.indexOf(calendar) !== 0) this._activate(calendar)
+    })
   }
 
   _activate(widget) {
