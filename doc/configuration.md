@@ -18,9 +18,6 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `powerOffTime` (number): The duration in milliseconds after which Desk-HUD's monitor powers off.
 
 - **dateTime**: This section handles date and time widget configuration
-  - `countdown` (object): Specifies a countdown timer with a name and a target date.
-    - `name` (string): The name of the countdown timer.
-    - `date` (string): The target date for the countdown timer in ISO 8601 format.
   - `timezones` (array): Defines an array of time zones with their IDs and corresponding names.
     - Each timezone object has the following properties:
       - `id` (string): The ID of the time zone.

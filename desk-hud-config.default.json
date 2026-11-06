@@ -8,10 +8,6 @@
     "powerOffTime": 10000
   },
   "dateTime": {
-    "countdown": {
-      "name": "Holidays",
-      "date": "2026-12-24T00:00:00.000Z"
-    },
     "timezones": [
       {
         "id": "America/New_York",

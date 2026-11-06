@@ -1,250 +1,111 @@
 import { ACCENT } from '../../frontend/theme.js'
 import LineArt from "../../frontend/components/LineArt"
-import TextField from "../../frontend/components/TextField"
+import TextField, { TEXT_GREY, TEXT_DIM } from "../../frontend/components/TextField"
 
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const WEEKDAYS = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'] // Monday first
+
+const MONTH_WIDTH = 266
+const COL = MONTH_WIDTH / 7
+const ROW = 23
+const TITLE_Y = -88
+const HEADER_Y = -64
+const GRID_Y = -40                       // centre of the first week row
+const MONTH_X = [-148, 148]              // centres of the two months
+
+const textStyle = (fontSize, extra={}) => ({
+  fontFamily: 'ShareTechMono',
+  fontSize,
+  fill: '#ffffff',
+  strokeThickness: 0,
+  align: 'center',
+  ...extra,
+})
+
+// DATE tab: this month and next as two large calendars. Today is
+// highlighted in the accent colour; weekends and days already past are grey.
 export default class DateScreen extends PIXI.Container {
   constructor() {
     super()
     // kept per instance: in rainbow mode ACCENT changes from widget to widget
     this._accent = ACCENT
     this.progress = 0
-    this._lastCalendarUpdate = 0
+    this._shownDay = null
+    this._texts = []
 
-    this.countdownName = ''
-    this.coundownDate = new Date(0)
-
-    const header = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'].join(' ')
-
-    this._pointer = new PIXI.Graphics()
-    this._pointer.beginFill(this._accent)
-    this._pointer.drawRect(-2, -1, 22, 16)
-    this.addChild(this._pointer)
-
-    this._currentMonthField = new TextField('', {
-      fontFamily: 'ShareTechMono',
-      fontSize:11,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'left',
-    });
-    this._currentMonthField.anchor.set(0, 0)
-    this._currentMonthField.x = -230
-    this._currentMonthField.y = -40
-    this.addChild(this._currentMonthField)
-
-    // today's number redrawn in black on top of the bright highlight box
-    this._todayLabel = new TextField('', {
-      fontFamily: 'ShareTechMono',
-      fontSize:11,
-      fill: '#000000',
-      stroke: "#000000",
-      strokeThickness: 0.5,
-      align: 'left',
-    });
-    this._todayLabel.anchor.set(0, 0)
-    this.addChild(this._todayLabel)
-
-    this._nextMonthField = new TextField('', {
-      fontFamily: 'ShareTechMono',
-      fontSize:11,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'left',
-    });
-    this._nextMonthField.anchor.set(0, 0)
-    this._nextMonthField.x = 50
-    this._nextMonthField.y = -40
-    this.addChild(this._nextMonthField)
-
-    this._currentMonthHeader = new TextField(header, {
-      fontFamily: 'ShareTechMono',
-      fontSize:11,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 1.5,
-      align: 'left',
-    });
-    this._currentMonthHeader.anchor.set(0, 0)
-    this._currentMonthHeader.x = -230
-    this._currentMonthHeader.y = -60
-    this.addChild(this._currentMonthHeader)
-
-    this._nexttMonthHeader = new TextField(header, {
-      fontFamily: 'ShareTechMono',
-      fontSize:11,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 1.5,
-      align: 'left',
-    });
-    this._nexttMonthHeader.anchor.set(0, 0)
-    this._nexttMonthHeader.x = 50
-    this._nexttMonthHeader.y = -60
-    this.addChild(this._nexttMonthHeader)
-
-    this._currentMonthTitle = new TextField(header, {
-      fontFamily: 'ShareTechMono',
-      fontSize: 16,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'left',
-    });
-    this._currentMonthTitle.x = -150
-    this._currentMonthTitle.y = -75
-    this.addChild(this._currentMonthTitle)
-
-    this._nextMonthTitle = new TextField(header, {
-      fontFamily: 'ShareTechMono',
-      fontSize: 16,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'left',
-    });
-    this._nextMonthTitle.x = 130
-    this._nextMonthTitle.y = -75
-    this.addChild(this._nextMonthTitle)
-
-    this._countdownTitle = new TextField('', {
-      fontFamily: 'ShareTechMono',
-      fontSize: 11,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 0.5,
-      align: 'center',
-    });
-    this._countdownTitle.x = -140
-    this._countdownTitle.y = 60
-    this.addChild(this._countdownTitle)
-
-    this._countdownLabel = new TextField('', {
-      fontFamily: 'ShareTechMono',
-      fontSize: 16,
-      fill: '#ffffff',
-      stroke: "#ffffff",
-      strokeThickness: 1.5,
-      align: 'center',
-    });
-    this._countdownLabel.x = -140
-    this._countdownLabel.y = 78
-    this.addChild(this._countdownLabel)
-
-    this._lines = new LineArt()
-    this._lines.addLine(-280, 50, -30, 50, 1, 0xffffff, 0.5)
-    this.addChild(this._lines)
-
-    this._refreshCalendar()
-  }
-
-  _getCalendarData(now) {
-    const monthStart = new Date(now.getFullYear(), now.getMonth())
-    const nextMonth = new Date(monthStart.getTime() + 40*24*60*60*1000 )
-    const nextMonthStart = new Date(nextMonth.getFullYear(), nextMonth.getMonth())
-    const monthEnd = new Date(nextMonthStart.getTime()-24*60*60*1000)
-
-    const data = [
-      []
-    ]
-
-    const day = (monthStart.getDay()+6) % 7 // Monday-first column of day 1
-    for(let i=0; i < day; i++) {
-      if(data[data.length-1].length === 7) {
-        data.push([])
-      }
-      data[data.length-1].push(' ')
+    const add = (x, y, s) => {
+      const t = new TextField('', s)
+      t.anchor.set(0.5)
+      t.position.set(x, y)
+      this.addChild(t)
+      this._texts.push(t)
+      return t
     }
 
-    const dayCount = monthEnd.getDate()
-    for(let i=1; i <= dayCount; i++) {
-      if(data[data.length-1].length === 7) {
-        data.push([])
-      }
-      data[data.length-1].push(i)
-    }
-    return data
-  }
+    this._separator = new LineArt()
+    this._separator.addLine(0, -96, 0, 84, 1, 0xffffff, 0.3)
+    this.addChild(this._separator)
 
-  _refreshCalendar() {
-    const now = new Date()
-    const monthStart = new Date(now.getFullYear(), now.getMonth())
-    const nextMonthDate = new Date(monthStart.getTime() + 40*24*60*60*1000 )
-    const currentMonth = this._getCalendarData(now)
-    const nextMonth = this._getCalendarData(nextMonthDate)
+    this._today = new PIXI.Graphics()
+    this.addChild(this._today)
 
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-    this._currentMonthTitle.text = months[now.getMonth()]
-    this._nextMonthTitle.text = months[nextMonthDate.getMonth()]
-    this._nextMonthField.text = nextMonth.map(r => r.map(c => String(c).padStart(2, ' ')).join(' ')).join('\n')
-    this._currentMonthField.text = currentMonth.map(r => r.map(c => String(c).padStart(2, ' ')).join(' ')).join('\n')
-
-    // measure the font so the highlight follows the actual day grid
-    const style = this._currentMonthField.style
-    const textScale = this._currentMonthField.scale.x
-    const measure = (t) => {
-      const m = PIXI.TextMetrics.measureText(t, style)
-      return {width: m.width*textScale, height: m.height*textScale}
-    }
-    const charW = measure('00').width/2
-    const cellW = measure('00 00').width - measure('00').width
-    const lineH = measure('0\n0').height - measure('0').height
-
-    for(let i = 0; i < currentMonth.length; i++) {
-      for(let j = 0; j < currentMonth[i].length; j++) {
-        if(currentMonth[i][j] === now.getDate()) {
-          this._pointer.clear()
-          this._pointer.beginFill(this._accent)
-          this._pointer.drawRect(-2, -1, 2*charW+4, lineH+2)
-          this._pointer.x = this._currentMonthField.x + cellW*j
-          this._pointer.y = this._currentMonthField.y + lineH*i
-          this._todayLabel.text = String(now.getDate()).padStart(2, ' ')
-          this._todayLabel.x = this._pointer.x
-          this._todayLabel.y = this._pointer.y
+    this._months = MONTH_X.map(cx => {
+      const left = cx - MONTH_WIDTH/2
+      const title = add(cx, TITLE_Y, textStyle(18, { strokeThickness: 1, stroke: '#ffffff' }))
+      WEEKDAYS.forEach((d, i) => {
+        add(left + (i + 0.5)*COL, HEADER_Y, textStyle(11, { fill: i >= 5 ? TEXT_DIM : TEXT_GREY })).text = d
+      })
+      const cells = []
+      for(let r = 0; r < 6; r++) {
+        for(let c = 0; c < 7; c++) {
+          cells.push(add(left + (c + 0.5)*COL, GRID_Y + r*ROW, textStyle(15)))
         }
       }
-    }
+      return { left, title, cells }
+    })
+
+    this._refresh()
+  }
+
+  _refresh() {
+    const now = new Date()
+    const dayKey = now.toDateString()
+    if(dayKey === this._shownDay) return
+    this._shownDay = dayKey
+
+    const first = [new Date(now.getFullYear(), now.getMonth(), 1), new Date(now.getFullYear(), now.getMonth() + 1, 1)]
+    this._today.clear()
+    first.forEach((start, m) => {
+      const month = this._months[m]
+      const year = start.getFullYear() !== now.getFullYear() ? ` ${start.getFullYear()}` : ''
+      month.title.text = MONTHS[start.getMonth()] + year
+      const offset = (start.getDay() + 6) % 7 // Monday-first column of the 1st
+      const days = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate()
+      month.cells.forEach((cell, i) => {
+        const day = i - offset + 1
+        if(day < 1 || day > days) {
+          cell.text = ''
+          return
+        }
+        cell.text = String(day)
+        const weekend = i % 7 >= 5
+        const past = m === 0 && day < now.getDate()
+        const isToday = m === 0 && day === now.getDate()
+        cell.style.fill = isToday ? '#000000' : (past ? TEXT_DIM : (weekend ? TEXT_GREY : '#ffffff'))
+        if(isToday) {
+          this._today.beginFill(this._accent)
+          this._today.drawRoundedRect(cell.x - 16, cell.y - 10, 32, 20, 6)
+          this._today.endFill()
+        }
+      })
+    })
   }
 
   render(renderer) {
-    const now = performance.now()
-    if(now > this._lastCalendarUpdate + 1000) {
-      this._lastCalendarUpdate = now
-      this._refreshCalendar()
-    }
-    this._currentMonthField.progress = this.progress
-    this._nextMonthField.progress = this.progress
-    this._currentMonthHeader.progress = this.progress
-    this._nexttMonthHeader.progress = this.progress
-    this._currentMonthTitle.progress = this.progress
-    this._nextMonthTitle.progress = this.progress
-    this._pointer.alpha = this.progress
-    this._todayLabel.progress = this.progress
-    this._countdownTitle.progress = this.progress
-    this._countdownLabel.progress = this.progress
-    this._lines.progress = this.progress
-
-    const nowDate = new Date()
-    if(nowDate.getTime() > this.coundownDate.getTime()) {
-      this.countdownName = 'New Year'
-      this.coundownDate = new Date(nowDate.getFullYear()+1, 0, 0)
-    }
-
-    this._countdownTitle.text = `${this.countdownName} in:`
-
-    const dt = Math.max(0, this.coundownDate.getTime() - nowDate.getTime())
-    const dd = Math.floor(dt/(1000*60*60*24))
-    const hh = Math.floor(dt/(1000*60*60)) % 24
-    const mm = Math.floor(dt/(1000*60)) % 60
-    const ss = Math.floor(dt/(1000)) % 60
-    const ms = Math.floor(dt) % 1000
-
-
-    this._countdownLabel.text = `${String(dd).padStart(2, '0')}:${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}.${String(ms).padStart(3, '0')}`
-
-
+    this._refresh() // cheap unless the day has changed
+    this._texts.forEach(t => t.progress = this.progress)
+    this._today.alpha = this.progress
+    this._separator.progress = this.progress
     super.render(renderer)
   }
 }
