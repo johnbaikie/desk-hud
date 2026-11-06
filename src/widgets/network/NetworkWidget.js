@@ -4,8 +4,14 @@ import ProgressCircle from '../../frontend/circles/ProgressCircle.js'
 import NetworkScreen from './NetworkScreen.js'
 import { ACCENT } from '../../frontend/theme.js'
 
-// Circle: internet ping in the middle, Wi-Fi signal as a 270° gauge, and the
-// status underneath when it isn't OK. Main screen: NetworkScreen.
+// Circle: internet ping in the middle, Wi-Fi signal as a gauge round the
+// bottom of the circle (it leaves the top free for the widget's title), and
+// the status underneath when it isn't OK. Main screen: NetworkScreen.
+
+// the title takes about ±30° of the top on a large circle and ±45° on a small
+// one, so the gauge runs clockwise from 49° to 311° (measured from 12 o'clock)
+const GAUGE_START = 0.85 // rad
+const GAUGE_SPAN = (2*Math.PI - 2*GAUGE_START) / (2*Math.PI) // of a full circle
 export default class NetworkWidget extends Widget {
   constructor() {
     super('network', 'Network')
@@ -21,7 +27,7 @@ export default class NetworkWidget extends Widget {
     this._signal = new ProgressCircle()
     this._signal.color = ACCENT
     this._signal.lineWidth = 2
-    this._signal.rotation = Math.PI*0.75 // gauge from bottom-left round to bottom-right
+    this._signal.rotation = GAUGE_START
     this.addChild(this._signal)
 
     this._pingLabel = new TextField('', {
@@ -86,7 +92,7 @@ export default class NetworkWidget extends Widget {
 
     this._signal.progress = p
     this._signal.size = this.size
-    this._signal.value = n && n.wifi ? 0.75*n.wifi.quality : (n && n.status === 'ok' ? 0.75 : 0)
+    this._signal.value = n && n.wifi ? GAUGE_SPAN*n.wifi.quality : (n && n.status === 'ok' ? GAUGE_SPAN : 0)
 
     this._pingLabel.progress = p
     this._pingLabel.style.fontSize = 14 + 12*this.size

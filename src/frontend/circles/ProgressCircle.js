@@ -43,7 +43,7 @@ export default class ProgressCircle extends PIXI.Container {
     this._canvas.clear()
 
     const r = 100*this.size
-    const da = Math.PI/20
+    const da = Math.PI/90 // fine steps: coarser ones show as facets
 
     this._canvas.moveTo(
       r * Math.sin(0),

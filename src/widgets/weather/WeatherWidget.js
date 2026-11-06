@@ -44,7 +44,10 @@ export default class WeatherWidget extends Widget {
     // pulsing ring while a severe or extreme alert is active
     this._alertRing = new PIXI.Graphics()
     this._alertRing.lineStyle({ width: 4, color: this._accent })
-    this._alertRing.drawCircle(0, 0, 96)
+    // leave the top open for the widget's title
+    const gap = 0.6
+    this._alertRing.moveTo(96*Math.cos(-Math.PI/2 + gap), 96*Math.sin(-Math.PI/2 + gap))
+    this._alertRing.arc(0, 0, 96, -Math.PI/2 + gap, 1.5*Math.PI - gap)
     this._alertRing.visible = false
     this.addChild(this._alertRing)
 
