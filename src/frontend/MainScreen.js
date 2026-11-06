@@ -1,7 +1,7 @@
 import ErrorScreen from './ErrorScreen.js'
 import DiamondButton from './components/DiamondButton.js'
 import LineArt from './components/LineArt.js'
-import TextField, { TEXT_DIM } from './components/TextField.js'
+import TextField, { TEXT_GREY } from './components/TextField.js'
 
 export default class MainScreen extends PIXI.Container {
 
@@ -31,37 +31,39 @@ export default class MainScreen extends PIXI.Container {
     this._errorScreen = new ErrorScreen()
     this.addChild(this._errorScreen )
 
+    // header above the panel: title in the middle, status on either side.
+    // A light outline only: a heavy one smudges the letters on the Pi.
     this._titleLabel = new TextField('>> widget <<', {
       fontFamily: 'ShareTechMono',
-      fontSize:11,
+      fontSize: 14,
       fill: '#ffffff',
       stroke: "#ffffff",
-      strokeThickness: 1.5,
+      strokeThickness: 0.6,
       align: 'center',
     });
-    this._titleLabel.y = -111
+    this._titleLabel.y = -113
     this.addChild(this._titleLabel)
     
     this._statusLeftLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
-      fontSize: 10,
-      fill: TEXT_DIM, // solid grey: faded white looks blurry
+      fontSize: 12,
+      fill: TEXT_GREY, // solid grey: faded white looks blurry
       strokeThickness: 0,
       align: 'center',
     });
     this._statusLeftLabel.x = -210
-    this._statusLeftLabel.y = -111
+    this._statusLeftLabel.y = -113
     this.addChild(this._statusLeftLabel)
 
     this._statusRightLabel = new TextField('', {
       fontFamily: 'ShareTechMono',
-      fontSize: 10,
-      fill: TEXT_DIM, // solid grey: faded white looks blurry
+      fontSize: 12,
+      fill: TEXT_GREY, // solid grey: faded white looks blurry
       strokeThickness: 0,
       align: 'center',
     });
     this._statusRightLabel.x = 210
-    this._statusRightLabel.y = -111
+    this._statusRightLabel.y = -113
     this.addChild(this._statusRightLabel)
 
     this._tabButtons = [];
