@@ -3,6 +3,7 @@ import TextField, { TEXT_GREY } from '../../frontend/components/TextField'
 import { COLS, ROWS, LAT_TOP, LAT_BOTTOM, isLand, cellLonLat } from './worldMap.js'
 import { zoneCoords } from './places.js'
 import { subsolarPoint, sunElevationSin, terminatorLat, sunTimes } from './sun.js'
+import { sublunarPoint, moonPhase, drawMoon } from './moon.js'
 
 const DOT = 4                       // px between dot centres
 const WIDTH = COLS * DOT            // 520
@@ -36,7 +37,9 @@ function timeIn(timeZone, time) {
 // TIME tab: a dot-matrix world map lit by the sun. Land dots are bright in
 // daylight and dim blue at night, a line marks where day meets night, a
 // yellow disc marks where the sun is overhead, and markers show home and the
-// configured time zones with their local times. Redrawn once a minute.
+// configured time zones with their local times. The Moon is marked where it
+// is overhead, and its phase is shown at the bottom left with sunrise and
+// sunset at home. Redrawn once a minute.
 export default class WorldMapScreen extends PIXI.Container {
   constructor(timezones, home, accent = ACCENT) {
     super()
@@ -64,6 +67,10 @@ export default class WorldMapScreen extends PIXI.Container {
     this._sun.drawCircle(0, 0, 5)
     this._sun.endFill()
     this.addChild(this._sun)
+
+    // where the Moon is overhead, drawn in its current phase
+    this._moon = new PIXI.Graphics()
+    this.addChild(this._moon)
 
     // home first, then each configured zone (except the one home is in)
     const localZone = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -107,6 +114,22 @@ export default class WorldMapScreen extends PIXI.Container {
       this._markers.addChild(p.label)
       p.marker = marker
     })
+
+    // Moon phase panel, in the open Pacific above the sunrise lines
+    this._moonIcon = new PIXI.Graphics()
+    this._moonIcon.position.set(LEFT + 13, 4)
+    this.addChild(this._moonIcon)
+    this._moonInfo = new TextField('', {
+      fontFamily: 'ShareTechMono',
+      fontSize: 10,
+      fill: TEXT_GREY,
+      strokeThickness: 0,
+      align: 'left',
+      lineHeight: 14,
+    })
+    this._moonInfo.anchor.set(0, 0.5)
+    this._moonInfo.position.set(LEFT + 28, 4)
+    this.addChild(this._moonInfo)
 
     // sunrise and sunset at home, in the open ocean at the bottom left
     this._sunInfo = new TextField('', {
@@ -169,9 +192,28 @@ export default class WorldMapScreen extends PIXI.Container {
 
     this._sun.position.set(Math.round(toX(sun.lon)), Math.round(toY(sun.lat)))
 
+    const moon = moonPhase(now)
+    const moonAt = sublunarPoint(now)
+    this._moon.clear()
+    drawMoon(this._moon, 0, 0, 6, moon.phase)
+    this._moon.lineStyle({ width: 1, color: 0xe8ecf6, alpha: 0.6 })
+    this._moon.drawCircle(0, 0, 6)
+    this._moon.position.set(Math.round(toX(moonAt.lon)), Math.round(toY(moonAt.lat)))
+
+    this._moonIcon.clear()
+    drawMoon(this._moonIcon, 0, 0, 10, moon.phase)
+    this._moonIcon.lineStyle({ width: 1, color: 0xe8ecf6, alpha: 0.5 })
+    this._moonIcon.drawCircle(0, 0, 10)
+    const days = (n) => n < 1 ? 'today' : `in ${Math.round(n)} d`
+    const next = moon.phase < 0.5 ? `full ${days(moon.daysToFull)}` : `new ${days(moon.daysToNew)}`
+    this._moonInfo.text = `${moon.name}\n${Math.round(100*moon.illumination)}% lit\n${next}`
+
     // place labels: try right of the marker, then left, then nudged up or
     // down, avoiding other labels, other markers and the map edges
     const boxes = this._places.map(p => ({ x: p.marker.x - 6, y: p.marker.y - 6, w: 12, h: 12, owner: p }))
+    // keep labels off the sun and the Moon too
+    boxes.push({ x: this._sun.x - 10, y: this._sun.y - 10, w: 20, h: 20, owner: null })
+    boxes.push({ x: this._moon.x - 7, y: this._moon.y - 7, w: 14, h: 14, owner: null })
     const overlaps = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
     const localDay = timeIn(Intl.DateTimeFormat().resolvedOptions().timeZone, now)
     for(const p of this._places) {
@@ -217,6 +259,9 @@ export default class WorldMapScreen extends PIXI.Container {
     this._dots.alpha = this.progress
     this._terminator.alpha = this.progress
     this._sun.alpha = this.progress
+    this._moon.alpha = this.progress
+    this._moonIcon.alpha = this.progress
+    this._moonInfo.progress = this.progress
     this._markers.alpha = this.progress
     this._places.forEach(p => p.label.progress = this.progress)
     this._sunInfo.progress = this.progress
