@@ -1,12 +1,11 @@
 import { ACCENT } from '../../frontend/theme.js'
 import TextField, { TEXT_GREY } from '../../frontend/components/TextField'
-import F1Car from './F1Car.js'
 
-// The F1 widget's three main-screen tabs. Each redraws only when new data
+// The F1 widget's drivers and teams tabs (the races tab is RacesScreen). Each redraws only when new data
 // arrives (changing text re-renders its texture). The panel's page spans
 // about x -295..295, y -105..98.
 
-const style = (fontSize, extra={}) => ({
+export const style = (fontSize, extra={}) => ({
   fontFamily: 'ShareTechMono',
   fontSize,
   fill: '#ffffff',
@@ -15,9 +14,9 @@ const style = (fontSize, extra={}) => ({
   align: 'left',
   ...extra,
 })
-const greyStyle = (fontSize, extra={}) => style(fontSize, { fill: TEXT_GREY, strokeThickness: 0, ...extra })
+export const greyStyle = (fontSize, extra={}) => style(fontSize, { fill: TEXT_GREY, strokeThickness: 0, ...extra })
 
-class Screen extends PIXI.Container {
+export class Screen extends PIXI.Container {
   constructor() {
     super()
     // kept per instance: in rainbow mode ACCENT changes from widget to widget
@@ -123,8 +122,8 @@ export class TeamsScreen extends Screen {
 
 const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-const pad2 = (n) => String(n).padStart(2, '0')
-function when(t) {
+export const pad2 = (n) => String(n).padStart(2, '0')
+export function when(t) {
   const d = new Date(t)
   return `${DAYS[d.getDay()]} ${String(d.getDate()).padStart(2)} ${MONTHS[d.getMonth()]}  ${pad2(d.getHours())}:${pad2(d.getMinutes())}`
 }
@@ -134,80 +133,4 @@ export function countdown(ms) {
   const days = Math.floor(m / 1440)
   const h = Math.floor(m / 60) % 24
   return days ? `${days}d ${pad2(h)}h ${pad2(m % 60)}m` : `${h}h ${pad2(m % 60)}m`
-}
-
-// Next race: name, place and round on the left with a countdown to the
-// start; the weekend's sessions in local time on the right
-const SESSION_ROWS = 6
-export class RaceScreen extends Screen {
-  constructor() {
-    super()
-    this._name = this._add(-280, -82, 18)
-    this._circuit = this._add(-280, -56, 11, 0, greyStyle)
-    this._place = this._add(-280, -39, 11, 0, greyStyle)
-    this._round = this._add(-280, -14, 12)
-    this._countdown = this._add(-280, 34, 28)
-    this._countdownLabel = this._add(-280, 62, 11, 0, greyStyle)
-    this._car = new F1Car(this._accent)
-    this._car.scale.set(2.2)
-    this._car.x = -55
-    this._car.y = 52
-    this.addChild(this._car)
-    this._sessions = Array.from({ length: SESSION_ROWS }, (_, i) => {
-      const y = -70 + i*24
-      return { y, when: this._add(40, y, 12), name: this._add(282, y, 12, 1) }
-    })
-    this._shownCountdown = null
-  }
-
-  update(d) {
-    const r = d.nextRace
-    this._name.text = r ? r.name : 'Season complete'
-    this._circuit.text = r ? r.circuit : ''
-    this._place.text = r ? [r.locality, r.country].filter(Boolean).join(', ') : ''
-    this._round.text = r ? `Round ${r.round} of ${d.totalRounds}${r.sprint ? ', sprint weekend' : ''}` : ''
-    this._countdownLabel.text = r ? 'until lights out' : ''
-    this._sessions.forEach((row, i) => {
-      const s = r && r.sessions[i]
-      row.when.text = s ? when(s.t) : ''
-      row.name.text = s ? s.name : ''
-      row.t = s ? s.t : null
-    })
-    if(!r && d.drivers && d.drivers.length) {
-      const champ = d.drivers[0]
-      this._circuit.text = `${d.season} champion: ${champ.name}`
-    }
-    this._shownCountdown = null
-  }
-
-  render(renderer) {
-    super.render(renderer)
-    const r = this.data && this.data.nextRace
-    this._car.alpha = this.progress
-    this._car.visible = !!r
-    if(!r) {
-      this._countdown.text = ''
-      return
-    }
-    const now = Date.now()
-    const text = countdown(r.start - now)
-    if(text !== this._shownCountdown) {
-      // once a minute: dim the sessions that are over, mark the next one
-      this._shownCountdown = text
-      this._countdown.text = text
-      this._bars.clear()
-      let marked = false
-      this._sessions.forEach(row => {
-        if(row.t === null) return
-        const over = row.t + 60*60*1000 < now
-        row.when.alpha = row.name.alpha = over ? 0.4 : 1
-        if(!over && !marked) {
-          marked = true
-          this._bars.beginFill(this._accent)
-          this._bars.drawCircle(26, row.y, 4)
-          this._bars.endFill()
-        }
-      })
-    }
-  }
 }

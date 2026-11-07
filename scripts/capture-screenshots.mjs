@@ -22,6 +22,7 @@ const TIMEZONE = 'America/Chicago'
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
 // what to capture: [file, widget id, tab, extra setup]
+// [file, widget id, tab, optional JavaScript to run once the tab is shown]
 const SHOTS = [
   ['preview_date.png', 'dateTime', 0],
   ['preview_time.png', 'dateTime', 1],
@@ -37,6 +38,7 @@ const SHOTS = [
   ['preview_f1.png', 'f1', 0],
   ['preview_f1_teams.png', 'f1', 1],
   ['preview_f1_race.png', 'f1', 2],
+  ['preview_f1_results.png', 'f1', 2, `window.deskHud.widget('f1')._races._select(18); window.deskHud.widget('f1')._races._setMode('Q')`],
   ['preview_accent.png', 'accent', 0],
 ]
 // optional arguments limit the run to screenshots whose names contain them,
@@ -103,9 +105,10 @@ await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
 await send('Page.navigate', { url })
 await sleep(6000)
 
-for(const [file, widgetId, tab] of SHOTS.filter(([file]) => wanted(file))) {
+for(const [file, widgetId, tab, setup] of SHOTS.filter(([file]) => wanted(file))) {
   const ok = await evaluate(`window.deskHud && window.deskHud.show(${JSON.stringify(widgetId)}, ${tab})`)
   if(!ok) { console.log(`skip ${file}: widget ${widgetId} not found`); continue }
+  if(setup) { await sleep(800); await evaluate(setup) } // e.g. pick a view inside the tab
   await sleep(2500) // let the widgets move and the panel draw in
   const shot = await send('Page.captureScreenshot', { format: 'png' })
   await writeFile(path.join(OUT, file), Buffer.from(shot.result.data, 'base64'))

@@ -82,9 +82,11 @@ The detail screen on the left shows the widget in front; tap any circle to bring
 
 ![F1 next race](doc/img/preview_f1_race.png)
 
+![F1 session results](doc/img/preview_f1_results.png)
+
 - **DRIVERS** and **TEAMS:** the championship standings with points bars, from the free [Jolpica-F1](https://github.com/jolpica/jolpica-f1) API (no key)
-- **NEXT RACE:** the circuit, round, a countdown to lights out and the weekend's sessions in local time
-- The circle shows the championship leader, with the season's progress as a gauge
+- **RACES:** one race weekend at a time; swipe left or right through the season. **INFO** has the circuit, a countdown to lights out and the sessions in local time; **P1**, **P2**, **P3**, **SQ**, **SP**, **Q** and **GP** show that session's classification (best laps and gaps, qualifying parts, race gaps, points and retirements) from [OpenF1](https://openf1.org)
+- The circle shows the championship leader, with the season's progress as a gauge and a small car driving round it
 
 ## Accent colour
 

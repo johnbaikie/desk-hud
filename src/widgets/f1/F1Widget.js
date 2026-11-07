@@ -1,7 +1,8 @@
 import Widget from '../../frontend/Widget.js'
 import TextField from '../../frontend/components/TextField.js'
 import ProgressCircle from '../../frontend/circles/ProgressCircle.js'
-import { DriversScreen, TeamsScreen, RaceScreen, countdown } from './F1Screens.js'
+import { DriversScreen, TeamsScreen, countdown } from './F1Screens.js'
+import RacesScreen from './RacesScreen.js'
 import { ACCENT } from '../../frontend/theme.js'
 import F1Car, { WHEEL_BOTTOM } from './F1Car.js'
 
@@ -9,12 +10,13 @@ import F1Car, { WHEEL_BOTTOM } from './F1Car.js'
 // Circle: the championship leader and their points, with the season's
 // progress (rounds run of the calendar) as a gauge round the bottom and a
 // small car driving on the end of it.
-// Main screen tabs: drivers, teams (constructors) and the next race.
+// Main screen tabs: drivers, teams (constructors) and races (the season's
+// weekends with each session's results, see RacesScreen).
 
 // the gauge leaves the top of the circle free for the title (as on Network)
 const GAUGE_START = 0.85 // rad
 const GAUGE_SPAN = (2*Math.PI - 2*GAUGE_START) / (2*Math.PI)
-const TAB_NAMES = ['drivers', 'teams', 'next race']
+const TAB_NAMES = ['drivers', 'teams', 'races']
 
 export default class F1Widget extends Widget {
   constructor() {
@@ -26,6 +28,7 @@ export default class F1Widget extends Widget {
       drivers: [],
       constructors: [],
       nextRace: null,
+      weekends: [],
     })
 
     this._season = new ProgressCircle()
@@ -58,7 +61,9 @@ export default class F1Widget extends Widget {
     this.addChild(this._info)
 
     this.main.title = 'Formula 1'
-    this._screens = [new DriversScreen(), new TeamsScreen(), new RaceScreen()]
+    this._races = new RacesScreen()
+    this._races.on('request', (key) => this.sendMessage({ action: 'results', key }))
+    this._screens = [new DriversScreen(), new TeamsScreen(), this._races]
     this._screens.forEach((screen, i) => {
       const tab = this.main.getTabButton(i)
       tab.text = TAB_NAMES[i]
@@ -69,6 +74,11 @@ export default class F1Widget extends Widget {
   }
 
   msg2state(msg) {
+    // a session's results, asked for by the races tab
+    if(msg.results) {
+      if(Number.isFinite(msg.results.key)) this._races.setResult(msg.results.key, msg.results)
+      return null
+    }
     if(msg.error) return { error: msg.error }
     if(!Array.isArray(msg.drivers) || !msg.drivers.length) return { error: 'No F1 standings' }
     const next = msg.nextRace
@@ -79,6 +89,8 @@ export default class F1Widget extends Widget {
       drivers: msg.drivers.filter(d => d && d.name),
       constructors: Array.isArray(msg.constructors) ? msg.constructors.filter(c => c && c.name) : [],
       nextRace: next && Number.isFinite(next.start) && Array.isArray(next.sessions) ? next : null,
+      weekends: Array.isArray(msg.weekends)
+        ? msg.weekends.filter(w => w && Array.isArray(w.sessions) && w.sessions.length) : [],
       error: null,
     }
   }
