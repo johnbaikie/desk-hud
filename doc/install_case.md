@@ -2,6 +2,8 @@
 
 The wooden case for Desk HUD is built from square sticks glued together. You will need the following materials and follow these step-by-step instructions:
 
+> Have a 3D printer? The [3D printed stand](install_stand.md) is an alternative that needs no glue or hardware.
+
 ![Wooden Sticks](img/sticks.jpg)
 
 ## Materials:
