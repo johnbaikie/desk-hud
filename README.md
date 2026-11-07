@@ -1,6 +1,6 @@
 # Desk-HUD
 
-A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks and the health of the network, all a tap or a swipe away.
+A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks, Formula 1 standings and the health of the network, all a tap or a swipe away.
 
 This is my take on [Desk-HUD by Krzysztof Jamroz](https://github.com/jamro/desk-hud). I have rebuilt most of the widgets, added new ones and moved it to a Raspberry Pi 5 in a 3D printed stand. See [Credits](#credits).
 
@@ -73,6 +73,18 @@ The detail screen on the left shows the widget in front; tap any circle to bring
 
 - Wi-Fi signal, router and internet ping, DNS lookup time and dropouts over the last 24 hours
 - A 30-minute ping chart and a download speed test (every 3 hours, or on demand)
+
+## Formula 1
+
+![F1 drivers](doc/img/preview_f1.png)
+
+![F1 teams](doc/img/preview_f1_teams.png)
+
+![F1 next race](doc/img/preview_f1_race.png)
+
+- **DRIVERS** and **TEAMS:** the championship standings with points bars, from the free [Jolpica-F1](https://github.com/jolpica/jolpica-f1) API (no key)
+- **NEXT RACE:** the circuit, round, a countdown to lights out and the weekend's sessions in local time
+- The circle shows the championship leader, with the season's progress as a gauge
 
 ## Accent colour
 

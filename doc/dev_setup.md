@@ -41,7 +41,8 @@ The screenshots in `doc/img/preview_*.png` come from the demo build:
 
 ```bash
 npm run build-demo
-node --experimental-websocket scripts/capture-screenshots.mjs
+node --experimental-websocket scripts/capture-screenshots.mjs              # all of them
+node --experimental-websocket scripts/capture-screenshots.mjs f1 rainbow   # only names containing "f1" or "rainbow"
 ```
 
 It needs Google Chrome; set `CHROME` if it is not in `/Applications`. The clock is fixed to a weekday morning so every run matches. Edit `SHOTS` in the script to add or change screens.

@@ -34,8 +34,15 @@ const SHOTS = [
   ['preview_pomodoro.png', 'pomodoro', 0],
   ['preview_stocks.png', 'stocks', 0],
   ['preview_network.png', 'network', 0],
+  ['preview_f1.png', 'f1', 0],
+  ['preview_f1_teams.png', 'f1', 1],
+  ['preview_f1_race.png', 'f1', 2],
   ['preview_accent.png', 'accent', 0],
 ]
+// optional arguments limit the run to screenshots whose names contain them,
+// e.g. `... capture-screenshots.mjs f1 rainbow`
+const ONLY = process.argv.slice(2)
+const wanted = (file) => !ONLY.length || ONLY.some(word => file.includes(word))
 
 // static server for dist/demo
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.woff': 'font/woff', '.woff2': 'font/woff2', '.css': 'text/css' }
@@ -96,7 +103,7 @@ await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
 await send('Page.navigate', { url })
 await sleep(6000)
 
-for(const [file, widgetId, tab] of SHOTS) {
+for(const [file, widgetId, tab] of SHOTS.filter(([file]) => wanted(file))) {
   const ok = await evaluate(`window.deskHud && window.deskHud.show(${JSON.stringify(widgetId)}, ${tab})`)
   if(!ok) { console.log(`skip ${file}: widget ${widgetId} not found`); continue }
   await sleep(2500) // let the widgets move and the panel draw in
@@ -106,12 +113,14 @@ for(const [file, widgetId, tab] of SHOTS) {
 }
 
 // rainbow mode: one colour per widget
-await evaluate(`localStorage.setItem('DeskHud_rainbow', '1'); location.reload()`)
-await sleep(6000)
-await evaluate(`window.deskHud.show('weather', 0)`)
-await sleep(2500)
-await writeFile(path.join(OUT, 'preview_rainbow.png'), Buffer.from((await send('Page.captureScreenshot', { format: 'png' })).result.data, 'base64'))
-console.log('wrote doc/img/preview_rainbow.png')
+if(wanted('preview_rainbow.png')) {
+  await evaluate(`localStorage.setItem('DeskHud_rainbow', '1'); location.reload()`)
+  await sleep(6000)
+  await evaluate(`window.deskHud.show('weather', 0)`)
+  await sleep(2500)
+  await writeFile(path.join(OUT, 'preview_rainbow.png'), Buffer.from((await send('Page.captureScreenshot', { format: 'png' })).result.data, 'base64'))
+  console.log('wrote doc/img/preview_rainbow.png')
+}
 
 if(errors.length) console.log('page errors:', errors)
 ws.close()
