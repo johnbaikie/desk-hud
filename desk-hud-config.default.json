@@ -38,5 +38,16 @@
   "stockdata": {
     "apiKey": "YOUR_STOCKDATA_API_KEY",
     "symbol": "AAPL"
+  },
+  "sports": {
+    "teams": {
+      "nfl": [
+        "KC"
+      ],
+      "mlb": [],
+      "nhl": [],
+      "mls": [],
+      "nwsl": []
+    }
   }
 }

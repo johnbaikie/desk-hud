@@ -10,7 +10,7 @@ On the client side, multiple widgets runs, each corresponding to a specific back
 
 Communication between the client and server is established through web sockets, allowing real-time data exchange. Additionally, an HTTP connection is used to serve static content to the client. This architecture enables seamless and efficient communication between the two components.
 
-The server component of Desk-HUD encompasses multiple services, each responsible for the logic of a specific widget. These services handle data retrieval, processing, and communication with external sources: the Google Calendar and Tasks APIs, a published Outlook calendar (ICS), the US National Weather Service, StockData, Jolpica-F1 and OpenF1 (Formula 1 standings and session results), and local network checks. The server also reports the Pi's CPU, memory, temperature and fan speed, and controls the power of the HDMI monitor. A distance-sensor service is included; without a sensor fitted it simulates a constant reading.
+The server component of Desk-HUD encompasses multiple services, each responsible for the logic of a specific widget. These services handle data retrieval, processing, and communication with external sources: the Google Calendar and Tasks APIs, a published Outlook calendar (ICS), the US National Weather Service, StockData, Jolpica-F1 and OpenF1 (Formula 1 standings and session results), ESPN (team scores and standings), and local network checks. The server also reports the Pi's CPU, memory, temperature and fan speed, and controls the power of the HDMI monitor. A distance-sensor service is included; without a sensor fitted it simulates a constant reading.
 
 ### Incoming messages
 

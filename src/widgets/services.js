@@ -6,6 +6,7 @@ const TodoService = require("./todo/TodoService")
 const WeatherService = require("./weather/WeatherService")
 const NetworkService = require("./network/NetworkService")
 const F1Service = require("./f1/F1Service")
+const SportsService = require("./sports/SportsService")
 
 const services = [
   StocksService,
@@ -16,5 +17,6 @@ const services = [
   PomodoroService,
   NetworkService,
   F1Service,
+  SportsService,
 ]
 module.exports = services

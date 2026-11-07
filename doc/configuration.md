@@ -44,6 +44,9 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `apiKey` (string): The API key for accessing the StockData service.
   - `symbol` (string or array): The ticker to show, or several (`["ORCL", "IBM"]` or `"ORCL,IBM"`). With several, the widget switches between them every 20 minutes. Each extra symbol costs about 4 requests a day; the free plan allows about 100.
 
+- **sports** (optional): favourite teams for the Sports widget, from ESPN's public scores API (no key).
+  - `teams` (object): a list of team abbreviations for each of `nfl`, `mlb`, `nhl`, `mls` and `nwsl`, e.g. `{"nfl": ["KC"], "nhl": ["DAL"], "mls": ["SKC"], "nwsl": []}`. Use ESPN's abbreviations (the ones on espn.com scoreboards, such as `KC`, `DAL`, `SKC`, `NYY`); ESPN team ids work too. A league with an empty list gets no button. With several teams in a league, swipe up or down to switch.
+
 Every key is required unless marked optional. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
 
 ## Integrations

@@ -39,6 +39,9 @@ const SHOTS = [
   ['preview_f1_teams.png', 'f1', 1],
   ['preview_f1_race.png', 'f1', 2],
   ['preview_f1_results.png', 'f1', 2, `window.deskHud.widget('f1')._races._select(18); window.deskHud.widget('f1')._races._setMode('Q')`],
+  ['preview_sports.png', 'sports', 0, `window.deskHud.widget('sports')._screen.select('nfl', 0)`],
+  ['preview_sports_live.png', 'sports', 0, `window.deskHud.widget('sports')._screen.select('nwsl', 0)`],
+  ['preview_sports_nhl.png', 'sports', 0, `window.deskHud.widget('sports')._screen.select('nhl', 0)`],
   ['preview_accent.png', 'accent', 0],
 ]
 // optional arguments limit the run to screenshots whose names contain them,

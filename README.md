@@ -1,6 +1,6 @@
 # Desk-HUD
 
-A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks, Formula 1 standings and the health of the network, all a tap or a swipe away.
+A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks, my teams' scores, Formula 1 standings and the health of the network, all a tap or a swipe away.
 
 This is my take on [Desk-HUD by Krzysztof Jamroz](https://github.com/jamro/desk-hud). I have rebuilt most of the widgets, added new ones and moved it to a Raspberry Pi 5 in a 3D printed stand. See [Credits](#credits).
 
@@ -87,6 +87,19 @@ The detail screen on the left shows the widget in front; tap any circle to bring
 - **DRIVERS** and **TEAMS:** the championship standings with points bars, from the free [Jolpica-F1](https://github.com/jolpica/jolpica-f1) API (no key)
 - **RACES:** one race weekend at a time; swipe left or right through the season. **INFO** has the circuit, a countdown to lights out and the sessions in local time; **P1**, **P2**, **P3**, **SQ**, **SP**, **Q** and **GP** show that session's classification (best laps and gaps, qualifying parts, race gaps, points and retirements) from [OpenF1](https://openf1.org)
 - The circle shows the championship leader, with the season's progress as a gauge and a small car driving round it
+
+## Sports
+
+![Sports](doc/img/preview_sports.png)
+
+![Live game](doc/img/preview_sports_live.png)
+
+![Standings](doc/img/preview_sports_nhl.png)
+
+- Your favourite NFL, MLB, NHL, MLS and NWSL teams from ESPN's scores API (no key), set in the [config](doc/configuration.md)
+- A button per league: record and standing, last result, next game with its TV channel, the games after it, and the division, conference or table with your team highlighted
+- Live scores during your teams' games (clock, down and distance, outs and runners); when a game starts the widget comes to the front
+- The circle shows the next game, or the live score
 
 ## Accent colour
 
