@@ -73,7 +73,7 @@ Open `scad/desk-hud-stand.scad`; the parameters are at the top.
 | `tilt` | 45° | Screen angle from vertical. |
 | `pk_clr` / `win_clr` | 0.30 mm | Clearance of the lens pocket / of the window, per side. |
 | `dt_clr_front` / `dt_clr_rear` | 0.10 / 0.45 mm | Dovetail clearance at the front stop / rear opening. |
-| `clip_x`, `clip_w` | ±85, ±130 / 14 mm | Clip positions and width. Keep clear of the PCB and HDMI connector (|x| < 70). |
+| `clip_x`, `clip_w` | ±85, ±130 / 14 mm | Clip positions and width. Keep clear of the PCB and HDMI connector (\|x\| < 70). |
 
 **Measuring `pi_depth`:** lay the screen lens-down on a flat table and measure the height of the highest part of the Pi or its cooler above the table. Each extra millimetre of `pi_depth` raises the stand by about 0.7 mm. With the defaults the lens bottom edge sits 31.3 mm above the table and the Pi stack clears it by 4 mm.
 
