@@ -3,10 +3,12 @@ import TextField from '../../frontend/components/TextField.js'
 import ProgressCircle from '../../frontend/circles/ProgressCircle.js'
 import { DriversScreen, TeamsScreen, RaceScreen, countdown } from './F1Screens.js'
 import { ACCENT } from '../../frontend/theme.js'
+import F1Car, { WHEEL_BOTTOM } from './F1Car.js'
 
 // Formula 1 championship standings from F1Service.
 // Circle: the championship leader and their points, with the season's
-// progress (rounds run of the calendar) as a gauge round the bottom.
+// progress (rounds run of the calendar) as a gauge round the bottom and a
+// small car driving on the end of it.
 // Main screen tabs: drivers, teams (constructors) and the next race.
 
 // the gauge leaves the top of the circle free for the title (as on Network)
@@ -31,6 +33,9 @@ export default class F1Widget extends Widget {
     this._season.lineWidth = 2
     this._season.rotation = GAUGE_START
     this.addChild(this._season)
+
+    this._car = new F1Car(ACCENT)
+    this.addChild(this._car)
 
     this._leader = new TextField('', {
       fontFamily: 'ShareTechMono',
@@ -97,6 +102,18 @@ export default class F1Widget extends Widget {
     this._season.progress = p
     this._season.size = this.size
     this._season.value = s.totalRounds ? GAUGE_SPAN * Math.min(1, s.round / s.totalRounds) : 0
+
+    // the car rides on the inside of the gauge at its tip, wheels on the
+    // line and nose pointing clockwise, the way the gauge grows (turned by
+    // half a turn so the wheels face out, and mirrored to keep the nose ahead)
+    const angle = GAUGE_START + 2*Math.PI * this._season._presentedValue * p
+    const carScale = 0.7 + 0.5*this.size
+    const r = 100*this.size - WHEEL_BOTTOM*carScale - 1
+    this._car.x = r * Math.sin(angle)
+    this._car.y = -r * Math.cos(angle)
+    this._car.rotation = angle + Math.PI
+    this._car.scale.set(-carScale, carScale)
+    this._car.alpha = p
 
     this._leader.progress = p
     this._leader.style.fontSize = 14 + 12*this.size

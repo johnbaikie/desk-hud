@@ -1,5 +1,6 @@
 import { ACCENT } from '../../frontend/theme.js'
 import TextField, { TEXT_GREY } from '../../frontend/components/TextField'
+import F1Car from './F1Car.js'
 
 // The F1 widget's three main-screen tabs. Each redraws only when new data
 // arrives (changing text re-renders its texture). The panel's page spans
@@ -147,6 +148,11 @@ export class RaceScreen extends Screen {
     this._round = this._add(-280, -14, 12)
     this._countdown = this._add(-280, 34, 28)
     this._countdownLabel = this._add(-280, 62, 11, 0, greyStyle)
+    this._car = new F1Car(this._accent)
+    this._car.scale.set(2.2)
+    this._car.x = -55
+    this._car.y = 52
+    this.addChild(this._car)
     this._sessions = Array.from({ length: SESSION_ROWS }, (_, i) => {
       const y = -70 + i*24
       return { y, when: this._add(40, y, 12), name: this._add(282, y, 12, 1) }
@@ -177,6 +183,8 @@ export class RaceScreen extends Screen {
   render(renderer) {
     super.render(renderer)
     const r = this.data && this.data.nextRace
+    this._car.alpha = this.progress
+    this._car.visible = !!r
     if(!r) {
       this._countdown.text = ''
       return
