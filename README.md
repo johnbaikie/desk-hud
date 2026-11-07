@@ -1,100 +1,106 @@
 # Desk-HUD
 
-Desk-HUD is a compact side monitor designed to enhance productivity and convenience in your workspace. It features an 11.9-inch touch screen connected to a Raspberry Pi hardware platform, providing quick access to essential features like a todo list, calendar, weather updates, clock, pomodoro timer and stock prices. With Desk-HUD, managing tasks and staying organized becomes effortless, all while keeping everything you need within reach on your desk.
+A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks and the health of the network, all a tap or a swipe away.
 
-![Desk view 1](doc/img/desk1.jpg)
+This is my take on [Desk-HUD by Krzysztof Jamroz](https://github.com/jamro/desk-hud). I have rebuilt most of the widgets, added new ones and moved it to a Raspberry Pi 5 in a 3D printed stand. See [Credits](#credits).
 
-![Desk view 2](doc/img/desk2.jpg)
+![Desk-HUD](doc/img/preview_date.png)
 
-# Key Features
+<!-- Add a photo of the finished build here, e.g. ![On my desk](doc/img/my-desk.jpg) -->
 
-## Date & Time Widget
+**[Try the demo](https://johnbaikie.github.io/desk-hud/)**: the full interface in your browser, running on simulated data.
 
-![Date preview](doc/img/preview_date.png)
+# Widgets
 
-![Time preview](doc/img/preview_time.png)
+The detail screen on the left shows the widget in front; tap any circle to bring it forward. With more widgets than circles, the arrows on the right rotate through the rest.
 
-- Clock and calendar
-- Special event countdown
-- Timezones time conversion
+## Date & Time
 
-## Weather Widget
+![Date](doc/img/preview_date.png)
 
-![Weather preview](doc/img/preview_weather.png)
+![World map](doc/img/preview_time.png)
 
-- Current conditions from the nearest US National Weather Service station
-- Temperature range for the next 24 hours and a rain countdown
-- Next 12 hours (NOW tab) and 6-day forecast (DAYS tab)
-- Active NWS alerts: shown on the circle and an ALERTS tab; a new warning wakes the screen and brings the widget to the front
+- **DATE:** this month and next as two large calendars. Tap any day to open it in the Calendar widget.
+- **TIME:** a dot-matrix world map lit by the sun, with the day/night line, the point where the sun is overhead, and the Moon in its current phase
+- Home and the configured time zones with their local times; sunrise, sunset and day length at home; moon phase and days to the next full or new moon
 
-## Calendar Widget
+## Weather
 
-![Calendar preview](doc/img/preview_calendar.png)
+![Weather now](doc/img/preview_weather.png)
 
-- Work (published Outlook calendar) and Personal (Google) tabs; swipe left/right for other days
-- Tap a day on the Date & Time widget's DATE tab to open it here
-- Busy/available timeline
-- Next meeting info and an ongoing meeting clock across both calendars
+![Weather days](doc/img/preview_weather_days.png)
 
-## Todo Widget
+![Weather alerts](doc/img/preview_weather_alerts.png)
 
-![Todo preview](doc/img/preview_todo.png)
+- Current conditions, forecasts and alerts from the US National Weather Service (no API key needed)
+- **NOW:** temperature, feels like, wind, humidity and the next 12 hours; **DAYS:** the next six days
+- **ALERTS:** active watches and warnings in full. A new warning wakes the screen and brings the widget to the front.
+- Coloured weather icons: yellow sun, white cloud, blue rain
 
-- Shows the tasks from all of your Google Tasks lists, plus tasks completed in the last 7 days
+## Calendar
+
+![Work calendar](doc/img/preview_calendar.png)
+
+![Personal calendar](doc/img/preview_calendar_personal.png)
+
+- **WORK** (a published Outlook calendar) and **PERSONAL** (Google Calendar) tabs; swipe left or right for other days
+- Busy timeline, all-day events, next meeting and a meeting clock across both calendars
+
+## Tasks
+
+![Tasks](doc/img/preview_todo.png)
+
+- Every Google Tasks list, plus tasks completed in the last 7 days
 - Tick tasks off (or back on) from the screen
-- To do / done / all counts
-- Visualize task completion timeline
 
-## Pomodoro Widget
+## Pomodoro
 
-![Pomodoro preview](doc/img/preview_pomodoro.png)
+![Pomodoro](doc/img/preview_pomodoro.png)
 
-- Timer supporting [Pomodoro technique](https://en.wikipedia.org/wiki/Pomodoro_Technique)
-- Last week history 
+- A [Pomodoro](https://en.wikipedia.org/wiki/Pomodoro_Technique) timer with the next session shown and a skip button
+- The last week's completed sessions
 
-## Stocks Widget
+## Stocks
 
-![Stocks preview](doc/img/preview_stocks.png)
+![Stocks](doc/img/preview_stocks.png)
 
-- Current stock price
-- Daily change of the price
-- Last months stock history
+- Price and day change, with open, previous close, high, low, volume and 6-month range, from [StockData](https://www.stockdata.org)
+- Several symbols: swipe up or down to switch
 
-## Distance sensor
+## Network
 
-![Distance preview](doc/img/preview_distance.png)
+![Network](doc/img/preview_network.png)
 
-- Darken the screen when no one is around
-- Activate Desk HUD automatically by approaching the desk
-- Power the screen off when inactive
+- Wi-Fi signal, router and internet ping, DNS lookup time and dropouts over the last 24 hours
+- A 30-minute ping chart and a download speed test (every 3 hours, or on demand)
 
-## System Monitoring
+## Accent colour
 
-![System preview](doc/img/preview_system.png)
+![Accent picker](doc/img/preview_accent.png)
 
-- Monitor Desk HUD CPU and memory usage
-- Monitor CPU temperature
-- Control CPU fan (on/off/auto)
+![Rainbow mode](doc/img/preview_rainbow.png)
 
-# Demo
+- Pick the accent colour used across every widget from presets or a hue bar
+- **Rainbow mode** gives each widget its own colour
 
-You can experience a demo of Desk-HUD by visiting the following URL: [https://desk-hud.jmrlab.com](https://desk-hud.jmrlab.com). Please note that the demo uses simulated data to showcase the features, giving you a feel for Desk-HUD's functionality and is not connected to real systems. 
+## System
 
-Additionally, there is a [video](https://www.youtube.com/watch?v=2UuWsG3Lnaw) showcasing the assembled project, complete with the wooden case and touch screen monitor.
+- CPU and memory load, CPU temperature and the Pi 5 Active Cooler's fan speed, along the bottom of the screen
+- Tap the dot at the bottom left to put the screen to sleep
 
-# Installation Guide
+# Build your own
 
-- [Hardware setup](doc/install_hardware.md)
-- [Software installation](doc/install_software.md)
+- [Hardware](doc/install_hardware.md)
+- [Software](doc/install_software.md)
 - [Configuration](doc/configuration.md)
-- [Wooden case assembly instructions](doc/install_case.md)
+- [3D printed stand](doc/install_stand.md), or the original project's [wooden case](doc/install_case.md)
 
-# Customization
+# Development
 
-Desk-HUD is specifically tailored to meet my unique requirements and is not intended as a one-size-fits-all solution. However, the project's source code is open for anyone to fork and customize according to their individual needs and preferences.
+- [Development setup](doc/dev_setup.md), including the demo build and regenerating these screenshots
+- [System design](doc/system_desgn.md)
+- [Create a widget](doc/dev_create_widget.md)
 
-Some resources to get started:
+# Credits
 
-- [System Design](doc/system_desgn.md)
-- [Setup of Development Environment](doc/dev_setup.md)
-- [Development Guide: Create a widget](doc/dev_create_widget.md)
+Based on [Desk-HUD](https://github.com/jamro/desk-hud) by [Krzysztof Jamroz](https://github.com/jamro), released under the MIT License. The overall design, the widget framework and the [wooden case](doc/install_case.md) (with its photos) come from his project. Licensed under the MIT License; see [LICENSE](LICENSE).

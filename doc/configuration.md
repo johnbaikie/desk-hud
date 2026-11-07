@@ -37,7 +37,7 @@ The configuration for Desk-HUD is stored in a JSON file.
 
   The Tasks widget shows every task from all of your Google Tasks lists: open tasks first, then tasks completed in the last 7 days.
 
-- **outlook**: The Outlook widget shows a work calendar next to the Google one.
+- **outlook**: A work calendar, shown on the WORK tab of the Calendar widget (Google Calendar is the PERSONAL tab).
   - `icsUrl` (string): The ICS link from Outlook's "Publish a calendar" setting (Settings → Calendar → Shared calendars). A `webcal://` link works too. Anyone with the link can read the calendar, so keep it out of git. The calendar is reloaded every 5 minutes, but Outlook itself may only refresh a published calendar every few hours.
 
 - **stockdata** - allows you to configure the [StockData](http://www.stockdata.org) service integration for Desk-HUD. StockData provides financial market data and analytics.
@@ -59,17 +59,17 @@ To set up Google access keys for integration with Desk-HUD, follow these steps:
 - Click `Create`. The OAuth client created screen appears, showing your new Client ID and Client secret.
 - Click `OK`. The newly created credential appears under OAuth 2.0 Client IDs.
 - Save the downloaded JSON file as `credentials.json`
-- Open `OAuth consent screen` and yourself to `Test users`
+- Open `OAuth consent screen` and add yourself to `Test users`
 - Once you have `credentials.json`, run the `node ./google_auth.js` script. Follow the instructions provided to complete the authentication process.
 
 Detailed process of obtaining `credentials.json` is described here [here](https://developers.google.com/tasks/quickstart/nodejs)
 
-** Refreshing Access Token **
-If your access token has expired, you need to remove `clientSecret` and `clientToken` from `deck-hud-config.json` and rerun `node ./google_auth.js` script.
+**Refreshing the access token**
+If your access token has expired, you need to remove `clientSecret` and `clientToken` from `desk-hud-config.json` and rerun `node ./google_auth.js` script.
 
 ### StockData
 
 - Visit the StockData website: Go to the StockData website at http://www.stockdata.org.
 - Click "Sign In"
-- Crete an account
+- Create an account
 - Get API token and copy it to config file

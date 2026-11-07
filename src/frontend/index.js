@@ -66,6 +66,20 @@ if(DEMO_MODE) {
       })
     })
     
+    if(DEMO_MODE) {
+      // lets scripts/capture-screenshots.mjs open any widget and tab
+      window.deskHud = {
+        show(widgetId, tab = 0) {
+          const widget = widgetsInstances.find(w => w.id === widgetId)
+          if(!widget) return false
+          if(widgetContainer._widgetList.indexOf(widget) !== 0) widgetContainer._activate(widget)
+          widget.main.activateTab(tab)
+          return true
+        },
+        widget: (widgetId) => widgetsInstances.find(w => w.id === widgetId),
+      }
+    }
+
     widgetContainer.online = socket.connected
     socket.on('connect', () => {
       console.log(`${LOG_PREFIX} Socket connected`)

@@ -1,5 +1,7 @@
 # Development Guide - Create a widget
 
+> This tutorial is from the original project and walks through the basics. For the conventions this version uses (the `ACCENT` colour from `theme.js`, text sizes, demo data, verification and deployment), follow [.claude/skills/create-widget/SKILL.md](../.claude/skills/create-widget/SKILL.md).
+
 This tutorial shows how to create and add a new widget to Desk HUD. During this walkthrough, 
 we are going to create "Memory" widget which monitors memory usage on Raspberry PI device
 
