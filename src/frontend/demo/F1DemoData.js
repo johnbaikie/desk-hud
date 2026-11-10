@@ -99,8 +99,8 @@ export default class F1DemoData {
       const sessions = times.split(' ').map((item, i) => {
         const [code, minutes] = item.split(':')
         const t = start + Number(minutes)*MINUTE
-        const session = { code, name: NAMES[code], t, end: t + (code === 'GP' ? 2*HOUR : HOUR), key: round*10 + i }
-        this._sessions.set(session.key, session)
+        const session = { code, name: NAMES[code], t, end: t + (code === 'GP' ? 2*HOUR : HOUR), key: round*10 + i, id: `${round}:${code}` }
+        this._sessions.set(session.id, session)
         return session
       })
       const race = sessions[sessions.length - 1]
@@ -126,10 +126,10 @@ export default class F1DemoData {
   }
 
   // the made-up classification of a session, as F1Service sends it
-  results(key) {
-    const session = this._sessions.get(key)
-    if(!session || session.end > Date.now()) return { widgetId: "f1", payload: { results: { key, rows: [] } } }
-    const rand = random(key)
+  results(id) {
+    const session = this._sessions.get(id)
+    if(!session || session.end > Date.now()) return { widgetId: "f1", payload: { results: { id, rows: [] } } }
+    const rand = random(session.key)
     // the championship order, shuffled a little
     const order = DRIVERS.slice(0, 22)
       .map((d, i) => ({ d, score: i + 9*rand() }))
@@ -173,6 +173,6 @@ export default class F1DemoData {
         row.gap = Number((row.time - best).toFixed(3))
       })
     }
-    return { widgetId: "f1", payload: { results: { key, rows } } }
+    return { widgetId: "f1", payload: { results: { id, rows } } }
   }
 }

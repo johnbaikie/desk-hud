@@ -103,7 +103,7 @@ export default class DemoSocket {
       this._pomodoroDemo.onMessage(payload)
       this._publish('widget', this._pomodoroDemo.data)
     } else if(serviceId === 'f1' && payload && payload.action === 'results') {
-      setTimeout(() => this._publish('widget', this._f1Demo.results(payload.key)), 300)
+      setTimeout(() => this._publish('widget', this._f1Demo.results(payload.id)), 300)
     } else if(serviceId === 'network') {
       this._networkDemo.onMessage(payload, () => this._publish('widget', this._networkDemo.data))
     }

@@ -1,4 +1,5 @@
 const Service = require('../../backend/services/Service.js')
+const storage = require('node-persist')
 
 // Formula 1 for the F1 widget, from two free APIs without keys:
 // - Jolpica-F1 (api.jolpi.ca), the successor of the Ergast API: drivers' and
@@ -6,9 +7,15 @@ const Service = require('../../backend/services/Service.js')
 //   Limits: 4 requests/s, 500/hour; this makes three requests an hour.
 // - OpenF1 (api.openf1.org): every session's classification, practice
 //   included, which Jolpica doesn't have. Historical data is free (live
-//   timing needs a paid account). Its session list is read hourly and
-//   matched to the calendar by type and start time; results are fetched when
-//   the widget asks for a session, and kept once the session is over.
+//   timing needs a paid account), but while any F1 session is live it turns
+//   away free users for everything, past sessions included (HTTP 401). Its
+//   session list is read hourly and matched to the calendar by type and start
+//   time.
+// Results are fetched when the widget asks for a session, and finished
+// sessions of the last two weekends are fetched ahead, in the gaps between
+// sessions, so they are there during the next one. Finished sessions are kept
+// in node-persist, as is OpenF1's session list. Qualifying, sprint and race
+// results fall back to Jolpica when OpenF1 is closed.
 
 const USER_AGENT = 'desk-hud (https://github.com/johnbaikie/desk-hud)'
 const API = 'https://api.jolpi.ca/ergast/f1'
@@ -18,6 +25,20 @@ const RETRY = 5*60*1000 // after a failure
 const REQUEST_TIMEOUT = 20*1000
 const HOUR = 60*60*1000
 const OPENF1_SPACING = 400 // ms between OpenF1 requests
+const OPENF1_RETRY = 10*60*1000 // while OpenF1 is closed or failing
+const LOCKED = 'OpenF1 is closed to free users while a session is live; results return when it ends'
+// sessions Jolpica has results for, and its endpoint and list for them
+const JOLPICA_RESULTS = {
+  Q: ['qualifying', 'QualifyingResults'],
+  SP: ['sprint', 'SprintResults'],
+  GP: ['results', 'Results'],
+}
+// team colours for Jolpica results (OpenF1 gives its own), by constructorId
+const TEAM_COLOURS = {
+  mercedes: '00D7B6', ferrari: 'ED1131', red_bull: '4781D7', mclaren: 'F47600',
+  rb: '6C98FF', alpine: '00A1E8', haas: '9C9FA2', audi: 'F50537', sauber: '01C00E',
+  williams: '1868DB', aston_martin: '229971', cadillac: '909090',
+}
 
 // Jolpica session keys -> short code and label, in weekend order
 const SESSIONS = [
@@ -47,6 +68,12 @@ function teamName(name) {
 }
 
 const num = (v) => typeof v === 'number' && Number.isFinite(v) ? v : null
+// "1:16.514" -> 76.514
+const lapSeconds = (text) => {
+  const m = /^(?:(\d+):)?(\d+(?:\.\d+)?)$/.exec(String(text || '').trim())
+  return m ? 60*Number(m[1] || 0) + Number(m[2]) : null
+}
+const friendly = (err) => /HTTP 401/.test(String(err && err.message || err)) ? LOCKED : 'OpenF1 unavailable: ' + String(err && err.message || err)
 
 class F1Service extends Service {
   constructor(config, io, webApp) {
@@ -54,12 +81,28 @@ class F1Service extends Service {
     this._timer = null
     this._last = null
     this._openf1Sessions = [] // last good OpenF1 session list
-    this._results = new Map() // session key -> finished session's rows
+    this._openf1Status = null // why OpenF1 can't be used now, or null
+    this._results = {} // session id ("19:Q") -> finished session's rows
     this._queue = Promise.resolve() // one results request at a time
     this._openf1Next = 0
   }
 
   async start() {
+    // what earlier runs saved (checked: a bad entry is dropped)
+    try {
+      const sessions = await storage.getItem('f1.openf1Sessions')
+      if(Array.isArray(sessions)) {
+        this._openf1Sessions = sessions.filter(s => s && Number.isFinite(s.key) && Number.isFinite(s.start) && s.code)
+      }
+      const results = await storage.getItem('f1.results')
+      if(results && typeof results === 'object') {
+        for(const [id, rows] of Object.entries(results)) {
+          if(/^\d+:[A-Z0-9]+$/.test(id) && Array.isArray(rows) && rows.length) this._results[id] = rows
+        }
+      }
+    } catch(err) {
+      this.logger.error('F1 saved data:', err.message || err)
+    }
     this.update() // not awaited: start() must resolve even if the API hangs
   }
 
@@ -68,8 +111,8 @@ class F1Service extends Service {
   }
 
   async onMessage(payload) {
-    if(payload && payload.action === 'results' && Number.isFinite(payload.key)) {
-      this._queue = this._queue.then(() => this._sendResults(payload.key))
+    if(payload && payload.action === 'results' && typeof payload.id === 'string') {
+      this._queue = this._queue.then(() => this._sendResults(payload.id))
     }
   }
 
@@ -146,8 +189,11 @@ class F1Service extends Service {
           end: Date.parse(s.date_end),
         }))
         .filter(s => Number.isFinite(s.key) && Number.isFinite(s.start))
+      this._openf1Status = null
+      await storage.setItem('f1.openf1Sessions', this._openf1Sessions)
     } catch(err) {
       this.logger.error('OpenF1 sessions:', err.message || err)
+      this._openf1Status = friendly(err)
     }
     return this._openf1Sessions
   }
@@ -165,6 +211,7 @@ class F1Service extends Service {
           const match = openf1.find(o => o.code === s.code && Math.abs(o.start - s.t) < 3*HOUR)
           return {
             ...s,
+            id: `${race.round}:${s.code}`,
             end: match && Number.isFinite(match.end) ? match.end : s.t + LENGTH[s.code],
             key: match ? match.key : null,
           }
@@ -208,28 +255,129 @@ class F1Service extends Service {
       totalRounds: list.length,
       nextRace,
       weekends,
+      openf1: this._openf1Status,
       updated: now,
       error: null,
     }
   }
 
-  // one session's classification, sent as {results: {key, rows | error}}
-  async _sendResults(key) {
+  _session(id) {
+    const weekends = this._last && this._last.weekends || []
+    for(const w of weekends) {
+      const session = w.sessions.find(s => s.id === id)
+      if(session) return { ...session, round: w.round }
+    }
+    return null
+  }
+
+  // one session's classification, sent as {results: {id, rows | error}}
+  async _sendResults(id) {
     try {
-      let rows = this._results.get(key)
-      if(!rows) {
-        const results = await this._openf1(`session_result?session_key=${key}`)
-        const drivers = await this._openf1(`drivers?session_key=${key}`)
-        if(!Array.isArray(results) || !Array.isArray(drivers)) throw new Error('OpenF1: unexpected results')
-        rows = this._rows(results, drivers)
-        const session = this._openf1Sessions.find(s => s.key === key)
-        // keep finished sessions; results can still change for a while after
-        if(rows.length && session && session.end + HOUR < Date.now()) this._results.set(key, rows)
-      }
-      this.emit({ results: { key, rows } })
+      const rows = await this._fetchResults(id)
+      this.emit({ results: { id, rows } })
     } catch(err) {
-      this.logger.error('OpenF1 results:', err.message || err)
-      this.emit({ results: { key, rows: null, error: String(err.message || err) } })
+      this.emit({ results: { id, rows: null, error: String(err.message || err) } })
+    }
+  }
+
+  // from the saved results, OpenF1, or Jolpica (qualifying, sprint, race)
+  async _fetchResults(id) {
+    if(this._results[id]) return this._results[id]
+    const session = this._session(id)
+    if(!session) throw new Error('Unknown session')
+    let rows = null
+    let error = null
+    if(session.key) {
+      try {
+        const results = await this._openf1(`session_result?session_key=${session.key}`)
+        const drivers = await this._openf1(`drivers?session_key=${session.key}`)
+        if(!Array.isArray(results) || !Array.isArray(drivers)) throw new Error('unexpected results')
+        rows = this._rows(results, drivers)
+      } catch(err) {
+        this.logger.error(`OpenF1 results ${id}:`, err.message || err)
+        error = friendly(err)
+        if(error === LOCKED) this._openf1Status = LOCKED
+      }
+    } else {
+      error = this._openf1Status || 'No timing data for this session'
+    }
+    if((!rows || !rows.length) && JOLPICA_RESULTS[session.code]) {
+      try {
+        const fallback = await this._jolpicaRows(session.round, session.code)
+        if(fallback.length) { rows = fallback; error = null }
+      } catch(err) {
+        this.logger.error(`Jolpica results ${id}:`, err.message || err)
+      }
+    }
+    if(!rows) throw new Error(error || 'No results')
+    // keep finished sessions; results can still change for a while after
+    if(rows.length && session.end + HOUR < Date.now()) {
+      this._results[id] = rows
+      await storage.setItem('f1.results', this._results)
+    }
+    return rows
+  }
+
+  // Jolpica's qualifying, sprint or race classification, as rows
+  async _jolpicaRows(round, code) {
+    const [endpoint, listName] = JOLPICA_RESULTS[code]
+    const season = this._last ? this._last.calendarSeason : 'current'
+    const data = await this._get(`${season}/${round}/${endpoint}.json?limit=100`)
+    const race = (data.RaceTable && data.RaceTable.Races || [])[0]
+    const list = race && Array.isArray(race[listName]) ? race[listName] : []
+    const base = (r) => ({
+      number: Number(r.number) || 0,
+      code: r.Driver && (r.Driver.code || String(r.Driver.familyName || '').slice(0, 3).toUpperCase()),
+      name: r.Driver ? r.Driver.familyName : '',
+      team: teamName(r.Constructor && r.Constructor.name),
+      colour: r.Constructor ? TEAM_COLOURS[r.Constructor.constructorId] || null : null,
+      points: null,
+      status: null,
+    })
+    if(code === 'Q') {
+      const rows = list.map(r => {
+        const parts = [r.Q1, r.Q2, r.Q3].map(lapSeconds)
+        const i = parts.reduce((last, t, j) => t !== null ? j : last, -1)
+        return { ...base(r), pos: Number(r.position) || null, laps: null, time: i >= 0 ? parts[i] : null, gap: null, part: i >= 0 ? `Q${i+1}` : null }
+      })
+      // the gap is to the fastest in the same part
+      rows.forEach(row => {
+        const best = Math.min(...rows.filter(r => r.part === row.part && r.time !== null).map(r => r.time))
+        row.gap = row.time !== null && Number.isFinite(best) ? Number((row.time - best).toFixed(3)) : null
+      })
+      return rows
+    }
+    const leader = list.find(r => r.Time && r.Time.millis)
+    const leaderMs = leader ? Number(leader.Time.millis) : null
+    return list.map(r => {
+      const classified = /^\d+$/.test(r.positionText || '')
+      const ms = r.Time && r.Time.millis ? Number(r.Time.millis) : null
+      const lapped = /^\+\d+ Laps?$/i.test(r.status || '')
+      return {
+        ...base(r),
+        pos: classified ? Number(r.positionText) : null,
+        laps: Number(r.laps) || 0,
+        time: ms !== null ? ms/1000 : null,
+        gap: ms !== null && leaderMs !== null ? Number(((ms - leaderMs)/1000).toFixed(3)) : (lapped ? r.status : null),
+        part: null,
+        points: Number(r.points) || 0,
+        status: classified ? null : ({ D: 'DSQ', W: 'DNS', E: 'DSQ', F: 'DNQ' }[r.positionText] || 'DNF'),
+      }
+    })
+  }
+
+  // fetch the finished sessions of the last two weekends that aren't saved
+  // yet, so they're there when a later session closes OpenF1
+  _prefetch() {
+    const now = Date.now()
+    const weekends = (this._last && this._last.weekends || []).filter(w => w.sessions.some(s => s.end + HOUR < now))
+    const ids = weekends.slice(-2)
+      .flatMap(w => w.sessions)
+      .filter(s => s.end + HOUR < now && !this._results[s.id])
+      .filter(s => (s.key && !this._openf1Status) || JOLPICA_RESULTS[s.code])
+      .map(s => s.id)
+    for(const id of ids) {
+      this._queue = this._queue.then(() => this._fetchResults(id).catch(() => {}))
     }
   }
 
@@ -273,6 +421,9 @@ class F1Service extends Service {
     try {
       this._last = await this._fetchAll()
       this.emit(this._last)
+      this._prefetch()
+      // try OpenF1 again sooner while it is closed or failing
+      if(this._openf1Status) wait = OPENF1_RETRY
     } catch(err) {
       this.logger.error(err)
       wait = RETRY

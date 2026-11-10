@@ -7,7 +7,7 @@ import { style, greyStyle, when, countdown, pad2 } from './F1Screens.js'
 // Swipe left/right for the next/previous weekend. The buttons along the top
 // pick a view: INFO (circuit, countdown and the session times) or a
 // session's classification (P1, P2, P3, SQ, SP, Q, GP). Results come from the
-// service on request: emits 'request' with an OpenF1 session key, and the
+// service on request: emits 'request' with a session id ("19:Q"), and the
 // widget hands the answer to setResult().
 
 const SWIPE_DISTANCE = 30
@@ -63,8 +63,8 @@ export default class RacesScreen extends PIXI.Container {
     this._accent = ACCENT
     this.progress = 0
     this._data = null
-    this._results = new Map()   // session key -> {rows, error, at}
-    this._requested = new Map() // session key -> time asked
+    this._results = new Map()   // session id -> {rows, error, at}
+    this._requested = new Map() // session id -> time asked
     this._index = null          // weekend shown
     this._mode = 'INFO'
     this._dirty = true
@@ -146,6 +146,10 @@ export default class RacesScreen extends PIXI.Container {
       }
     })
     this._message = this._add(this._resultsView, 0, 10, 12, 0.5, greyStyle)
+    // messages such as OpenF1 being closed during a live session can be long
+    this._message.style.wordWrap = true
+    this._message.style.wordWrapWidth = 440
+    this._message.style.align = 'center'
   }
 
   _add(parent, x, y, fontSize, anchorX=0, styleFn=style) {
@@ -199,20 +203,20 @@ export default class RacesScreen extends PIXI.Container {
     this._dirty = true
   }
 
-  setResult(key, result) {
-    this._results.set(key, { ...result, at: Date.now() })
+  setResult(id, result) {
+    this._results.set(id, { ...result, at: Date.now() })
     this._dirty = true
   }
 
   // asks the service for a session's results when it has none worth keeping
   _request(session, now) {
-    const res = this._results.get(session.key)
+    const res = this._results.get(session.id)
     const stale = !res || res.error || !res.rows || !res.rows.length
       || (session.end + HOUR > now && now - res.at > REFRESH_RECENT)
-    const asked = this._requested.get(session.key)
+    const asked = this._requested.get(session.id)
     if(stale && (!asked || now - asked > RETRY_AFTER)) {
-      this._requested.set(session.key, now)
-      this.emit('request', session.key)
+      this._requested.set(session.id, now)
+      this.emit('request', session.id)
     }
   }
 
@@ -282,13 +286,11 @@ export default class RacesScreen extends PIXI.Container {
       message = 'no such session'
     } else if(session.t > now) {
       message = `${session.name} starts ${when(session.t)}`
-    } else if(!session.key) {
-      message = 'no timing data for this session'
     } else {
       this._request(session, now)
-      const res = this._results.get(session.key)
+      const res = this._results.get(session.id)
       if(!res) message = 'loading...'
-      else if(res.error || !res.rows) message = 'timing unavailable, retrying'
+      else if(res.error || !res.rows) message = res.error || 'timing unavailable, retrying'
       else if(!res.rows.length) message = session.end > now ? 'session in progress' : 'no results yet'
       else rows = res.rows
     }

@@ -62,7 +62,7 @@ export default class F1Widget extends Widget {
 
     this.main.title = 'Formula 1'
     this._races = new RacesScreen()
-    this._races.on('request', (key) => this.sendMessage({ action: 'results', key }))
+    this._races.on('request', (id) => this.sendMessage({ action: 'results', id }))
     this._screens = [new DriversScreen(), new TeamsScreen(), this._races]
     this._screens.forEach((screen, i) => {
       const tab = this.main.getTabButton(i)
@@ -76,7 +76,7 @@ export default class F1Widget extends Widget {
   msg2state(msg) {
     // a session's results, asked for by the races tab
     if(msg.results) {
-      if(Number.isFinite(msg.results.key)) this._races.setResult(msg.results.key, msg.results)
+      if(typeof msg.results.id === 'string') this._races.setResult(msg.results.id, msg.results)
       return null
     }
     if(msg.error) return { error: msg.error }
