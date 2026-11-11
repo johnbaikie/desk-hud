@@ -46,6 +46,8 @@ const SHOTS = [
   ['preview_horoscope_month.png', 'horoscope', 2],
   ['preview_word.png', 'word', 0],
   ['preview_word_dyk.png', 'word', 2],
+  ['preview_bambu.png', 'bambu', 0],
+  ['preview_bambu_idle.png', 'bambu', 0, `window.deskHud.widget('bambu')._select(1, true)`],
   ['preview_accent.png', 'accent', 0],
 ]
 // optional arguments limit the run to screenshots whose names contain them,

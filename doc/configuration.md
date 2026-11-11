@@ -51,6 +51,14 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `sign` (string): one of the 12 zodiac signs, e.g. `"Cancer"` (any case).
   - `apiKey` (string, optional): a [FreeAstroAPI](https://www.freeastroapi.com) key (free plan: 80 requests a day; the widget uses about 10). With it, TODAY shows FreeAstroAPI's forecast with love, career, money and health scores, lucky colour, number and time, and the Moon. Without it (or while FreeAstroAPI is down), TODAY comes from [FreeHoroscopeAPI](https://freehoroscopeapi.com), which also supplies WEEK and MONTH and needs no key. The key can also come from the `FREE_ASTRO_API_KEY` environment variable. Keep it out of git.
 
+- **bambu** (optional): Bambu Lab printers for the Printers widget, read over the local network (MQTT on port 8883; the Pi must be able to reach the printers). Nothing is ever sent to a printer except a request for its full status, so the widget cannot affect a print.
+  - `printers` (array): one entry per printer:
+    - `name` (string, optional): the name shown on the HUD.
+    - `host` (string): the printer's IP address (give it a DHCP reservation so it doesn't change).
+    - `serial` (string): the printer's serial number (Settings → Device on the printer, or in Bambu Studio/Handy).
+    - `accessCode` (string): the 8-character LAN access code (Settings → Network / WLAN on the printer's screen). It changes if you refresh it on the printer. Keep it out of git; it is never sent to the browser.
+    - `model` (string, optional): e.g. `"H2S"`; worked out from the serial number when left out.
+
 Every key is required unless marked optional. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
 
 ## Integrations

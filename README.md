@@ -122,6 +122,17 @@ The code for a **PERSONAL** calendar tab (Google Calendar) and a **Tasks** widge
 - **WORD:** pronunciation, part of speech, definition and an example; **IN USE:** a quote from published writing; **DID YOU KNOW:** the story behind the word
 - Swipe left or right for the last 10 days' words
 
+## Bambu Lab printers
+
+![Printing](doc/img/preview_bambu.png)
+
+![Idle printer](doc/img/preview_bambu_idle.png)
+
+- Print progress for Bambu Lab printers on the local network (LAN MQTT with each printer's access code, set in the [config](doc/configuration.md))
+- File, percent, layer, time left and finish time; nozzle, bed and chamber temperatures; AMS filament colours and types, with the slot in use ringed
+- View only: nothing is sent to the printers except a status request
+- With several printers, swipe up or down to switch; the circle follows the print finishing soonest
+
 ## Accent colour
 
 ![Accent picker](doc/img/preview_accent.png)
