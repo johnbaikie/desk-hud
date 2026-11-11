@@ -26,8 +26,12 @@ module.exports = {
       repo: "https://github.com/johnbaikie/desk-hud.git",
       path: "/var/www",
       "pre-deploy-local": "",
+      // no build here: the compiled frontend (src/backend/www/js/app.js) is
+      // committed, and running npm install + webpack on the 2 GB Pi next to
+      // Chromium coincided with freezes and watchdog reboots. Only runtime
+      // dependencies are installed, at low priority.
       "post-deploy":
-        "npm install && npm run build && pm2 reload ecosystem.config.js --env production",
+        "nice -n 19 npm install --omit=dev --no-audit --no-fund && pm2 reload ecosystem.config.js --env production",
       "pre-setup": "",
     },
   },

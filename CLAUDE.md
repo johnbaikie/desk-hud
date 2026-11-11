@@ -16,7 +16,7 @@ npm run watch              # webpack dev build of the frontend in watch mode
 npm run build              # production frontend build
 npm run build-demo         # build demo mode (simulated data) into dist/demo
 npm run serve-demo         # serve dist/demo
-npm run deploy             # pm2 deploy to the Pi (deskhud@10.168.168.159, see ecosystem.config.js)
+npm run deploy             # pm2 deploy to the Pi (deskhud@10.168.168.159): pulls origin/main, installs runtime deps, reloads; it does NOT build, so run `npm run build` and commit app.js first
 node ./google_auth.js      # one-off Google OAuth flow; writes tokens into the config file
 ```
 

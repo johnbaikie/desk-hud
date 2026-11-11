@@ -164,7 +164,7 @@ Also `node -e 'require("./src/widgets/<id>/<Name>Service.js")'` to catch backend
 
 ## 7. Ship
 
-Only when the user asks: commit (don't add the untracked `*.LICENSE.txt` build files), `git push origin main`, then `npm run deploy` (pulls `origin/main` on the Pi, installs, builds, reloads pm2). Confirm with:
+Only when the user asks: commit (don't add the untracked `*.LICENSE.txt` build files), `git push origin main`, then `npm run deploy` (pulls `origin/main` on the Pi, installs runtime dependencies, reloads pm2; it does not build, so the committed `app.js` must be fresh from `npm run build`). Confirm with:
 
 ```bash
 ssh deskhud@10.168.168.159 'sleep 20; pm2 jlist'   # status online, uptime growing
