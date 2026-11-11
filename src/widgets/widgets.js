@@ -16,7 +16,7 @@ import AccentWidget from './accent'
 // Calendar's Personal tab, see CalendarWidget); the code stays either way
 import features from './features.json'
 
-const widgets = [ BambuWidget,
+const widgets = [
   DateTimeWidget,
   WeatherWidget,
   CalendarWidget,
@@ -29,6 +29,7 @@ const widgets = [ BambuWidget,
   SportsWidget,
   HoroscopeWidget,
   WordWidget,
+  BambuWidget,
   AccentWidget,
   
 ]
