@@ -1,6 +1,6 @@
 # Desk-HUD
 
-A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks, my teams' scores, Formula 1 standings and the health of the network, all a tap or a swipe away.
+A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks, my teams' scores, my horoscope, Formula 1 standings and the health of the network, all a tap or a swipe away.
 
 This is my take on [Desk-HUD by Krzysztof Jamroz](https://github.com/jamro/desk-hud). I have rebuilt most of the widgets, added new ones and moved it to a Raspberry Pi 5 in a 3D printed stand. See [Credits](#credits).
 
@@ -100,6 +100,17 @@ The detail screen on the left shows the widget in front; tap any circle to bring
 - A button per league: record and standing, last result, next game with its TV channel, the games after it, and the division, conference or table with your team highlighted
 - Live scores during your teams' games (clock, down and distance, outs and runners); when a game starts the widget comes to the front
 - The circle shows the next game, or the live score
+
+## Horoscope
+
+![Horoscope](doc/img/preview_horoscope.png)
+
+![Monthly horoscope](doc/img/preview_horoscope_month.png)
+
+- **TODAY**, **WEEK** and **MONTH** readings for your sign, set in the [config](doc/configuration.md)
+- With a free [FreeAstroAPI](https://www.freeastroapi.com) key, TODAY adds love, career, money and health scores, a lucky colour, number and time, and the Moon's phase and sign
+- The circle shows the sign's symbol, name and dates
+- Powered by [FreeAstroAPI](https://www.freeastroapi.com) and [FreeHoroscopeAPI](https://freehoroscopeapi.com)
 
 ## Accent colour
 

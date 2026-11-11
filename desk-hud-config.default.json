@@ -49,5 +49,9 @@
       "mls": [],
       "nwsl": []
     }
+  },
+  "horoscope": {
+    "sign": "Aries",
+    "apiKey": ""
   }
 }

@@ -8,6 +8,7 @@ import StocksWidget from './stocks'
 import NetworkWidget from './network'
 import F1Widget from './f1'
 import SportsWidget from './sports'
+import HoroscopeWidget from './horoscope'
 import AccentWidget from './accent'
 
 const widgets = [
@@ -21,6 +22,7 @@ const widgets = [
   NetworkWidget,
   F1Widget,
   SportsWidget,
+  HoroscopeWidget,
   AccentWidget,
   
 ]

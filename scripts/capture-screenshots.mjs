@@ -42,6 +42,8 @@ const SHOTS = [
   ['preview_sports.png', 'sports', 0, `window.deskHud.widget('sports')._screen.select('nfl', 0)`],
   ['preview_sports_live.png', 'sports', 0, `window.deskHud.widget('sports')._screen.select('nwsl', 0)`],
   ['preview_sports_nhl.png', 'sports', 0, `window.deskHud.widget('sports')._screen.select('nhl', 0)`],
+  ['preview_horoscope.png', 'horoscope', 0],
+  ['preview_horoscope_month.png', 'horoscope', 2],
   ['preview_accent.png', 'accent', 0],
 ]
 // optional arguments limit the run to screenshots whose names contain them,

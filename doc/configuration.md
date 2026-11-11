@@ -47,6 +47,10 @@ The configuration for Desk-HUD is stored in a JSON file.
 - **sports** (optional): favourite teams for the Sports widget, from ESPN's public scores API (no key).
   - `teams` (object): a list of team abbreviations for each of `nfl`, `mlb`, `nhl`, `mls` and `nwsl`, e.g. `{"nfl": ["KC"], "nhl": ["DAL"], "mls": ["SKC"], "nwsl": []}`. Use ESPN's abbreviations (the ones on espn.com scoreboards, such as `KC`, `DAL`, `SKC`, `NYY`); ESPN team ids work too. A league with an empty list gets no button. With several teams in a league, swipe up or down to switch.
 
+- **horoscope** (optional): the Horoscope widget.
+  - `sign` (string): one of the 12 zodiac signs, e.g. `"Cancer"` (any case).
+  - `apiKey` (string, optional): a [FreeAstroAPI](https://www.freeastroapi.com) key (free plan: 80 requests a day; the widget uses about 10). With it, TODAY shows FreeAstroAPI's forecast with love, career, money and health scores, lucky colour, number and time, and the Moon. Without it (or while FreeAstroAPI is down), TODAY comes from [FreeHoroscopeAPI](https://freehoroscopeapi.com), which also supplies WEEK and MONTH and needs no key. The key can also come from the `FREE_ASTRO_API_KEY` environment variable. Keep it out of git.
+
 Every key is required unless marked optional. The server stops with a "Config prop not found" error if a key it reads is missing or empty. Leave `google.clientId`, `google.clientSecret` and `google.clientToken` empty in a new config; `node ./google_auth.js` fills them in.
 
 ## Integrations
