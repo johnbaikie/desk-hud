@@ -8,6 +8,7 @@ const NetworkService = require("./network/NetworkService")
 const F1Service = require("./f1/F1Service")
 const SportsService = require("./sports/SportsService")
 const HoroscopeService = require("./horoscope/HoroscopeService")
+const WordService = require("./word/WordService")
 // switches for optional features: "google" runs the Google Calendar and
 // Tasks services; the code stays either way
 const features = require("./features.json")
@@ -23,5 +24,6 @@ const services = [
   F1Service,
   SportsService,
   HoroscopeService,
+  WordService,
 ]
 module.exports = services

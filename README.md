@@ -1,6 +1,6 @@
 # Desk-HUD
 
-A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work calendar, weather and alerts, a pomodoro timer, stocks, my teams' scores, my horoscope, Formula 1 standings and the health of the network, all a tap or a swipe away.
+A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work calendar, weather and alerts, a pomodoro timer, stocks, my teams' scores, my horoscope, a word of the day, Formula 1 standings and the health of the network, all a tap or a swipe away.
 
 This is my take on [Desk-HUD by Krzysztof Jamroz](https://github.com/jamro/desk-hud). I have rebuilt most of the widgets, added new ones and moved it to a Raspberry Pi 5 in a 3D printed stand. See [Credits](#credits).
 
@@ -111,6 +111,16 @@ The code for a **PERSONAL** calendar tab (Google Calendar) and a **Tasks** widge
 - With a free [FreeAstroAPI](https://www.freeastroapi.com) key, TODAY adds love, career, money and health scores, a lucky colour, number and time, and the Moon's phase and sign
 - The circle shows the sign's symbol, name and dates
 - Powered by [FreeAstroAPI](https://www.freeastroapi.com) and [FreeHoroscopeAPI](https://freehoroscopeapi.com)
+
+## Word of the Day
+
+![Word of the Day](doc/img/preview_word.png)
+
+![Did you know?](doc/img/preview_word_dyk.png)
+
+- [Merriam-Webster's Word of the Day](https://www.merriam-webster.com/word-of-the-day) from its public feed (no key)
+- **WORD:** pronunciation, part of speech, definition and an example; **IN USE:** a quote from published writing; **DID YOU KNOW:** the story behind the word
+- Swipe left or right for the last 10 days' words
 
 ## Accent colour
 

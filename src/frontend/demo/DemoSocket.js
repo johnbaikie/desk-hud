@@ -9,6 +9,7 @@ import NetworkDemoData from "./NetworkDemoData"
 import F1DemoData from "./F1DemoData"
 import SportsDemoData from "./SportsDemoData"
 import HoroscopeDemoData from "./HoroscopeDemoData"
+import WordDemoData from "./WordDemoData"
 import features from '../../widgets/features.json'
 
 export default class DemoSocket {
@@ -24,6 +25,7 @@ export default class DemoSocket {
     this._f1Demo = new F1DemoData()
     this._sportsDemo = new SportsDemoData()
     this._horoscopeDemo = new HoroscopeDemoData()
+    this._wordDemo = new WordDemoData()
 
     
     this._listeners = {}
@@ -43,6 +45,7 @@ export default class DemoSocket {
       this._publish('widget', this._f1Demo.data)
       this._publish('widget', this._sportsDemo.data)
       this._publish('widget', this._horoscopeDemo.data)
+      this._publish('widget', this._wordDemo.data)
     }, 500)
 
     setTimeout(() => {
