@@ -9,6 +9,7 @@ import NetworkDemoData from "./NetworkDemoData"
 import F1DemoData from "./F1DemoData"
 import SportsDemoData from "./SportsDemoData"
 import HoroscopeDemoData from "./HoroscopeDemoData"
+import features from '../../widgets/features.json'
 
 export default class DemoSocket {
   constructor() {
@@ -31,8 +32,10 @@ export default class DemoSocket {
       this._publish('connect');
       this._publish('config', this._getConfig())
       this._publish('widget', this._weatherDemo.data)
-      this._publish('widget', this._todoDemo.data)
-      this._publish('widget', this._calendarDemo.data)
+      if(features.google) {
+        this._publish('widget', this._todoDemo.data)
+        this._publish('widget', this._calendarDemo.data)
+      }
       this._publish('widget', this._outlookDemo.data)
       this._publish('widget', this._pomodoroDemo.data)
       this._publish('widget', this._stocksDemo.data)

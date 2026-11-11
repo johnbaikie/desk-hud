@@ -8,13 +8,16 @@ const NetworkService = require("./network/NetworkService")
 const F1Service = require("./f1/F1Service")
 const SportsService = require("./sports/SportsService")
 const HoroscopeService = require("./horoscope/HoroscopeService")
+// switches for optional features: "google" runs the Google Calendar and
+// Tasks services; the code stays either way
+const features = require("./features.json")
 
 const services = [
   StocksService,
   WeatherService,
-  CalendarService,
+  ...(features.google ? [CalendarService] : []),
   OutlookService,
-  TodoService,
+  ...(features.google ? [TodoService] : []),
   PomodoroService,
   NetworkService,
   F1Service,

@@ -1,6 +1,6 @@
 # Desk-HUD
 
-A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work and personal calendars, tasks, weather and alerts, a pomodoro timer, stocks, my teams' scores, my horoscope, Formula 1 standings and the health of the network, all a tap or a swipe away.
+A side monitor for my desk: an 11.9" 1480×320 touch screen on a Raspberry Pi 5 that keeps the day in view, with my work calendar, weather and alerts, a pomodoro timer, stocks, my teams' scores, my horoscope, Formula 1 standings and the health of the network, all a tap or a swipe away.
 
 This is my take on [Desk-HUD by Krzysztof Jamroz](https://github.com/jamro/desk-hud). I have rebuilt most of the widgets, added new ones and moved it to a Raspberry Pi 5 in a 3D printed stand. See [Credits](#credits).
 
@@ -41,17 +41,17 @@ The detail screen on the left shows the widget in front; tap any circle to bring
 
 ![Work calendar](doc/img/preview_calendar.png)
 
+- **WORK** (a published Outlook calendar); swipe left or right for other days
+- Busy timeline, all-day events, next meeting and a meeting clock
+- A **PERSONAL** tab (Google Calendar) is available but switched off; see [Google features](#google-features-switched-off)
+
+## Google features (switched off)
+
 ![Personal calendar](doc/img/preview_calendar_personal.png)
-
-- **WORK** (a published Outlook calendar) and **PERSONAL** (Google Calendar) tabs; swipe left or right for other days
-- Busy timeline, all-day events, next meeting and a meeting clock across both calendars
-
-## Tasks
 
 ![Tasks](doc/img/preview_todo.png)
 
-- Every Google Tasks list, plus tasks completed in the last 7 days
-- Tick tasks off (or back on) from the screen
+The code for a **PERSONAL** calendar tab (Google Calendar) and a **Tasks** widget (every Google Tasks list, tick tasks off from the screen) is still here but switched off, because Google expires the sign-in every 7 days until its project is published. To turn them back on, set `"google": true` in [src/widgets/features.json](src/widgets/features.json), fill in the `google` section of the [config](doc/configuration.md#google), rebuild and deploy.
 
 ## Pomodoro
 

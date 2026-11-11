@@ -49,7 +49,11 @@ const SHOTS = [
 // optional arguments limit the run to screenshots whose names contain them,
 // e.g. `... capture-screenshots.mjs f1 rainbow`
 const ONLY = process.argv.slice(2)
-const wanted = (file) => !ONLY.length || ONLY.some(word => file.includes(word))
+// the Google screens only exist while the "google" feature is on
+const features = JSON.parse(await readFile(path.join(ROOT, 'src', 'widgets', 'features.json'), 'utf8'))
+const GOOGLE_SHOTS = ['preview_calendar_personal.png', 'preview_todo.png']
+const wanted = (file) => (features.google || !GOOGLE_SHOTS.includes(file))
+  && (!ONLY.length || ONLY.some(word => file.includes(word)))
 
 // static server for dist/demo
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.woff': 'font/woff', '.woff2': 'font/woff2', '.css': 'text/css' }

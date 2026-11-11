@@ -29,7 +29,7 @@ The configuration for Desk-HUD is stored in a JSON file.
   - `lon` (number): The longitude of the location.
   - `units` (string, optional): `"metric"` (°C, the default) or `"imperial"` (°F).
 
-- **google**: This section pertains to Google integration.
+- **google** (only used when `"google": true` in `src/widgets/features.json`; switched off by default): This section pertains to Google integration.
   - `clientId` (string): The client ID for Google integration.
   - `clientSecret` (string): The client secret for Google integration.
   - `clientToken` (string): The client token for Google integration.
@@ -37,7 +37,7 @@ The configuration for Desk-HUD is stored in a JSON file.
 
   The Tasks widget shows every task from all of your Google Tasks lists: open tasks first, then tasks completed in the last 7 days.
 
-- **outlook**: A work calendar, shown on the WORK tab of the Calendar widget (Google Calendar is the PERSONAL tab).
+- **outlook**: A work calendar, shown on the WORK tab of the Calendar widget (Google Calendar is the PERSONAL tab when the Google features are on).
   - `icsUrl` (string): The ICS link from Outlook's "Publish a calendar" setting (Settings → Calendar → Shared calendars). A `webcal://` link works too. Anyone with the link can read the calendar, so keep it out of git. The calendar is reloaded every 5 minutes, but Outlook itself may only refresh a published calendar every few hours.
 
 - **stockdata** - allows you to configure the [StockData](http://www.stockdata.org) service integration for Desk-HUD. StockData provides financial market data and analytics.

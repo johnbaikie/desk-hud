@@ -10,12 +10,15 @@ import F1Widget from './f1'
 import SportsWidget from './sports'
 import HoroscopeWidget from './horoscope'
 import AccentWidget from './accent'
+// switches for optional features: "google" adds the Tasks widget (and the
+// Calendar's Personal tab, see CalendarWidget); the code stays either way
+import features from './features.json'
 
 const widgets = [
   DateTimeWidget,
   WeatherWidget,
   CalendarWidget,
-  TodoWidget,
+  ...(features.google ? [TodoWidget] : []),
   PomodoroWidget,
 
   StocksWidget,

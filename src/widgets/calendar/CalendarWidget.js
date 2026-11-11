@@ -9,6 +9,7 @@ import TextField from '../../frontend/components/TextField.js';
 import CalendarScreen from './CalendarScreen.js';
 import AuthErrorScreen from './lib/AuthErrorScreen.js';
 import ErrorScreen from '../../frontend/ErrorScreen.js';
+import features from '../features.json'
 
 // the main screen goes back to today after this long without a swipe or tap
 const DAY_RESET_TIME = 2*60*1000
@@ -25,11 +26,13 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 export default class CalendarWidget extends Widget {
   // One widget for both calendars: the Google service ('calendar') is the
   // Personal tab and the Outlook ICS service ('outlook') the Work tab. The
-  // circle sums up today across both.
+  // circle sums up today across both. With "google": false in
+  // src/widgets/features.json there is only the Work tab.
   constructor() {
     super('calendar', 'Calendar')
-    // WidgetContainer routes these services' messages here
-    this.messageIds = ['calendar', 'outlook']
+    // WidgetContainer routes these services' messages here; without the
+    // Google feature (src/widgets/features.json) only Outlook's
+    this.messageIds = features.google ? ['calendar', 'outlook'] : ['outlook']
     this.initState({
       sources: { work: { events: null, error: null }, personal: { events: null, error: null } },
       todayEvents: null,
@@ -119,7 +122,8 @@ export default class CalendarWidget extends Widget {
     this._screens = TAB_NAMES.map((name, i) => {
       const tab = this.main.getTabButton(i)
       tab.text = name
-      tab.visible = true
+      // no Personal tab without the Google feature
+      tab.visible = i !== TAB_PERSONAL || features.google
       const screen = new CalendarScreen()
       screen.on('swipe', (step) => this._selectDay(this._dayOffset + step))
       this.main.getPage(i).addChild(screen)
