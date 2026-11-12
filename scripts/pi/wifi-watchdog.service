@@ -1,0 +1,8 @@
+[Unit]
+Description=Reconnect Wi-Fi when the router stops answering
+After=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/wifi-watchdog
+TimeoutStartSec=90
