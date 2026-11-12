@@ -23,9 +23,25 @@ const SocketLogger = require('./SocketLogger.js');
   await config.load()
 
   const port = config.getProp('core.port')
+  // The kiosk browser runs on the same machine, so by default nothing else on
+  // the network can reach the page, the socket (which takes service commands
+  // and streams the backend log) or livereload. Set core.host to "0.0.0.0" to
+  // open them to the LAN.
+  let host = '127.0.0.1'
+  try {
+    host = config.getProp('core.host')
+  } catch(err) {
+    host = '127.0.0.1'
+  }
   config.coreLogger.log("Desk HUD started")
-  
-  const liveReloadServer = livereload.createServer();
+
+  // livereload has no host option: build its server (which also serves
+  // livereload.js) without listening, then make it listen on `host`
+  const liveReloadServer = livereload.createServer({ noListen: true });
+  const liveReloadHttp = liveReloadServer.config.server
+  const listenLiveReload = liveReloadHttp.listen.bind(liveReloadHttp)
+  liveReloadHttp.listen = (lrPort) => listenLiveReload(lrPort, host)
+  liveReloadServer.listen();
   liveReloadServer.server.once("connection", () => {
     setTimeout(() => {
       liveReloadServer.refresh("/");
@@ -92,8 +108,8 @@ const SocketLogger = require('./SocketLogger.js');
     })
   });
   
-  server.listen(port, () => {
-    config.coreLogger.log(`app listening on port ${port}`)
+  server.listen(port, host, () => {
+    config.coreLogger.log(`app listening on ${host}:${port}`)
   })
   
 })()

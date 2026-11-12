@@ -12,6 +12,7 @@ The configuration for Desk-HUD is stored in a JSON file.
 
 - **core**: This section contains core settings for Desk-HUD.
   - `port` (number): The port number on which Desk-HUD's server runs.
+  - `host` (string, optional): the address the server and livereload listen on. Defaults to `127.0.0.1`, so only the kiosk browser on the same machine can open the page or its socket. Set `"0.0.0.0"` to open the dashboard to other machines on the network.
   - `distance` (object): The distance settings for the distance sensor, specifying the threshold values for waking up and going to sleep modes.
     - `wakeUp` (number): The distance threshold (in centimeters) at which Desk-HUD wakes up from sleep mode.
     - `goSleep` (number): The distance threshold (in centimeters) at which Desk-HUD goes into sleep mode.
