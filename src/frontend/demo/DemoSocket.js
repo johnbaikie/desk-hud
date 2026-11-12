@@ -11,6 +11,7 @@ import SportsDemoData from "./SportsDemoData"
 import HoroscopeDemoData from "./HoroscopeDemoData"
 import WordDemoData from "./WordDemoData"
 import BambuDemoData from "./BambuDemoData"
+import LaunchesDemoData from "./LaunchesDemoData"
 import features from '../../widgets/features.json'
 
 export default class DemoSocket {
@@ -28,6 +29,7 @@ export default class DemoSocket {
     this._horoscopeDemo = new HoroscopeDemoData()
     this._wordDemo = new WordDemoData()
     this._bambuDemo = new BambuDemoData()
+    this._launchesDemo = new LaunchesDemoData()
 
     
     this._listeners = {}
@@ -49,6 +51,7 @@ export default class DemoSocket {
       this._publish('widget', this._horoscopeDemo.data)
       this._publish('widget', this._wordDemo.data)
       this._publish('widget', this._bambuDemo.data)
+      this._publish('widget', this._launchesDemo.data)
     }, 500)
 
     setTimeout(() => {

@@ -133,6 +133,17 @@ The code for a **PERSONAL** calendar tab (Google Calendar) and a **Tasks** widge
 - View only: nothing is sent to the printers except a status request
 - With several printers, swipe up or down to switch; the circle follows the print finishing soonest
 
+## Rocket launches
+
+![Next launch](doc/img/preview_launches.png)
+
+![Upcoming launches](doc/img/preview_launches_upcoming.png)
+
+- Launches worldwide from [Launch Library 2](https://thespacedevs.com/llapi) by The Space Devs (free, no key)
+- The circle counts down to the next launch; its ring fills over the last day, with a rocket riding the tip that lights its engine in the final hour
+- NEXT: mission, rocket, provider, time and window, pad, status, orbit, launch weather and the mission description; swipe for other launches
+- UPCOMING and RECENT: the next and last ten launches; tap one to see it on NEXT
+
 ## Accent colour
 
 ![Accent picker](doc/img/preview_accent.png)

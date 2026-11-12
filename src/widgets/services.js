@@ -10,6 +10,7 @@ const SportsService = require("./sports/SportsService")
 const HoroscopeService = require("./horoscope/HoroscopeService")
 const WordService = require("./word/WordService")
 const BambuService = require("./bambu/BambuService")
+const LaunchesService = require("./launches/LaunchesService")
 // switches for optional features: "google" runs the Google Calendar and
 // Tasks services; the code stays either way
 const features = require("./features.json")
@@ -27,5 +28,6 @@ const services = [
   HoroscopeService,
   WordService,
   BambuService,
+  LaunchesService,
 ]
 module.exports = services

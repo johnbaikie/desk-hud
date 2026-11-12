@@ -11,6 +11,7 @@ import SportsWidget from './sports'
 import HoroscopeWidget from './horoscope'
 import WordWidget from './word'
 import BambuWidget from './bambu'
+import LaunchesWidget from './launches'
 import AccentWidget from './accent'
 // switches for optional features: "google" adds the Tasks widget (and the
 // Calendar's Personal tab, see CalendarWidget); the code stays either way
@@ -30,6 +31,7 @@ const widgets = [
   HoroscopeWidget,
   WordWidget,
   BambuWidget,
+  LaunchesWidget,
   AccentWidget,
   
 ]
