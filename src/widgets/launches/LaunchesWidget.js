@@ -147,11 +147,12 @@ export default class LaunchesWidget extends Widget {
       this._count.text = count
     }
     this._count.progress = p
-    this._count.style.fontSize = 13 + 9*this.size
-    this._count.y = 0
+    // 22 on a large circle, 13 on a small one, so T-1D 05:12 fits either
+    this._count.style.fontSize = 4 + 18*this.size
+    this._count.y = 14*(1 - this.size) // a little lower on a small circle, centring the pair
     this._name.progress = p
     this._name.style.fontSize = 9 + 3*this.size
-    this._name.y = -26*this.size
+    this._name.y = -26*this.size + 8*(1 - this.size)
     this._site.progress = p
     this._site.y = 24*this.size
     this._site.visible = this.size === 1

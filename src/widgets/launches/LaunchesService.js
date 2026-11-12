@@ -58,6 +58,16 @@ function simplify(l) {
     weather: str(l.weather_concerns),
     webcastLive: l.webcast_live === true,
     failReason: str(l.failreason),
+    statusDescription: str(status.description),
+    programs: Array.isArray(l.program) ? l.program.map(p => str(p && p.name)).filter(Boolean) : [],
+    providerType: str(provider.type && provider.type.name),
+    // this launch's number in its calendar year: for the provider, worldwide (orbital), from the pad and the site
+    countYear: {
+      provider: Number.isFinite(l.agency_launch_attempt_count_year) ? l.agency_launch_attempt_count_year : null,
+      orbital: Number.isFinite(l.orbital_launch_attempt_count_year) ? l.orbital_launch_attempt_count_year : null,
+      pad: Number.isFinite(l.pad_launch_attempt_count_year) ? l.pad_launch_attempt_count_year : null,
+      location: Number.isFinite(l.location_launch_attempt_count_year) ? l.location_launch_attempt_count_year : null,
+    },
   }
 }
 
