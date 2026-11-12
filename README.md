@@ -108,7 +108,7 @@ The code for a **PERSONAL** calendar tab (Google Calendar) and a **Tasks** widge
 ![Monthly horoscope](doc/img/preview_horoscope_month.png)
 
 - **TODAY**, **WEEK** and **MONTH** readings for your sign, set in the [config](doc/configuration.md)
-- With a free [FreeAstroAPI](https://www.freeastroapi.com) key, TODAY adds love, career, money and health scores, a lucky colour, number and time, and the Moon's phase and sign
+- With a free [FreeAstroAPI](https://www.freeastroapi.com) key, TODAY adds love, career, money and health scores, a lucky colour, number and time, and the Moon's phase and sign; the reading itself still comes from FreeHoroscopeAPI, which writes a new one each day
 - The circle shows the sign's symbol, name and dates
 - Powered by [FreeAstroAPI](https://www.freeastroapi.com) and [FreeHoroscopeAPI](https://freehoroscopeapi.com)
 

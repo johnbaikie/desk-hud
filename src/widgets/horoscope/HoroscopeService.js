@@ -8,7 +8,9 @@ const storage = require('node-persist')
 //   time, and the Moon, for our own local date. Free plan: 80 requests a day,
 //   1 a second; this makes about 10. The key stays on the server: it is only
 //   sent in the x-api-key header, never to the browser or the logs.
-//   Without a key, or while FreeAstroAPI fails, FreeHoroscopeAPI's daily.
+//   The text comes from FreeHoroscopeAPI's daily (FreeAstroAPI's is a
+//   template that barely changes), FreeAstroAPI's only when that fails.
+//   Without a key, or while FreeAstroAPI fails, FreeHoroscopeAPI's daily alone.
 // - Weekly and monthly: FreeHoroscopeAPI (freehoroscopeapi.com; no key).
 //   Its terms ask for a visible "Powered by FreeHoroscopeAPI" credit, which
 //   the widget shows.
@@ -141,16 +143,48 @@ class HoroscopeService extends Service {
   }
 
   async _fetch(period) {
-    if(period === 'daily' && this._apiKey) {
-      try {
-        return await this._fetchAstro()
-      } catch(err) {
-        this.logger.error('Horoscope daily (FreeAstroAPI):', err.message || err)
-        // keep today's FreeAstroAPI reading rather than replace it
-        const last = this._readings.daily
-        if(last && last.source === 'freeastroapi' && last.date === this._today()) return last
-      }
+    if(period === 'daily' && this._apiKey) return this._fetchDaily()
+    return this._fetchFree(period)
+  }
+
+  // TODAY with a key: FreeAstroAPI's scores, lucky things and Moon, with
+  // FreeHoroscopeAPI's text (FreeAstroAPI's own text is a template that barely
+  // changes from day to day). FreeHoroscopeAPI's day starts before ours, so a
+  // reading dated after today (in the evening) doesn't replace today's.
+  async _fetchDaily() {
+    const today = this._today()
+    const last = this._readings.daily
+    let astro = null
+    try {
+      astro = await this._fetchAstro()
+    } catch(err) {
+      this.logger.error('Horoscope daily (FreeAstroAPI):', err.message || err)
+      // keep today's FreeAstroAPI reading rather than replace it
+      if(last && last.source === 'freeastroapi' && last.date === today) astro = last
     }
+    let free = null
+    try {
+      free = await this._fetchFree('daily')
+    } catch(err) {
+      this.logger.error('Horoscope daily (FreeHoroscopeAPI):', err.message || err)
+    }
+    const lastFree = last && last.textSource === 'freehoroscopeapi' && last.textDate === today
+      ? { date: last.textDate, text: last.text } : null
+    if(free && free.date > today && lastFree) free = lastFree
+    if(!free) free = lastFree
+    if(!astro) {
+      if(free) return { ...free, fetched: Date.now() }
+      throw new Error('FreeAstroAPI and FreeHoroscopeAPI both failed')
+    }
+    // astroText: FreeAstroAPI's own text, for when FreeHoroscopeAPI has none for today
+    const astroText = astro.astroText || astro.text
+    return free
+      ? { ...astro, astroText, text: free.text, textSource: 'freehoroscopeapi', textDate: free.date }
+      : { ...astro, astroText, text: astroText, textSource: 'freeastroapi', textDate: astro.date }
+  }
+
+  // FreeHoroscopeAPI: daily, weekly or monthly
+  async _fetchFree(period) {
     const response = await fetch(`${API}/${period}?sign=${this._sign}`, {
       headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' },
       signal: AbortSignal.timeout(REQUEST_TIMEOUT),

@@ -15,7 +15,9 @@ export default class HoroscopeDemoData {
           daily: {
             source: 'freeastroapi',
             date: day,
-            text: 'With the Moon in Sagittarius, Cancer meets the day through a water lens. The Moon activating your 6th house puts routine, rest and energy first. Center your decisions on health and use restorative boundaries to turn momentum into concrete results; a small change at home pays off more than a big one at work.',
+            text: 'Cancer, today is a good day to focus on your home and family life. You may find yourself thinking about ways to make your living space more comfortable and inviting. Spending time with loved ones can be especially rewarding now, and you may feel a strong desire to connect with them on a deeper level. It is also a good time to take care of the chores you have been putting off.',
+            textSource: 'freehoroscopeapi',
+            textDate: day,
             theme: 'Emotion',
             keywords: ['Intuition', 'Emotion', 'Nurturing'],
             scores: { overall: 58, love: 51, career: 50, money: 57, health: 72 },

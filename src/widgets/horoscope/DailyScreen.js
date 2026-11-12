@@ -78,7 +78,9 @@ export default class DailyScreen extends PIXI.Container {
     this._error = error
     this._bars.clear()
     const rich = !!(reading && reading.scores && Object.keys(reading.scores).length)
-    this._credit.text = reading && reading.source === 'freeastroapi' ? 'Powered by FreeAstroAPI' : 'Powered by FreeHoroscopeAPI'
+    this._credit.text = !reading || reading.source !== 'freeastroapi' ? 'Powered by FreeHoroscopeAPI'
+      : reading.textSource === 'freehoroscopeapi' ? 'Powered by FreeHoroscopeAPI and FreeAstroAPI'
+      : 'Powered by FreeAstroAPI'
 
     if(!reading) {
       this._date.text = ''
