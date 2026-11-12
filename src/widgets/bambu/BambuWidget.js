@@ -11,6 +11,9 @@ import PrinterScreen, { duration } from './PrinterScreen.js'
 // printer that is printing (the one finishing soonest).
 const SELECT_TIMEOUT = 2*60*1000
 const ACTIVE = ['printing', 'paused', 'preparing']
+// the arc leaves a gap at the top for the title, as on Network, F1 and Sports
+const ARC_START = 0.85 // rad from 12 o'clock
+const ARC_SPAN = (2*Math.PI - 2*ARC_START) / (2*Math.PI)
 
 export default class BambuWidget extends Widget {
   constructor() {
@@ -24,6 +27,7 @@ export default class BambuWidget extends Widget {
     this._arc = new ProgressCircle()
     this._arc.color = ACCENT
     this._arc.lineWidth = 3
+    this._arc.rotation = ARC_START
     this.addChild(this._arc)
 
     const style = (fontSize, stroke) => ({
@@ -132,7 +136,7 @@ export default class BambuWidget extends Widget {
 
     this._arc.progress = progress
     this._arc.size = this.size
-    this._arc.value = p && (active || p.status === 'finished') && Number.isFinite(p.percent) ? p.percent/100 : 0
+    this._arc.value = p && (active || p.status === 'finished') && Number.isFinite(p.percent) ? ARC_SPAN * p.percent/100 : 0
 
     this._bigLabel.progress = progress
     this._bigLabel.style.fontSize = 14 + 12*this.size
