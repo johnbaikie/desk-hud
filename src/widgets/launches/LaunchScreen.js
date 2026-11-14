@@ -91,10 +91,12 @@ export default class LaunchScreen extends PIXI.Container {
   }
 
   // l: a launch from LaunchesService (or null); index/count: its place in the list
-  show(l, index, count) {
+  // note: an extra line for the details (where the payload is in orbit)
+  show(l, index, count, note='') {
     this._position.text = count > 1 ? `${index + 1} / ${count}   < swipe for other launches >` : ''
-    if(l === this._launch) return
+    if(l === this._launch && note === this._note) return
     this._launch = l
+    this._note = note
     if(!l) {
       for(const f of this._fields) if(f !== this._credit && f !== this._position && f !== this._scrollHint) f.text = ''
       this._fit('No launch data yet.')
@@ -116,6 +118,7 @@ export default class LaunchScreen extends PIXI.Container {
   // the scrolling text: description, then details as short paragraphs
   _details(l) {
     const parts = [l.description || 'No mission description.']
+    if(this._note) parts.push(this._note)
     if(l.failReason) parts.push(`Failure: ${l.failReason}`)
     if(l.statusDescription) parts.push(`${l.statusName || l.status}: ${l.statusDescription}`)
     if(l.weather) parts.push(`Weather concerns: ${l.weather}`)

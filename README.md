@@ -139,10 +139,13 @@ The code for a **PERSONAL** calendar tab (Google Calendar) and a **Tasks** widge
 
 ![Upcoming launches](doc/img/preview_launches_upcoming.png)
 
+![Orbit](doc/img/preview_launches_orbit.png)
+
 - Launches worldwide from [Launch Library 2](https://thespacedevs.com/llapi) by The Space Devs (free, no key)
 - The circle counts down to the next launch; its ring fills over the last day, with a rocket riding the tip that lights its engine in the final hour
 - NEXT: mission, rocket, provider, time and window, pad, status, orbit, launch weather and the mission description; swipe for other launches
-- UPCOMING and RECENT: the next and last ten launches; tap one to see it on NEXT
+- LAUNCHES: the next or last ten launches (UPCOMING / RECENT buttons); tap one to see it on NEXT
+- ORBIT: where the ISS, Tiangong and recent launches' payloads are now, on a world map lit by the sun, from [CelesTrak](https://celestrak.org) orbital data (free, no key); tap one for its ground track, height, speed, whether it is in sunlight, and for the stations the next pass over home. New launches show up once they are catalogued, usually within a day
 
 ## Accent colour
 

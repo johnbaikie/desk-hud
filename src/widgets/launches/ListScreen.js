@@ -95,7 +95,7 @@ export default class ListScreen extends PIXI.Container {
         row.status.text = shortCountdown(l, now)
         row.status.style.fill = l.status === 'Go' ? hex(this._accent) : '#ffffff'
       } else {
-        row.status.text = l.status === 'Success' ? 'success' : l.status === 'Failure' ? 'failure' : l.status === 'Partial Failure' ? 'partial' : l.status
+        row.status.text = l.status === 'Deployed' ? 'deployed' : l.status === 'Success' ? 'success' : l.status === 'Failure' ? 'failure' : l.status === 'Partial Failure' ? 'partial' : l.status
         row.status.style.fill = GOOD.includes(l.status) ? hex(this._accent) : '#ffffff'
       }
       row.rocket.text = cut(shortRocket(l), 16)

@@ -4,7 +4,8 @@ import ProgressCircle from '../../frontend/circles/ProgressCircle.js'
 import { ACCENT } from '../../frontend/theme.js'
 import Rocket, { ROCKET_LENGTH } from './Rocket.js'
 import LaunchScreen from './LaunchScreen.js'
-import ListScreen from './ListScreen.js'
+import ListsScreen from './ListsScreen.js'
+import OrbitScreen from './OrbitScreen.js'
 import { countdown, shortRocket, site, exact } from './format.js'
 
 // Rocket launches worldwide from LaunchesService (Launch Library 2).
@@ -12,8 +13,9 @@ import { countdown, shortRocket, site, exact } from './format.js'
 // (open at the top for the title) fills over the last 24 hours before
 // launch, with a rocket riding its tip; the flame lights up in the last hour
 // and while a launch is in flight.
-// Main screen: NEXT (one launch in detail; swipe for the others), UPCOMING
-// and RECENT lists (tap a row to see it on NEXT). After a while NEXT goes
+// Main screen: NEXT (one launch in detail; swipe for the others), LAUNCHES
+// (the upcoming or recent list; tap a row to see it on NEXT) and ORBIT (the
+// ISS, Tiangong and recent payloads on a world map). After a while NEXT goes
 // back to the next launch.
 
 const RING_START = 0.85 // rad from 12 o'clock, as on Network, F1 and Sports
@@ -25,7 +27,7 @@ export default class LaunchesWidget extends Widget {
   constructor() {
     super('launches', 'Launches')
     this._accent = ACCENT
-    this.initState({ upcoming: [], recent: [] })
+    this.initState({ upcoming: [], recent: [], orbits: null, home: null })
 
     this._ring = new ProgressCircle()
     this._ring.color = ACCENT
@@ -49,7 +51,7 @@ export default class LaunchesWidget extends Widget {
     this._lastCount = null
 
     this.main.title = 'Rocket Launches'
-    const tabs = ['next', 'upcoming', 'recent']
+    const tabs = ['next', 'launches', 'orbit']
     tabs.forEach((name, i) => {
       const tab = this.main.getTabButton(i)
       tab.text = name
@@ -58,12 +60,11 @@ export default class LaunchesWidget extends Widget {
     this._detail = new LaunchScreen()
     this._detail.on('swipe', (step) => this._select(this._index + step))
     this.main.getPage(0).addChild(this._detail)
-    this._lists = ['upcoming', 'recent'].map((mode, i) => {
-      const screen = new ListScreen(mode)
-      screen.on('select', (id) => this._show(id))
-      this.main.getPage(i + 1).addChild(screen)
-      return screen
-    })
+    this._lists = new ListsScreen()
+    this._lists.on('select', (id) => this._show(id))
+    this.main.getPage(1).addChild(this._lists)
+    this._orbit = new OrbitScreen()
+    this.main.getPage(2).addChild(this._orbit)
     this._index = 0 // into _all(): upcoming, then recent
     this._indexAt = 0
   }
@@ -75,7 +76,9 @@ export default class LaunchesWidget extends Widget {
     const upcoming = valid(msg.upcoming)
     const recent = valid(msg.recent)
     if(!upcoming.length && !recent.length) return { error: 'No launch data' }
-    return { upcoming, recent, error: null }
+    const orbits = msg.orbits && Array.isArray(msg.orbits.stations) && Array.isArray(msg.orbits.launches) ? msg.orbits : null
+    const home = msg.home && Number.isFinite(msg.home.lat) && Number.isFinite(msg.home.lon) ? msg.home : null
+    return { upcoming, recent, orbits, home, error: null }
   }
 
   updateState(obj) {
@@ -85,9 +88,9 @@ export default class LaunchesWidget extends Widget {
     const id = this._shown && this._shown.id
     const all = this._all()
     const found = id ? all.findIndex(l => l.id === id) : -1
+    this._orbit.show(this.state.orbits, this.state.home)
     this._select(found >= 0 ? found : 0, false)
-    this._lists[0].show(this.state.upcoming)
-    this._lists[1].show(this.state.recent)
+    this._lists.show(this.state.upcoming, this.state.recent)
     this._featured = this.state.upcoming[0] || null
     this._name.text = this._featured ? shortRocket(this._featured) : ''
     this._site.text = this._featured ? site(this._featured) : ''
@@ -104,9 +107,17 @@ export default class LaunchesWidget extends Widget {
     this._index = Math.max(0, Math.min(all.length - 1, index))
     if(byUser) this._indexAt = Date.now()
     this._shown = all[this._index]
-    this._detail.show(this._shown, this._index, all.length)
+    this._detail.show(this._shown, this._index, all.length, this._orbitNote(this._shown))
     this.main.statusLeftText = this._index < this.state.upcoming.length ? 'upcoming launch' : 'recent launch'
     this.main.statusRightText = 'all times local'
+  }
+
+  // for NEXT: where a recent launch's payload is, if CelesTrak tracks it
+  _orbitNote(l) {
+    const o = l && this.state.orbits && this.state.orbits.launches.find(x => x.launchId === l.id)
+    if(!o) return ''
+    const others = o.count - 1
+    return `In orbit: ${o.name}${others > 0 ? ` and ${others} other object${others === 1 ? '' : 's'}` : ''} (${o.designator}). See it on the ORBIT tab.`
   }
 
   _show(id) {
@@ -159,7 +170,8 @@ export default class LaunchesWidget extends Widget {
 
     const pages = this.main.progress * this.dataLoadProgress
     this._detail.progress = pages
-    this._lists.forEach(s => s.progress = pages)
+    this._lists.progress = pages
+    this._orbit.progress = pages
     super.render(renderer)
   }
 }

@@ -50,7 +50,7 @@ const SHOTS = [
   ['preview_bambu_idle.png', 'bambu', 0, `window.deskHud.widget('bambu')._select(1, true)`],
   ['preview_launches.png', 'launches', 0],
   ['preview_launches_upcoming.png', 'launches', 1],
-  ['preview_launches_recent.png', 'launches', 2],
+  ['preview_launches_orbit.png', 'launches', 2],
   ['preview_accent.png', 'accent', 0],
 ]
 // optional arguments limit the run to screenshots whose names contain them,

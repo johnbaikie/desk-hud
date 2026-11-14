@@ -45,5 +45,5 @@ export const shortRocket = (l) => (l.rocket || '').replace(/\s+Block\s+\d+.*$/i,
 
 export const cut = (s, n) => !s ? '' : s.length > n ? s.slice(0, n - 2).trimEnd() + '..' : s
 
-// statuses LL2 uses: Go, TBC, TBD, Hold, In Flight, Success, Failure, Partial Failure
-export const GOOD = ['Go', 'In Flight', 'Success']
+// statuses LL2 uses: Go, TBC, TBD, Hold, In Flight, Deployed (payload deployed), Success, Failure, Partial Failure
+export const GOOD = ['Go', 'In Flight', 'Deployed', 'Success']
